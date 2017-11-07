@@ -4,4 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="StatusMessage.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="StatusMessage.cs" />
+  </ItemGroup>
+
 </Project>

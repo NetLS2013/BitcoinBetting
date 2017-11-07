@@ -3,6 +3,34 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Controllers\AccountController.cs" />
+    <None Remove="Controllers\UsersController.cs" />
+    <None Remove="Controllers\ValuesController.cs" />
+    <None Remove="Database\ApplicationDbContext.cs" />
+    <None Remove="Database\Entities\User.cs" />
+    <None Remove="Models\Account\LoginModel.cs" />
+    <None Remove="Models\Account\RegisterModel.cs" />
+    <None Remove="Program.cs" />
+    <None Remove="Services\Contracts\IEmailSender.cs" />
+    <None Remove="Services\Email\EmailSender.cs" />
+    <None Remove="Services\Identity\AppIdentityUser.cs" />
+    <None Remove="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Database\ApplicationDbContext.cs" />
+    <Compile Include="Database\Entities\User.cs" />
+    <Compile Include="Models\Account\LoginModel.cs" />
+    <Compile Include="Models\Account\RegisterModel.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Services\Contracts\IEmailSender.cs" />
+    <Compile Include="Services\Email\EmailSender.cs" />
+    <Compile Include="Services\Identity\AppIdentityUser.cs" />
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Database\Helpers" />
     <Folder Include="Database\Repositories" />
     <Folder Include="database\Repository" />

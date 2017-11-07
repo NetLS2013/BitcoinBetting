@@ -38,6 +38,11 @@ namespace BitcoinBetting.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var user = await userManager.FindByEmailAsync(model.Email);
 
             if (user != null)
@@ -64,6 +69,11 @@ namespace BitcoinBetting.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var user = new AppIdentityUser
             {
                 Email = model.Email,
