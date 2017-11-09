@@ -1,10 +1,9 @@
-﻿using BitcoinBetting.Core.Models.User;
+﻿using BitcoinBetting.Core.Interfaces;
+using BitcoinBetting.Core.Models.User;
+using BitcoinBetting.Core.Services;
+using BitcoinBetting.Core.Services.Validations;
 using BitcoinBetting.Core.ViewModels.Base;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -15,50 +14,125 @@ namespace BitcoinBetting.Core.ViewModels
     {
         public LoginModel loginModel;
 
-        public ICommand LoginCommand { protected set; get; }
+        public ICommand LoginCommand => new Command(async () => await Login());
+
+        public IRequestProvider requestProvider { get; set; }
+
+        public bool IsValid { get; set; }
+
+        private ValidatableObject<string> email;
+        private ValidatableObject<string> password;
+        private ValidatableObject<bool> isRemember;
 
         public LoginViewModel()
         {
+            requestProvider = new RequestProvider();
             loginModel = new LoginModel();
+
+            email = new ValidatableObject<string>();
+            password = new ValidatableObject<string>();
+            isRemember = new ValidatableObject<bool>();
+
+            AddValidations();
         }
 
-        public string UserName
+        public ValidatableObject<string> Email
         {
-            get { return loginModel.Email; }
+            get
+            {
+                loginModel.Email = email.Value;
+                return email;
+            }
             set
             {
-                if (loginModel.Email != value)
+                if (email.Value != value.Value)
                 {
-                    loginModel.Email = value;
-                    OnPropertyChanged("UserName");
+                    email = value;
+                    OnPropertyChanged("Email");
                 }
             }
         }
 
-        public string Password
+        public ValidatableObject<string> Password
         {
-            get { return loginModel.Password; }
+            get
+            {
+                loginModel.Password = password.Value;
+                return password;
+            }
             set
             {
-                if (loginModel.Password != value)
+                if (password.Value != value.Value)
                 {
-                    loginModel.Password = value;
+                    password = value;
                     OnPropertyChanged("Password");
                 }
             }
         }
 
-        public bool IsRemember
+        public ValidatableObject<bool> IsRemember
         {
-            get { return loginModel.IsRemember; }
+            get
+            {
+                return isRemember;
+            }
             set
             {
-                if (loginModel.IsRemember != value)
+                if (isRemember.Value != value.Value)
                 {
-                    loginModel.IsRemember = value;
+                    isRemember = value;
                     OnPropertyChanged("IsRemember");
                 }
             }
+        }
+
+        private async Task Login()
+        {
+            IsBusy = true;
+            IsValid = Validate();
+
+            if (!IsValid)
+            {
+                string error = string.Empty;
+                error += Email.Errors.Count > 0 ? Email.Errors[0] + Environment.NewLine : string.Empty;
+                error += Password.Errors.Count > 0 ? Password.Errors[0] : string.Empty;
+
+                await Application.Current.MainPage.DisplayAlert("Login fail", error, "Ok");
+            }
+            else
+            {
+                try
+                {
+                    var result = await this.requestProvider.PostAsync<LoginModel, Result>(GlobalSetting.Instance.LoginEndpoint, this.loginModel);
+
+                    if (!result.result)
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Login fail", result.Message, "Ok");
+                    }
+                    else
+                    {
+                        // some logic when login success
+                    }
+                }
+                catch (Exception e)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Login fail", e.Message, "Ok");
+                }
+            }
+
+            IsBusy = false;
+        }
+
+        private bool Validate()
+        {
+            return Email.Validate() && Password.Validate();
+        }
+
+        private void AddValidations()
+        {
+            Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A email is required" });
+
+            Password.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A password is required" });
         }
     }
 }

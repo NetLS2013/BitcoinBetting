@@ -18,6 +18,8 @@ namespace BitcoinBetting.Core.ViewModels
 
         public IRequestProvider requestProvider { get; set; }
 
+        public bool IsValid { get; set; }
+
         private ValidatableObject<string> email;
         private ValidatableObject<string> password;
         private ValidatableObject<string> repassword;
@@ -38,17 +40,16 @@ namespace BitcoinBetting.Core.ViewModels
             AddValidations();
         }
 
-        public bool IsValid { get; set; }
-
         public ValidatableObject<string> Email
         {
             get
             {
+                registrationModel.Email = email.Value;
                 return email;
             }
             set
             {
-                if (registrationModel.Email != value.Value)
+                if (email.Value != value.Value)
                 {
                     email = value;
                     OnPropertyChanged("UserName");
@@ -60,11 +61,12 @@ namespace BitcoinBetting.Core.ViewModels
         {
             get
             {
+                registrationModel.Password = password.Value;
                 return password;
             }
             set
             {
-                if (registrationModel.Password != value.Value)
+                if (password.Value != value.Value)
                 {
                     password = value;
                     OnPropertyChanged("Password");
@@ -92,11 +94,12 @@ namespace BitcoinBetting.Core.ViewModels
         {
             get
             {
+                registrationModel.FirstName = firstName.Value;
                 return firstName;
             }
             set
             {
-                if (registrationModel.FirstName != value.Value)
+                if (firstName.Value != value.Value)
                 {
                     firstName = value;
                     OnPropertyChanged("FirstName");
@@ -108,11 +111,12 @@ namespace BitcoinBetting.Core.ViewModels
         {
             get
             {
+                registrationModel.LastName = lastName.Value;
                 return lastName;
             }
             set
             {
-                if (registrationModel.LastName != value.Value)
+                if (lastName.Value != value.Value)
                 {
                     lastName = value;
                     OnPropertyChanged("LastName");
@@ -133,22 +137,17 @@ namespace BitcoinBetting.Core.ViewModels
                 error += Email.Errors.Count > 0 ? Email.Errors[0] + Environment.NewLine : string.Empty;
                 error += Password.Errors.Count > 0 ? Password.Errors[0] : string.Empty;
 
-                await Application.Current.MainPage.DisplayAlert("Login fail", error, "Ok");
+                await Application.Current.MainPage.DisplayAlert("Registration fail", error, "Ok");
             }
             else
             {
-                this.registrationModel.FirstName = this.FirstName.Value;
-                this.registrationModel.LastName = this.LastName.Value;
-                this.registrationModel.Email = this.Email.Value;
-                this.registrationModel.Password = this.Password.Value;
-
                 try
                 {
                     var result = await this.requestProvider.PostAsync<RegistrationModel, Result>(GlobalSetting.Instance.RegisterEndpoint, this.registrationModel);
 
                     if (!result.result)
                     {
-                        await Application.Current.MainPage.DisplayAlert("Login fail", result.Message, "Ok");
+                        await Application.Current.MainPage.DisplayAlert("Registration fail", result.Message, "Ok");
                     }
                     else
                     {
@@ -157,7 +156,7 @@ namespace BitcoinBetting.Core.ViewModels
                 }
                 catch(Exception e)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Login fail", e.Message, "Ok");
+                    await Application.Current.MainPage.DisplayAlert("Registration fail", e.Message, "Ok");
                 }
             }
 

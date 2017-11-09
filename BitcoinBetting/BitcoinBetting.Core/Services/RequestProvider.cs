@@ -67,7 +67,7 @@ namespace BitcoinBetting.Core.Services
 
             using (var httpClient = CreateHttpClient(ref cookieContainer))
             {
-                var content = new StringContent(JsonConvert.SerializeObject(data));
+                var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = null;
 
@@ -112,16 +112,15 @@ namespace BitcoinBetting.Core.Services
 
         private HttpClient CreateHttpClient(ref CookieContainer cookieContainer)
         {
-            cookieContainer = new CookieContainer();
+            if (!string.IsNullOrWhiteSpace(GlobalSetting.Instance.AuthToken))
+            {
+                cookieContainer.Add(new Cookie(".AspNetCore.Identity.Application", GlobalSetting.Instance.AuthToken) { Domain = new Uri(GlobalSetting.Instance.BaseEndpoint).Host });
+            }
+
             var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
-            var httpClient = new HttpClient();
+            var httpClient = new HttpClient(handler);
 
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            if (string.IsNullOrWhiteSpace(GlobalSetting.Instance.AuthToken))
-            {
-                httpClient.DefaultRequestHeaders.TryAddWithoutValidation(".AspNetCore.Identity.Application", GlobalSetting.Instance.AuthToken);
-            }
 
             return httpClient;
         }
