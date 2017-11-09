@@ -2,35 +2,16 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
-    <StartupObject></StartupObject>
+    <StartupObject>
+    </StartupObject>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-  </PropertyGroup>
-
+  </PropertyGroup>  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>6</LangVersion>
-    <DocumentationFile></DocumentationFile>
+    <LangVersion>7</LangVersion>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
 
-  <!--<ItemGroup>
-    <None Remove="Controllers\ValuesController.cs" />
-    <None Remove="Program.cs" />
-    <None Remove="Startup.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Controllers\AccountController.cs" />
-    <None Remove="Controllers\UsersController.cs" />
-    <None Remove="Controllers\ValuesController.cs" />
-    <None Remove="Database\ApplicationDbContext.cs" />
-    <None Remove="Database\Entities\User.cs" />
-    <None Remove="Models\Account\LoginModel.cs" />
-    <None Remove="Models\Account\RegisterModel.cs" />
-    <None Remove="Program.cs" />
-    <None Remove="Services\Contracts\IEmailSender.cs" />
-    <None Remove="Services\Email\EmailSender.cs" />
-    <None Remove="Services\Identity\AppIdentityUser.cs" />
-    <None Remove="Startup.cs" />
-  </ItemGroup>-->
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\UsersController.cs" />

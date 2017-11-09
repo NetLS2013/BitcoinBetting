@@ -74,6 +74,11 @@ namespace BitcoinBetting.Server.Controllers
                 return BadRequest();
             }
 
+            if (await userManager.FindByEmailAsync(model.Email) != null)
+            {
+                return Ok(new { code = StatusMessage.EmailDuplicate, result = false });
+            }
+
             var user = new AppIdentityUser
             {
                 Email = model.Email,
