@@ -3,19 +3,26 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>BitcoinBetting.Core</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Models\ResponseMessage.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSetting.cs" />
+    <Compile Include="Helpers\NotConverter.cs" />
     <Compile Include="Interfaces\IRequestProvider.cs" />
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ResponseMessage.cs" />
     <Compile Include="Models\User\LoginModel.cs" />
     <Compile Include="Models\User\RegistrationModel.cs" />
     <Compile Include="Models\User\Result.cs" />
