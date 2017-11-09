@@ -36,7 +36,7 @@ namespace BitcoinBetting.Server.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -67,7 +67,7 @@ namespace BitcoinBetting.Server.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             if (!ModelState.IsValid)
             {

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 
 namespace BitcoinBetting.Server
 {
@@ -33,7 +34,23 @@ namespace BitcoinBetting.Server
 
             services.AddIdentity<AppIdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-            
+
+
+            //services.ConfigureApplicationCookie(options =>
+            //{
+            //    options.LoginPath = "/Account/Login";
+            //    options.LogoutPath = "/Account/Logout";
+            //    options.SlidingExpiration = true;
+            //    options.Cookie = new CookieBuilder
+            //    {
+            //        HttpOnly = true,
+            //        Name = ".Fiver.Security.Cookie",
+            //        Path = "/",
+            //        SameSite = SameSiteMode.Lax,
+            //        SecurePolicy = CookieSecurePolicy.SameAsRequest
+            //    };
+            //});
+
             services.AddTransient<IEmailSender, EmailSender>();
             
             services.AddMvc();

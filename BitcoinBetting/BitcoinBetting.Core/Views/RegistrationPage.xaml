@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BitcoinBetting.Views.RegistrationPage"
+             Title="Registration">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">
+            <Entry Text="{Binding FirstName.Value, Mode=TwoWay}" Placeholder="First Name" />
+            <Entry Text="{Binding LastName.Value, Mode=TwoWay}" Placeholder="Last Name" />
+            <Entry Text="{Binding Email.Value, Mode=TwoWay}" Placeholder="Email" />
+            <Entry Text="{Binding Password.Value, Mode=TwoWay}" Placeholder="Password" IsPassword="true" />
+            <Entry Text="{Binding RePassword.Value, Mode=TwoWay}"  Placeholder="Re-Password" IsPassword="true" />
+            <Label x:Name="Validation" Text="OR REGISTER WITH" HorizontalOptions="Center" Margin="20" />
+            <Button Text="Register" Command="{Binding RegistrationCommand}"/>
+            <Label Text="OR REGISTER WITH" HorizontalOptions="Center" Margin="20" />
+
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Facebook" BackgroundColor="Blue" HorizontalOptions="FillAndExpand" TextColor="White" Image="facebook.png"/>
+                <Button Text="Google" BackgroundColor="Red" HorizontalOptions="FillAndExpand" TextColor="White" Image="google.png" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BitcoinBetting.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,11 +14,16 @@ namespace BitcoinBetting
         {
             InitializeComponent();
 
-            MainPage = new BitcoinBetting.MainPage();
+            MainPage = new NavigationPage(new MainPage())
+            {
+                BarBackgroundColor = Color.Transparent,
+                BarTextColor = Color.Black
+            };
         }
 
         protected override void OnStart()
         {
+            
             // Handle when your app starts
         }
 

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BitcoinBetting.Views.LoginPage"
+             Title="Login">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">
+            <Entry Text="{Binding UserName}" Placeholder="Email" />
+            <Entry Text="{Binding Password}" Placeholder="Password" IsPassword="true" />
+            <Label Text="Forgot password?" HorizontalOptions="End" FontSize="Small" VerticalOptions="Center"/>
+
+            <Button Text="Login" />
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Label Text="Remember me" VerticalOptions="Center" HorizontalOptions="Start" />
+                <Switch VerticalOptions="Center" Grid.Column="1" HorizontalOptions="Start"/>
+            </StackLayout>
+            <Label Text="OR LOGIN WITH" HorizontalOptions="Center" Margin="20"/>
+
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Facebook" BackgroundColor="Blue" HorizontalOptions="FillAndExpand" TextColor="White" Image="facebook.png"/>
+                <Button Text="Google" BackgroundColor="Red" HorizontalOptions="FillAndExpand" TextColor="White" Image="google.png" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
