@@ -1,4 +1,4 @@
-﻿using BitcoinBetting.Interfaces;
+﻿using BitcoinBetting.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace BitcoinBetting.Services.Validations
+namespace BitcoinBetting.Core.Services.Validations
 {
     public class ValidatableObject<T> : BindableObject, IValidity
     {

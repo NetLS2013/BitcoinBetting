@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BitcoinBetting.ViewModels.Base
+namespace BitcoinBetting.Core.ViewModels.Base
 {
     public class BaseViewModel : INotifyPropertyChanged
     {

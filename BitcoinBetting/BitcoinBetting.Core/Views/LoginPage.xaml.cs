@@ -1,8 +1,8 @@
-﻿using BitcoinBetting.ViewModels;
+﻿using BitcoinBetting.Core.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace BitcoinBetting.Views
+namespace BitcoinBetting.Core.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class LoginPage : ContentPage

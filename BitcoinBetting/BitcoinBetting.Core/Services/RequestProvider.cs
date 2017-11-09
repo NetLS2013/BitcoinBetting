@@ -1,4 +1,4 @@
-﻿using BitcoinBetting.Interfaces;
+﻿using BitcoinBetting.Core.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -11,7 +11,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BitcoinBetting.Services
+namespace BitcoinBetting.Core.Services
 {
     public class RequestProvider : IRequestProvider
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BitcoinBetting
+namespace BitcoinBetting.Core
 {
     public class GlobalSetting
     {

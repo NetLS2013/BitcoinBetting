@@ -1,5 +1,5 @@
-﻿using BitcoinBetting.ViewModels.Base;
-using BitcoinBetting.Views;
+﻿using BitcoinBetting.Core.ViewModels.Base;
+using BitcoinBetting.Core.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
-namespace BitcoinBetting.ViewModels
+namespace BitcoinBetting.Core.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {

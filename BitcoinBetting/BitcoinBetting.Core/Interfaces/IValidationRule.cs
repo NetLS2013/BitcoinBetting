@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BitcoinBetting.Interfaces
+namespace BitcoinBetting.Core.Interfaces
 {
     public interface IValidationRule<T>
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BitcoinBetting.Models.User
+namespace BitcoinBetting.Core.Models.User
 {
     public class RegistrationModel
     {

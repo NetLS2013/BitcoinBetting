@@ -1,4 +1,4 @@
-﻿using BitcoinBetting.ViewModels;
+﻿using BitcoinBetting.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace BitcoinBetting.Views
+namespace BitcoinBetting.Core.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RegistrationPage : ContentPage
@@ -16,6 +16,7 @@ namespace BitcoinBetting.Views
         public RegistrationPage()
         {
             this.BindingContext = new RegistrationViewModel();
+
             InitializeComponent();
         }
     }

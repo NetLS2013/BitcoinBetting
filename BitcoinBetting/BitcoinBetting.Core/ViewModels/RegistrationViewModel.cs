@@ -1,14 +1,14 @@
-﻿using BitcoinBetting.Interfaces;
-using BitcoinBetting.Models.User;
-using BitcoinBetting.Services;
-using BitcoinBetting.Services.Validations;
-using BitcoinBetting.ViewModels.Base;
+﻿using BitcoinBetting.Core.Interfaces;
+using BitcoinBetting.Core.Models.User;
+using BitcoinBetting.Core.Services;
+using BitcoinBetting.Core.Services.Validations;
+using BitcoinBetting.Core.ViewModels.Base;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
-namespace BitcoinBetting.ViewModels
+namespace BitcoinBetting.Core.ViewModels
 {
     public class RegistrationViewModel : BaseViewModel
     {
