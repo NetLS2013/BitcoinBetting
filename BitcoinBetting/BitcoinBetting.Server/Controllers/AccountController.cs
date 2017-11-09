@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
 using BitcoinBetting.Enum;
-using BitcoinBetting.Server.Models;
 using BitcoinBetting.Server.Models.Account;
 using BitcoinBetting.Server.Services.Contracts;
-using BitcoinBetting.Server.Services.Email;
 using BitcoinBetting.Server.Services.Identity;
 
 using Microsoft.AspNetCore.Http;
@@ -92,7 +91,7 @@ namespace BitcoinBetting.Server.Controllers
             if (create.Succeeded)
             {
                 var confrimationCode = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackurl = Url.Action("ConfirmEmail", new { userId = user.Id, code = confrimationCode });
+                var callbackurl = Url.Action(nameof(ConfirmEmail), new { userId = user.Id, code = confrimationCode });
 
                 await emailSender.SendEmailAsync(user.Email, "Confirm Email", callbackurl);
                 
@@ -128,6 +127,60 @@ namespace BitcoinBetting.Server.Controllers
             }
             
             return BadRequest();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExternalLogin()
+        {
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), new { returnUrl = "/" });
+            var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+
+            return Challenge(properties, "Facebook");
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            var info = await signInManager.GetExternalLoginInfoAsync();
+            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
+            
+            if (result.Succeeded)
+            {
+                return Ok(new { result = true });
+            }
+            
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                
+            return Ok(new { result = true, email, provider = info.LoginProvider });
+        }
+        
+        public async Task<IActionResult> ExternalLoginConfirmation([FromBody] RegisterModel model)
+        {
+            var info = await signInManager.GetExternalLoginInfoAsync();
+            
+            var user = new AppIdentityUser
+            {
+                Email = model.Email,
+                UserName = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
+            
+            var result = await userManager.CreateAsync(user);
+            
+            if (result.Succeeded)
+            {
+                result = await userManager.AddLoginAsync(user, info);
+                
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, false);
+                    
+                    return Ok(new { result = true });
+                }
+            }
+
+            return null;
         }
     }
 }

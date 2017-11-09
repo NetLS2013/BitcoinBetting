@@ -7,7 +7,7 @@ using BitcoinBetting.Server.Database;
 using BitcoinBetting.Server.Services.Contracts;
 using BitcoinBetting.Server.Services.Email;
 using BitcoinBetting.Server.Services.Identity;
-
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -35,22 +35,13 @@ namespace BitcoinBetting.Server
             services.AddIdentity<AppIdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    options.LoginPath = "/Account/Login";
-            //    options.LogoutPath = "/Account/Logout";
-            //    options.SlidingExpiration = true;
-            //    options.Cookie = new CookieBuilder
-            //    {
-            //        HttpOnly = true,
-            //        Name = ".Fiver.Security.Cookie",
-            //        Path = "/",
-            //        SameSite = SameSiteMode.Lax,
-            //        SecurePolicy = CookieSecurePolicy.SameAsRequest
-            //    };
-            //});
-
+            services.AddAuthentication()
+                .AddFacebook(f =>
+                {
+                    f.AppId = "158276314781134";
+                    f.AppSecret = "6a46eb840dbe945a1c4717f3f79700b4";
+                });
+            
             services.AddTransient<IEmailSender, EmailSender>();
             
             services.AddMvc();
@@ -64,7 +55,6 @@ namespace BitcoinBetting.Server
             }
 
             app.UseAuthentication();
-
             app.UseMvcWithDefaultRoute();
         }
     }

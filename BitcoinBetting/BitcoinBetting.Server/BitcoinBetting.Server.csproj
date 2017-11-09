@@ -5,13 +5,13 @@
     <StartupObject>
     </StartupObject>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-  </PropertyGroup>  
+    <UserSecretsId>dkHS62hDDaa01fs76</UserSecretsId>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7</LangVersion>
     <DocumentationFile>
     </DocumentationFile>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -33,9 +33,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BitcoinBetting.Enum\BitcoinBetting.Enum.csproj" />
