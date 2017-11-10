@@ -7,14 +7,14 @@ using BitcoinBetting.Server.Database;
 using BitcoinBetting.Server.Services.Contracts;
 using BitcoinBetting.Server.Services.Email;
 using BitcoinBetting.Server.Services.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using BitcoinBetting.Server.Services.MailChimp;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Http;
 
 namespace BitcoinBetting.Server
 {
@@ -32,7 +32,8 @@ namespace BitcoinBetting.Server
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<AppIdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
+            services.AddIdentity<AppIdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddAuthentication()
@@ -40,9 +41,15 @@ namespace BitcoinBetting.Server
                 {
                     f.AppId = "158276314781134";
                     f.AppSecret = "6a46eb840dbe945a1c4717f3f79700b4";
+                })
+                .AddGoogle(g =>
+                {
+                    g.ClientId = "727512244362-2gm10t4ulfo72b79emnko9ikgf74lf46.apps.googleusercontent.com";
+                    g.ClientSecret = "KvA6TwyqVFMgxxPdhDFyH09p";
                 });
             
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IMailChimpSender, MailChimpSender>();
             
             services.AddMvc();
         }

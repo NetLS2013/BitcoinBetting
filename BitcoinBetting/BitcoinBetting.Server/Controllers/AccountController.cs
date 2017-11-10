@@ -23,15 +23,18 @@ namespace BitcoinBetting.Server.Controllers
         private readonly UserManager<AppIdentityUser> userManager;
         private readonly SignInManager<AppIdentityUser> signInManager;
         private readonly IEmailSender emailSender;
-        
+        private readonly IMailChimpSender mailChimp;
+
         public AccountController(
             UserManager<AppIdentityUser> userManager,
             SignInManager<AppIdentityUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IMailChimpSender mailChimp)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailSender = emailSender;
+            this.mailChimp = mailChimp;
         }
         
         [HttpPost]
@@ -91,9 +94,17 @@ namespace BitcoinBetting.Server.Controllers
             if (create.Succeeded)
             {
                 var confrimationCode = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackurl = Url.Action(nameof(ConfirmEmail), new { userId = user.Id, code = confrimationCode });
+                var callbackurl = Url.Action(nameof(ConfirmEmail), "Account",new { userId = user.Id, code = confrimationCode }, Request.Scheme);
 
-                await emailSender.SendEmailAsync(user.Email, "Confirm Email", callbackurl);
+                try
+                {
+                    await emailSender.SendEmailAsync(user.Email, "BitcoinBetting support" ,"Confirm email link:\n" + callbackurl);
+                    await mailChimp.AddUserAsync(user.Email, user.FirstName, user.LastName);
+                }
+                catch (Exception e)
+                {
+                    return Ok(new { code = StatusMessage.ErrorCreatingUser, result = false });
+                }
                 
                 var passwordSignIn = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
                     
@@ -133,9 +144,9 @@ namespace BitcoinBetting.Server.Controllers
         public async Task<IActionResult> ExternalLogin()
         {
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), new { returnUrl = "/" });
-            var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+            var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
 
-            return Challenge(properties, "Facebook");
+            return Challenge(properties, "Google");
         }
         
         [HttpGet]
