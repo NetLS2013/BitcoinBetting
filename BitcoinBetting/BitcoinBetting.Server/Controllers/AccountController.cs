@@ -5,15 +5,15 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-
 using BitcoinBetting.Enum;
 using BitcoinBetting.Server.Models.Account;
 using BitcoinBetting.Server.Services.Contracts;
 using BitcoinBetting.Server.Services.Identity;
-
+using BitcoinBetting.Server.Services.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace BitcoinBetting.Server.Controllers
 {
@@ -24,17 +24,24 @@ namespace BitcoinBetting.Server.Controllers
         private readonly SignInManager<AppIdentityUser> signInManager;
         private readonly IEmailSender emailSender;
         private readonly IMailChimpSender mailChimp;
-
+        private readonly JwtSettings jwtSettings;
+        private readonly IJwtToken jwtToken;
+        
         public AccountController(
             UserManager<AppIdentityUser> userManager,
             SignInManager<AppIdentityUser> signInManager,
             IEmailSender emailSender,
-            IMailChimpSender mailChimp)
+            IMailChimpSender mailChimp,
+            IOptions<JwtSettings> jwtOptions,
+            IJwtToken jwtToken
+            )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailSender = emailSender;
             this.mailChimp = mailChimp;
+            this.jwtSettings = jwtOptions.Value;
+            this.jwtToken = jwtToken;
         }
         
         [HttpPost]
@@ -45,19 +52,16 @@ namespace BitcoinBetting.Server.Controllers
                 return BadRequest();
             }
 
-            var user = await userManager.FindByEmailAsync(model.Email);
+            var passwordSignIn = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
-            if (user != null)
+            if (passwordSignIn.Succeeded)
             {
-                var passwordSignIn = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                var user = await userManager.FindByEmailAsync(model.Email);
                 
-                if (passwordSignIn.Succeeded)
-                {
-                    return Ok(new { result = true });
-                }
+                return Ok(new { result = true, token = jwtToken.GetAccessToken(user, jwtSettings) });
             }
-            
-            return Ok(new { code = StatusMessage.UsernameOrPasswordIncorrect, result = false });
+
+            return Ok(new { result = false, code = StatusMessage.UsernameOrPasswordIncorrect });
         }
         
         [HttpPost]
@@ -110,7 +114,7 @@ namespace BitcoinBetting.Server.Controllers
                     
                 if (passwordSignIn.Succeeded)
                 {
-                    return Ok(new { result = true });
+                    return Ok(new { result = true, token = jwtToken.GetAccessToken(user, jwtSettings) });
                 }
             }
             
@@ -141,30 +145,40 @@ namespace BitcoinBetting.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExternalLogin()
+        public async Task<IActionResult> ExternalLogin(string provider)
         {
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), new { returnUrl = "/" });
-            var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback));
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
-            return Challenge(properties, "Google");
+            return Challenge(properties, provider);
         }
         
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallback()
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
             var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var redirectUrl = String.Empty;
             
             if (result.Succeeded)
             {
-                return Ok(new { result = true });
-            }
-            
-            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var user = await userManager.FindByEmailAsync(email);
+                redirectUrl = "final?token=" + jwtToken.GetAccessToken(user, jwtSettings);
                 
-            return Ok(new { result = true, email, provider = info.LoginProvider });
+                return Redirect(redirectUrl);
+            }
+
+            redirectUrl = "next?provider=" + info.LoginProvider
+                + "&gname=" + info.Principal.FindFirstValue(ClaimTypes.GivenName)
+                + "&sname=" + info.Principal.FindFirstValue(ClaimTypes.Surname)
+                + "&email=" + info.Principal.FindFirstValue(ClaimTypes.Email)
+                + "&externalToken=" + Request.Cookies["Identity.External"];
+            
+            return Redirect(redirectUrl);
         }
         
+        [HttpPost]
         public async Task<IActionResult> ExternalLoginConfirmation([FromBody] RegisterModel model)
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
@@ -187,11 +201,11 @@ namespace BitcoinBetting.Server.Controllers
                 {
                     await signInManager.SignInAsync(user, false);
                     
-                    return Ok(new { result = true });
+                    return Ok(new { result = true, token = jwtToken.GetAccessToken(user, jwtSettings) });
                 }
             }
 
-            return null;
+            return Ok(new { code = StatusMessage.ErrorCreatingUser, result = false });
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 using BitcoinBetting.Server.Database;
@@ -8,13 +9,19 @@ using BitcoinBetting.Server.Services.Contracts;
 using BitcoinBetting.Server.Services.Email;
 using BitcoinBetting.Server.Services.Identity;
 using BitcoinBetting.Server.Services.MailChimp;
-
+using BitcoinBetting.Server.Services.Security;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BitcoinBetting.Server
 {
@@ -29,27 +36,52 @@ namespace BitcoinBetting.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<JwtSettings>(Configuration.GetSection("JWTSettings"));
+            
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<AppIdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddAuthentication()
-                .AddFacebook(f =>
+            services
+                .AddAuthentication(auth =>
                 {
-                    f.AppId = "158276314781134";
-                    f.AppSecret = "6a46eb840dbe945a1c4717f3f79700b4";
+                    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddGoogle(g =>
+                .AddJwtBearer(bearer =>
                 {
-                    g.ClientId = "727512244362-2gm10t4ulfo72b79emnko9ikgf74lf46.apps.googleusercontent.com";
-                    g.ClientSecret = "KvA6TwyqVFMgxxPdhDFyH09p";
+                    bearer.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = Configuration.GetSection("JWTSettings:Issuer").Value,
+                        ValidAudience = Configuration.GetSection("JWTSettings:Audience").Value,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(
+                                Encoding.ASCII.GetBytes(Configuration.GetSection("JWTSettings:SecretKey").Value)),
+
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true
+                    };
+
+                    bearer.RequireHttpsMetadata = false;
+                })
+                .AddFacebook(facebook =>
+                {
+                    facebook.AppId = "158276314781134";
+                    facebook.AppSecret = "6a46eb840dbe945a1c4717f3f79700b4";
+                })
+                .AddGoogle(google =>
+                {
+                    google.ClientId = "727512244362-2gm10t4ulfo72b79emnko9ikgf74lf46.apps.googleusercontent.com";
+                    google.ClientSecret = "KvA6TwyqVFMgxxPdhDFyH09p";
                 });
             
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IMailChimpSender, MailChimpSender>();
+            services.AddTransient<IJwtToken, JwtToken>();
             
             services.AddMvc();
         }

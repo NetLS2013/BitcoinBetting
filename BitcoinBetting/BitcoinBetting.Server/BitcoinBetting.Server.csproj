@@ -15,14 +15,18 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Database\ApplicationDbContext.cs" />
+    <Compile Include="Helpers\Converter.cs" />
     <Compile Include="Models\Account\LoginModel.cs" />
     <Compile Include="Models\Account\RegisterModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Services\Contracts\IEmailSender.cs" />
     <Compile Include="Services\Contracts\IMailChimpSender.cs" />
+    <Compile Include="Services\Contracts\IJwtToken.cs" />
     <Compile Include="Services\Email\EmailSender.cs" />
     <Compile Include="Services\Identity\AppIdentityUser.cs" />
     <Compile Include="Services\MailChimp\MailChimpSender.cs" />
+    <Compile Include="Services\Security\JwtSettings.cs" />
+    <Compile Include="Services\Security\JwtToken.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
