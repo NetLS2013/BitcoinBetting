@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace BitcoinBetting.Server.Models.Account
 {
-    public class ForgotPasswordModel
+    public class ForgotPasswordConfirmModel
     {
         [Required]
         [EmailAddress]
         public string Email { get; set; }
 
+        [Required]
+        public string Code { get; set; }
+
+        [Required]
+        public string Password { get; set; }
     }
 }

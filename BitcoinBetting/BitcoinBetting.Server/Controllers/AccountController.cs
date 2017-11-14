@@ -241,7 +241,7 @@ namespace BitcoinBetting.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ForgotPasswordConfirmation([FromBody] ForgotPasswordModel model)
+        public async Task<IActionResult> ForgotPasswordConfirmation([FromBody] ForgotPasswordConfirmModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -253,41 +253,24 @@ namespace BitcoinBetting.Server.Controllers
             {
                 return Ok(new { code = StatusMessage.EmailNotExist, result = false });
             }
-            if (await userManager.IsEmailConfirmedAsync(user))
-            {
-                return Ok(new { code = StatusMessage.EmailNotConfirmed, result = false });
-            }
 
             if (model.Code == user.RestorePassCode)
             {
+                await userManager.RemovePasswordAsync(user);
+                var result = await userManager.AddPasswordAsync(user, model.Password);
+
                 user.RestorePassCode = null;
                 await userManager.UpdateAsync(user);
 
-                return Ok(new { result = true, token = jwtToken.GetAccessToken(user, jwtSettings) });
+                if (result.Succeeded)
+                {
+                    return Ok(new { result = true });
+                }
+
+                return Ok(new { code = StatusMessage.ErrorChangePass, result = false });
             }
 
             return Ok(new { result = false, code = StatusMessage.WrongCode });
-        }
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost]
-        public async Task<IActionResult> ResetPassword([FromBody] RestorePasswordModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var user = await userManager.FindByNameAsync(User.Identity.Name);
-
-            await userManager.RemovePasswordAsync(user);
-            var result = await userManager.AddPasswordAsync(user, model.NewPassword);
-            if (result.Succeeded)
-            {
-                return Ok(new { result = true });
-            }
-
-            return Ok(new { code = StatusMessage.ErrorChangePass, result = false });
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
