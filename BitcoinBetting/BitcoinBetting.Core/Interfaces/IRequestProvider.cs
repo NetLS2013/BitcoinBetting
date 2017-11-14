@@ -10,7 +10,7 @@ namespace BitcoinBetting.Core.Interfaces
     {
         Task<TResult> GetAsync<TResult>(string uri);
 
-        Task<TResult> PostAsync<TData, TResult>(string uri, TData data);
+        Task<TResult> PostAsync<TData, TResult>(string uri, TData data, List<KeyValuePair<string, string>> cookies = null);
 
         Task DeleteAsync(string uri);
     }

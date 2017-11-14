@@ -8,7 +8,7 @@ namespace BitcoinBetting.Core
 {
     public class GlobalSetting
     {
-        public const string DefaultEndpoint = "http://5454958b.ngrok.io";
+        public const string DefaultEndpoint = "http://bitcoinapp.com:50276";
         private string baseEndpoint;
 
         public string AuthToken { get; set; }
@@ -19,8 +19,22 @@ namespace BitcoinBetting.Core
 
         public string LogoutEndpoint { get; set; }
 
+        public string ExternalLoginEndpoint { get; set; }
+
+        public string ExternalLoginFacebookEndpoint { get; set; }
+
+        public string ExternalLoginGoogleEndpoint { get; set; }
+
+        public string ExternalLoginCallbackEndpoint { get; set; }
+
+        public string ExternalLoginConfirmationEndpoint { get; set; }
+
+        public string ExternalLoginFinalEndpoint { get; set; }
+
+        public string ExternalLoginNextEndpoint { get; set; }
+
         private static object myLock = new object();
-        private static volatile GlobalSetting instance = new GlobalSetting();
+        private static volatile GlobalSetting instance;
 
         private GlobalSetting() { }
 
@@ -34,15 +48,14 @@ namespace BitcoinBetting.Core
                     {
                         if (instance == null)
                         {
-                            instance = new GlobalSetting() {
+                            instance = new GlobalSetting()
+                            {
                                 BaseEndpoint = DefaultEndpoint
                             };
-                            
                         }
                     }
                 }
 
-                instance.UpdateEndpoint(DefaultEndpoint);
                 return instance;
             }
         }
@@ -62,6 +75,14 @@ namespace BitcoinBetting.Core
             RegisterEndpoint = string.Format("{0}/api/Account/Register", baseEndpoint);
             LoginEndpoint = string.Format("{0}/api/Account/Login", baseEndpoint);
             LogoutEndpoint = string.Format("{0}/api/Account/Logout", baseEndpoint);
+            ExternalLoginEndpoint = string.Format("{0}/api/Account/ExternalLogin", baseEndpoint);
+            ExternalLoginCallbackEndpoint = string.Format("{0}/api/Account/ExternalLoginCallback", baseEndpoint);
+            ExternalLoginConfirmationEndpoint = string.Format("{0}/api/Account/ExternalLoginConfirmation", baseEndpoint);
+            ExternalLoginNextEndpoint = string.Format("{0}/api/Account/next", baseEndpoint);
+            ExternalLoginFinalEndpoint = string.Format("{0}/api/Account/final", baseEndpoint);
+
+            ExternalLoginFacebookEndpoint = string.Format("{0}?provider={1}", ExternalLoginEndpoint, "Facebook");
+            ExternalLoginGoogleEndpoint = string.Format("{0}?provider={1}", ExternalLoginEndpoint, "Google");
         }
 
     }

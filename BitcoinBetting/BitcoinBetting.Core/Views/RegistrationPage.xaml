@@ -22,8 +22,8 @@
 
             <Label Text="OR REGISTER WITH" HorizontalOptions="Center" Margin="20" />
             <StackLayout Orientation="Horizontal">
-                <Button Text="Facebook" BackgroundColor="Blue" HorizontalOptions="FillAndExpand" TextColor="White" Image="facebook.png" IsEnabled="{Binding IsBusy, Converter={StaticResource NotConverter}}"/>
-                <Button Text="Google" BackgroundColor="Red" HorizontalOptions="FillAndExpand" TextColor="White" Image="google.png" IsEnabled="{Binding IsBusy, Converter={StaticResource NotConverter}}"/>
+                <Button Text="Facebook" Command="{Binding FacebookLoginCommand}" BackgroundColor="Blue" HorizontalOptions="FillAndExpand" TextColor="White" Image="facebook.png" IsEnabled="{Binding IsBusy, Converter={StaticResource NotConverter}}"/>
+                <Button Text="Google" Command="{Binding GoogleLoginCommand}" BackgroundColor="Red" HorizontalOptions="FillAndExpand" TextColor="White" Image="google.png" IsEnabled="{Binding IsBusy, Converter={StaticResource NotConverter}}"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

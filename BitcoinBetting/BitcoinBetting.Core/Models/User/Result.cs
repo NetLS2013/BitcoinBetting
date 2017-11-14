@@ -13,6 +13,8 @@ namespace BitcoinBetting.Core.Models.User
 
         public bool result { get; set; }
 
+        public string token { get; set; }
+
         public string Message {
             get
             {

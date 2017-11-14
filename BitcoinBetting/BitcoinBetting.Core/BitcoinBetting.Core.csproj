@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <None Remove="Models\ResponseMessage.cs" />
+    <None Remove="Models\User\ExternalLoginConfirmModel.cs" />
+    <None Remove="ViewModels\ExternalLoginConfirmationViewModel.cs" />
+    <None Remove="ViewModels\MenuViewModel.cs" />
+    <None Remove="Views\ExtrenalLoginConfirmPage.xaml.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +27,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ResponseMessage.cs" />
+    <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
     <Compile Include="Models\User\LoginModel.cs" />
     <Compile Include="Models\User\RegistrationModel.cs" />
     <Compile Include="Models\User\Result.cs" />
@@ -30,9 +35,12 @@
     <Compile Include="Services\Validations\IsNotNullOrEmptyRule.cs" />
     <Compile Include="Services\Validations\ValidatableObject.cs" />
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="Views\ExtrenalLoginConfirmPage.xaml.cs" />
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>

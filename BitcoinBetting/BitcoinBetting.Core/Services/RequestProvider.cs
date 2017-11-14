@@ -35,9 +35,7 @@ namespace BitcoinBetting.Core.Services
 
         public async Task<TResult> GetAsync<TResult>(string uri)
         {
-            CookieContainer cookieContainer = new CookieContainer();
-
-            using (var httpClient = CreateHttpClient(ref cookieContainer))
+            using (var httpClient = CreateHttpClient())
             {
                 HttpResponseMessage response = null;
 
@@ -55,17 +53,14 @@ namespace BitcoinBetting.Core.Services
                 string serialized = await response.Content.ReadAsStringAsync();
 
                 var result = JsonConvert.DeserializeObject<TResult>(serialized, serializerSettings);
-                this.GetCookie(cookieContainer);
 
                 return result;
             }
         }
 
-        public async Task<TResult> PostAsync<TData, TResult>(string uri, TData data)
+        public async Task<TResult> PostAsync<TData, TResult>(string uri, TData data, List<KeyValuePair<string, string>> cookies = null)
         {
-            CookieContainer cookieContainer = new CookieContainer();
-
-            using (var httpClient = CreateHttpClient(ref cookieContainer))
+            using (var httpClient = CreateHttpClient(cookies))
             {
                 var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
@@ -75,7 +70,7 @@ namespace BitcoinBetting.Core.Services
                 {
                     response = await httpClient.PostAsync(uri, content);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     throw new HttpRequestException("Network error");
                 }
@@ -85,7 +80,6 @@ namespace BitcoinBetting.Core.Services
                 string serialized = await response.Content.ReadAsStringAsync();
 
                 var result = JsonConvert.DeserializeObject<TResult>(serialized, serializerSettings);
-                this.GetCookie(cookieContainer);
 
                 return result;
             }
@@ -93,9 +87,7 @@ namespace BitcoinBetting.Core.Services
 
         public async Task DeleteAsync(string uri)
         {
-            CookieContainer cookieContainer = new CookieContainer();
-
-            using (var httpClient = CreateHttpClient(ref cookieContainer))
+            using (var httpClient = CreateHttpClient())
             {
                 try
                 {
@@ -105,36 +97,37 @@ namespace BitcoinBetting.Core.Services
                 {
                     throw new HttpRequestException("Network error");
                 }
-
-                this.GetCookie(cookieContainer);
-            } 
+            }
         }
 
-        private HttpClient CreateHttpClient(ref CookieContainer cookieContainer)
+        private HttpClient CreateHttpClient(List<KeyValuePair<string, string>> cookies = null)
         {
-            if (!string.IsNullOrWhiteSpace(GlobalSetting.Instance.AuthToken))
+            HttpClient httpClient = null;
+            if (cookies != null)
             {
-                cookieContainer.Add(new Cookie(".AspNetCore.Identity.Application", GlobalSetting.Instance.AuthToken) { Domain = new Uri(GlobalSetting.Instance.BaseEndpoint).Host });
+                CookieContainer cookieContainer = new CookieContainer();
+
+                foreach (var cookie in cookies)
+                {
+                    cookieContainer.Add(new Cookie(cookie.Key, cookie.Value) { Domain = new Uri(GlobalSetting.Instance.BaseEndpoint).Host });
+                }
+
+                var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+                httpClient = new HttpClient(handler);
+            }
+            else
+            {
+                httpClient = new HttpClient();
             }
 
-            var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
-            var httpClient = new HttpClient(handler);
+            if (!string.IsNullOrWhiteSpace(GlobalSetting.Instance.AuthToken))
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GlobalSetting.Instance.AuthToken);
+            }
 
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return httpClient;
-        }
-
-        private void GetCookie(CookieContainer cookieContainer)
-        {
-            IEnumerable<Cookie> responseCookies = cookieContainer.GetCookies(new Uri(GlobalSetting.Instance.RegisterEndpoint)).Cast<Cookie>();
-            foreach (Cookie cookie in responseCookies)
-            {
-                if (cookie.Name == ".AspNetCore.Identity.Application")
-                {
-                    GlobalSetting.Instance.AuthToken = cookie.Value;
-                }
-            }
         }
 
         private async Task HandleResponse(HttpResponseMessage response)

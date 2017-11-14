@@ -16,6 +16,10 @@ namespace BitcoinBetting.Core.ViewModels
 
         public ICommand RegistrationCommand => new Command(async () => await Register());
 
+        public ICommand FacebookLoginCommand => new Command(async () => await FacebookLogin());
+
+        public ICommand GoogleLoginCommand => new Command(async () => await GoogleLogin());
+
         public IRequestProvider requestProvider { get; set; }
 
         public bool IsValid { get; set; }
@@ -184,6 +188,16 @@ namespace BitcoinBetting.Core.ViewModels
             Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A email is required" });
 
             Password.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A password is required" });
+        }
+
+        private async Task FacebookLogin()
+        {
+            Device.OpenUri(new Uri(GlobalSetting.Instance.ExternalLoginFacebookEndpoint));
+        }
+
+        private async Task GoogleLogin()
+        {
+            Device.OpenUri(new Uri(GlobalSetting.Instance.ExternalLoginGoogleEndpoint));
         }
     }
 }

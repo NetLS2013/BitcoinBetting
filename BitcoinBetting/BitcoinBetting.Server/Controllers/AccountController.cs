@@ -158,18 +158,18 @@ namespace BitcoinBetting.Server.Controllers
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
             var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
-            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+
             var redirectUrl = String.Empty;
             
             if (result.Succeeded)
             {
-                var user = await userManager.FindByEmailAsync(email);
-                redirectUrl = "final?token=" + jwtToken.GetAccessToken(user, jwtSettings);
+                var user = await userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                redirectUrl = "bitcoinbetting://bitcoinapp.com/final?token=" + jwtToken.GetAccessToken(user, jwtSettings);
                 
                 return Redirect(redirectUrl);
             }
 
-            redirectUrl = "next?provider=" + info.LoginProvider
+            redirectUrl = "bitcoinbetting://bitcoinapp.com/next?provider=" + info.LoginProvider
                 + "&gname=" + info.Principal.FindFirstValue(ClaimTypes.GivenName)
                 + "&sname=" + info.Principal.FindFirstValue(ClaimTypes.Surname)
                 + "&email=" + info.Principal.FindFirstValue(ClaimTypes.Email)
