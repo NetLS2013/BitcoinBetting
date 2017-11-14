@@ -6,5 +6,6 @@ namespace BitcoinBetting.Server.Services.Identity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string RestorePassCode { get; set; }
     }
 }

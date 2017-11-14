@@ -12,12 +12,18 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Models\Account\ForgotPasswordModel.cs" />
+    <None Remove="Models\Account\RestorePasswordModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Database\ApplicationDbContext.cs" />
     <Compile Include="Helpers\Converter.cs" />
+    <Compile Include="Models\Account\ForgotPasswordModel.cs" />
     <Compile Include="Models\Account\LoginModel.cs" />
     <Compile Include="Models\Account\RegisterModel.cs" />
+    <Compile Include="Models\Account\RestorePasswordModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Services\Contracts\IEmailSender.cs" />
     <Compile Include="Services\Contracts\IMailChimpSender.cs" />
