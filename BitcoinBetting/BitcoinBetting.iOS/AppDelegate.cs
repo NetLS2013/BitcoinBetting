@@ -22,12 +22,46 @@ namespace BitcoinBetting.iOS
         //
         // You have 17 seconds to return from this method, or iOS will terminate your application.
         //
+        private App application;
+
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            LoadApplication(new App());
+            application = new App();
+            LoadApplication(application);
 
             return base.FinishedLaunching(app, options);
         }
+
+        public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+        {
+            var uri = new NSUrlComponents(url, true);
+            var token = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "token")?.Value;
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                Core.GlobalSetting.Instance.AuthToken = token;
+                // TODO Open next page
+
+                LoadApplication(application);
+            }
+            else
+            {
+                
+                var model = new Core.Models.User.ExternalLoginConfirmModel();
+                model.Email = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "email").Value;
+                model.FirstName = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "gname").Value;
+                model.LastName = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "sname").Value;
+                model.Cookie = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "externalToken").Value;
+                model.Provider = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "provider").Value;
+
+                LoadApplication(application);
+
+                Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new Core.Views.ExtrenalLoginConfirmPage(model));
+            }
+
+            return true;
+        }
     }
+
 }
