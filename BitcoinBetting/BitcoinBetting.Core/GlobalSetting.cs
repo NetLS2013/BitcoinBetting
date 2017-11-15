@@ -16,22 +16,18 @@ namespace BitcoinBetting.Core
         public string RegisterEndpoint { get; set; }
 
         public string LoginEndpoint { get; set; }
-
         public string LogoutEndpoint { get; set; }
 
         public string ExternalLoginEndpoint { get; set; }
-
         public string ExternalLoginFacebookEndpoint { get; set; }
-
         public string ExternalLoginGoogleEndpoint { get; set; }
-
         public string ExternalLoginCallbackEndpoint { get; set; }
-
         public string ExternalLoginConfirmationEndpoint { get; set; }
-
         public string ExternalLoginFinalEndpoint { get; set; }
-
         public string ExternalLoginNextEndpoint { get; set; }
+        
+        public string ForgotPasswordEndpoint { get; set; }
+        public string ForgotPasswordConfirmationEndpoint { get; set; }
 
         private static object myLock = new object();
         private static volatile GlobalSetting instance;
@@ -66,6 +62,7 @@ namespace BitcoinBetting.Core
             set
             {
                 baseEndpoint = value;
+                
                 UpdateEndpoint(baseEndpoint);
             }
         }
@@ -83,6 +80,9 @@ namespace BitcoinBetting.Core
 
             ExternalLoginFacebookEndpoint = string.Format("{0}?provider={1}", ExternalLoginEndpoint, "Facebook");
             ExternalLoginGoogleEndpoint = string.Format("{0}?provider={1}", ExternalLoginEndpoint, "Google");
+            
+            ForgotPasswordEndpoint = string.Format("{0}/api/Account/ForgotPassword", baseEndpoint);
+            ForgotPasswordConfirmationEndpoint = string.Format("{0}/api/Account/ForgotPasswordConfirmation", baseEndpoint);
         }
 
     }

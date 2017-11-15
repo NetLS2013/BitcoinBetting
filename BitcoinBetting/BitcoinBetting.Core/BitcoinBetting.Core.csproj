@@ -1,11 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <AssemblyName>BitcoinBetting.Core</AssemblyName>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Models\ResponseMessage.cs" />
     <None Remove="Models\User\ExternalLoginConfirmModel.cs" />
@@ -13,7 +11,6 @@
     <None Remove="ViewModels\MenuViewModel.cs" />
     <None Remove="Views\ExtrenalLoginConfirmPage.xaml.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -31,6 +28,8 @@
     <Compile Include="Models\User\LoginModel.cs" />
     <Compile Include="Models\User\RegistrationModel.cs" />
     <Compile Include="Models\User\Result.cs" />
+    <Compile Include="Models\User\ForgotPasswordConfirmModel.cs" />
+    <Compile Include="Models\User\ForgotPasswordModel.cs" />
     <Compile Include="Services\RequestProvider.cs" />
     <Compile Include="Services\Validations\IsNotNullOrEmptyRule.cs" />
     <Compile Include="Services\Validations\ValidatableObject.cs" />
@@ -40,23 +39,28 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
+    <Compile Include="ViewModels\NewPasswordViewModel.cs" />
     <Compile Include="Views\ExtrenalLoginConfirmPage.xaml.cs" />
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ForgotPasswordPage.xaml.cs">
+      <DependentUpon>ForgotPasswordPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RegistrationPage.xaml.cs">
       <DependentUpon>RegistrationPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\NewPasswordPage.xaml.cs">
+      <DependentUpon>NewPasswordPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Xamarin.Forms" Version="2.4.0.38779" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\BitcoinBetting.Enum\BitcoinBetting.Enum.csproj" />
   </ItemGroup>
-
 </Project>

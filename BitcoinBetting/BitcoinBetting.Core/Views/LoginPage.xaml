@@ -13,14 +13,14 @@
         <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">
             <Entry Text="{Binding Email.Value, Mode=TwoWay}" Keyboard="Email" Placeholder="Email" IsEnabled="{Binding IsBusy, Converter={StaticResource NotConverter}}"/>
             <Entry Text="{Binding Password.Value, Mode=TwoWay}" Placeholder="Password" IsPassword="true" IsEnabled="{Binding IsBusy, Converter={StaticResource NotConverter}}"/>
-            <Label Text="Forgot password?" HorizontalOptions="End" FontSize="Small" VerticalOptions="Center"/>
+            <Button Text="Forgot password" Command="{Binding ForgotPasswordCommand}" HorizontalOptions="End" FontSize="Small" IsEnabled="{Binding IsBusy, Converter={StaticResource NotConverter}}"/>
             <Button Text="Login" Command="{Binding LoginCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource NotConverter}}"/>
             
             <ActivityIndicator IsRunning="{Binding IsBusy}" HorizontalOptions="Center" />
             
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
                 <Label Text="Remember me" VerticalOptions="Center" HorizontalOptions="Start" />
-                <Switch VerticalOptions="Center" Grid.Column="1" HorizontalOptions="Start"/>
+                <Switch VerticalOptions="Center" HorizontalOptions="Start"/>
             </StackLayout>
             <Label Text="OR LOGIN WITH" HorizontalOptions="Center" Margin="20"/>
 

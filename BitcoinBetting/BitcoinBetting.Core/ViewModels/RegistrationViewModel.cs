@@ -155,6 +155,7 @@ namespace BitcoinBetting.Core.ViewModels
                     }
                     else
                     {
+                        GlobalSetting.Instance.AuthToken = result.token;
                         // some logic when login success
                     }
                 }

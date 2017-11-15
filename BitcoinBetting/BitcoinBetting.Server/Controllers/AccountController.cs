@@ -220,13 +220,10 @@ namespace BitcoinBetting.Server.Controllers
             }
 
             var user = await userManager.FindByEmailAsync(model.Email);
+            
             if (user == null)
             {
                 return Ok(new { code = StatusMessage.EmailNotExist, result = false });
-            }
-            if (await userManager.IsEmailConfirmedAsync(user))
-            {
-                return Ok(new { code = StatusMessage.EmailNotConfirmed, result = false });
             }
 
             var random = new Random();

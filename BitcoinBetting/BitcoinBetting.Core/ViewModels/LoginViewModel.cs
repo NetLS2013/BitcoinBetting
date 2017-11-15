@@ -6,6 +6,7 @@ using BitcoinBetting.Core.ViewModels.Base;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BitcoinBetting.Core.Views;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
@@ -15,28 +16,30 @@ namespace BitcoinBetting.Core.ViewModels
         public LoginModel loginModel;
 
         public ICommand LoginCommand => new Command(async () => await Login());
-
         public ICommand FacebookLoginCommand => new Command(async () => await FacebookLogin());
-
         public ICommand GoogleLoginCommand => new Command(async () => await GoogleLogin());
+        public ICommand ForgotPasswordCommand => new Command(async () => await ForgotPassword());
 
         public IRequestProvider requestProvider { get; set; }
 
         public bool IsValid { get; set; }
-
+        public INavigation Navigation { get; set;}
+        
         private ValidatableObject<string> email;
         private ValidatableObject<string> password;
         private ValidatableObject<bool> isRemember;
-
-        public LoginViewModel()
+        
+        public LoginViewModel(INavigation navigation)
         {
+            this.Navigation = navigation;
+            
             requestProvider = new RequestProvider();
             loginModel = new LoginModel();
 
             email = new ValidatableObject<string>();
             password = new ValidatableObject<string>();
             isRemember = new ValidatableObject<bool>();
-
+                
             AddValidations();
         }
 
@@ -98,8 +101,8 @@ namespace BitcoinBetting.Core.ViewModels
             if (!IsValid)
             {
                 string error = string.Empty;
-                error += Email.Errors.Count > 0 ? Email.Errors[0] + Environment.NewLine : string.Empty;
-                error += Password.Errors.Count > 0 ? Password.Errors[0] : string.Empty;
+                error += Email.Errors.Count > 0 ? Environment.NewLine + Email.Errors[0] : string.Empty;
+                error += Password.Errors.Count > 0 ? Environment.NewLine + Password.Errors[0] : string.Empty;
 
                 await Application.Current.MainPage.DisplayAlert("Login fail", error, "Ok");
             }
@@ -126,6 +129,11 @@ namespace BitcoinBetting.Core.ViewModels
 
             IsBusy = false;
         }
+        
+        private async Task ForgotPassword()
+        {
+            await Navigation.PushAsync(new ForgotPasswordPage());
+        }
 
         private bool Validate()
         {
@@ -135,7 +143,6 @@ namespace BitcoinBetting.Core.ViewModels
         private void AddValidations()
         {
             Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A email is required" });
-
             Password.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A password is required" });
         }
 

@@ -24,6 +24,7 @@
     <Compile Include="Models\Account\LoginModel.cs" />
     <Compile Include="Models\Account\RegisterModel.cs" />
     <Compile Include="Models\Account\RestorePasswordModel.cs" />
+    <Compile Include="Models\Account\ForgotPasswordConfirmModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Services\Contracts\IEmailSender.cs" />
     <Compile Include="Services\Contracts\IMailChimpSender.cs" />

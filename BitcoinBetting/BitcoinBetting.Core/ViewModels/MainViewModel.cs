@@ -13,20 +13,17 @@ namespace BitcoinBetting.Core.ViewModels
     public class MainViewModel : BaseViewModel
     {
         public ICommand LoginCommnad { protected set; get; }
-
         public ICommand RegisterCommnad { protected set; get; }
-
         public INavigation Navigation { protected set; get; }
 
         private LoginPage loginPage;
-
         private RegistrationPage registrationPage;
 
         public MainViewModel(INavigation Navigation, LoginPage loginPage, RegistrationPage registrationPage)
         {
             this.Navigation = Navigation;
-            LoginCommnad = new Command(LoadLoginPage);
-            RegisterCommnad = new Command(LoadRegistrationPage);
+            this.LoginCommnad = new Command(LoadLoginPage);
+            this.RegisterCommnad = new Command(LoadRegistrationPage);
 
             this.loginPage = loginPage;
             this.registrationPage = registrationPage;

@@ -5,12 +5,12 @@ using Xamarin.Forms.Xaml;
 namespace BitcoinBetting.Core.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class LoginPage : ContentPage
+	public partial class ForgotPasswordPage : ContentPage
 	{
-        public LoginPage ()
+        public ForgotPasswordPage ()
 		{
 			InitializeComponent ();
-            this.BindingContext = new LoginViewModel(Navigation);
+            this.BindingContext = new ForgotPasswordViewModel(Navigation, this);
         }
     }
 }
