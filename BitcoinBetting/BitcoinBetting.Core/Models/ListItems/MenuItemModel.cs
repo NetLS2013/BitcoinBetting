@@ -1,15 +1,9 @@
 ﻿using System;
 
-namespace BitcoinBetting.Core.Views.MasterDetail
+namespace BitcoinBetting.Core.Models.ListItems
 {
-
-    public class MenuItemPage
+    public class MenuItemModel
     {
-        public MenuItemPage()
-        {
-            
-        }
-        
         public int Id { get; set; }
         public string Title { get; set; }
         public Type TargetType { get; set; }

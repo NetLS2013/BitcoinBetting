@@ -14,6 +14,8 @@
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />
     <Compile Include="Models\ResponseMessage.cs" />
+    <Compile Include="Models\ListItems\BettingItemModel.cs" />
+    <Compile Include="Models\ListItems\MenuItemModel.cs" />
     <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
     <Compile Include="Models\User\LoginModel.cs" />
     <Compile Include="Models\User\RegistrationModel.cs" />
@@ -31,13 +33,13 @@
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="ViewModels\NewPasswordViewModel.cs" />
+    <Compile Include="ViewModels\BettingViewModel.cs" />
     <Compile Include="Views\Menu\MasterPage.xaml.cs">
       <DependentUpon>MasterPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Menu\MenuPage.xaml.cs">
       <DependentUpon>MenuPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Menu\MenuItemPage.cs" />
     <Compile Include="Views\Account\ExtrenalLoginConfirmPage.xaml.cs" />
     <Compile Include="Views\Account\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>

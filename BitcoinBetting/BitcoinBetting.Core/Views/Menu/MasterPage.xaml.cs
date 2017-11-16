@@ -1,5 +1,5 @@
 ﻿using System;
-using BitcoinBetting.Core.Views.MasterDetail;
+using BitcoinBetting.Core.Models.ListItems;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,7 +17,7 @@ namespace BitcoinBetting.Core.Views.Menu
 
         private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var item = e.SelectedItem as MenuItemPage;
+            var item = e.SelectedItem as MenuItemModel;
             
             if (item == null)
                 return;
