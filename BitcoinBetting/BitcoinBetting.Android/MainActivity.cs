@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Android.Content;
+using BitcoinBetting.Core.Views.Account;
 
 namespace BitcoinBetting.Droid
 {
@@ -54,7 +55,7 @@ namespace BitcoinBetting.Droid
 
                     LoadApplication(new App());
 
-                    Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new Core.Views.ExtrenalLoginConfirmPage(model));
+                    Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new ExtrenalLoginConfirmPage(model));
                 }
             }
             else

@@ -7,6 +7,8 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BitcoinBetting.Core.Views;
+using BitcoinBetting.Core.Views.Account;
+using BitcoinBetting.Core.Views.Menu;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
@@ -110,7 +112,7 @@ namespace BitcoinBetting.Core.ViewModels
             {
                 try
                 {
-                    var result = await this.requestProvider.PostAsync<LoginModel, Result>(GlobalSetting.Instance.LoginEndpoint, this.loginModel);
+                    var result = await requestProvider.PostAsync<LoginModel, Result>(GlobalSetting.Instance.LoginEndpoint, this.loginModel);
 
                     if (!result.result)
                     {
@@ -118,7 +120,9 @@ namespace BitcoinBetting.Core.ViewModels
                     }
                     else
                     {
-                        Application.Current.MainPage = new NavigationPage(new ProfilePage());
+                        GlobalSetting.Instance.AuthToken = result.token;
+
+                        Application.Current.MainPage = new NavigationPage(new MasterPage());
                     }
                 }
                 catch (Exception e)

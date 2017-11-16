@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BitcoinBetting.Core;
-
+using BitcoinBetting.Core.Views.Account;
 using Foundation;
 using UIKit;
 
@@ -57,7 +57,7 @@ namespace BitcoinBetting.iOS
 
                 LoadApplication(application);
 
-                Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new Core.Views.ExtrenalLoginConfirmPage(model));
+                Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new ExtrenalLoginConfirmPage(model));
             }
 
             return true;

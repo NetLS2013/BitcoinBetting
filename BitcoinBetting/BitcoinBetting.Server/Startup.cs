@@ -41,8 +41,17 @@ namespace BitcoinBetting.Server
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<AppIdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<AppIdentityUser, IdentityRole>(option =>
+                {
+                    option.Password = new PasswordOptions
+                    {
+                        RequireNonAlphanumeric = false,
+                        RequireUppercase = false,
+                        RequireDigit = false
+                    };
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services
                 .AddAuthentication(auth =>

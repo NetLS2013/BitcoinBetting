@@ -2,15 +2,16 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BitcoinBetting.Core.Views;
+using BitcoinBetting.Core.Views.Account;
 using BitcoinBetting.Core.Views.MasterDetail;
 
 namespace BitcoinBetting.Core.ViewModels
 {
-    class MasterViewModel : INotifyPropertyChanged
+    class MenuViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<MenuItemPage> MenuItems { get; set; }
             
-        public MasterViewModel()
+        public MenuViewModel()
         {
             MenuItems = new ObservableCollection<MenuItemPage>(new[]
             {

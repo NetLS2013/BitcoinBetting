@@ -3,16 +3,16 @@ using BitcoinBetting.Core.Views.MasterDetail;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace BitcoinBetting.Core.Views
+namespace BitcoinBetting.Core.Views.Menu
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ProfilePage : MasterDetailPage
+    public partial class MasterPage : MasterDetailPage
     {
-        public ProfilePage()
+        public MasterPage()
         {
             InitializeComponent();
             
-            MasterPage.ListView.ItemSelected += ListView_ItemSelected;
+            MenuPage.ListView.ItemSelected += ListView_ItemSelected;
         }
 
         private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -28,7 +28,7 @@ namespace BitcoinBetting.Core.Views
             Detail = new NavigationPage(page);
             IsPresented = false;
 
-            MasterPage.ListView.SelectedItem = null;
+            MenuPage.ListView.SelectedItem = null;
         }
     }
 }

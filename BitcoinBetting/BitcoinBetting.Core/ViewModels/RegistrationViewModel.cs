@@ -6,6 +6,7 @@ using BitcoinBetting.Core.ViewModels.Base;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BitcoinBetting.Core.Views.Menu;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
@@ -15,23 +16,24 @@ namespace BitcoinBetting.Core.ViewModels
         public RegistrationModel registrationModel;
 
         public ICommand RegistrationCommand => new Command(async () => await Register());
-
         public ICommand FacebookLoginCommand => new Command(async () => await FacebookLogin());
-
         public ICommand GoogleLoginCommand => new Command(async () => await GoogleLogin());
 
-        public IRequestProvider requestProvider { get; set; }
+        private IRequestProvider requestProvider { get; set; }
 
-        public bool IsValid { get; set; }
-
+        private bool IsValid { get; set; }
+        private INavigation Navigation { get; set;}
+        
         private ValidatableObject<string> email;
         private ValidatableObject<string> password;
         private ValidatableObject<string> repassword;
         private ValidatableObject<string> firstName;
         private ValidatableObject<string> lastName;
 
-        public RegistrationViewModel()
+        public RegistrationViewModel(INavigation navigation)
         {
+            Navigation = navigation;
+            
             requestProvider = new RequestProvider();
             registrationModel = new RegistrationModel();
 
@@ -156,7 +158,8 @@ namespace BitcoinBetting.Core.ViewModels
                     else
                     {
                         GlobalSetting.Instance.AuthToken = result.token;
-                        // some logic when login success
+
+                        Application.Current.MainPage = new NavigationPage(new MasterPage());
                     }
                 }
                 catch(Exception e)
@@ -171,10 +174,20 @@ namespace BitcoinBetting.Core.ViewModels
         private bool Validate()
         {
             var isValid = FirstName.Validate() && LastName.Validate() && Email.Validate() && FirstName.Validate() && Password.Validate();
+            
             if(isValid && password.Value != repassword.Value)
             {
                 Password.Errors.Clear();
-                Password.Errors.Add("A password and re-password is not equals");
+                Password.Errors.Add("The password and re-password is not equals");
+
+                isValid = false;
+            }
+            else if(password.Value.Length < 6)
+            {
+                Password.Errors.Clear();
+                Password.Errors.Add("The password must have at least 6 characters");
+                
+                isValid = false;
             }
 
             return isValid;
@@ -183,11 +196,8 @@ namespace BitcoinBetting.Core.ViewModels
         private void AddValidations()
         {
             FirstName.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A first name is required" });
-
             LastName.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A last name is required" });
-
             Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A email is required" });
-
             Password.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A password is required" });
         }
 

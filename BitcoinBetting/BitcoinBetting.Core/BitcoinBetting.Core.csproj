@@ -13,9 +13,6 @@
     <Compile Include="Interfaces\IRequestProvider.cs" />
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />
-    <Compile Include="StartupPage.xaml.cs">
-      <DependentUpon>StartupPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Models\ResponseMessage.cs" />
     <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
     <Compile Include="Models\User\LoginModel.cs" />
@@ -29,33 +26,36 @@
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
     <Compile Include="ViewModels\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="ViewModels\MasterViewModel.cs" />
+    <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\StartupViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="ViewModels\NewPasswordViewModel.cs" />
-    <Compile Include="Views\MasterDetail\DetailPage.xaml.cs">
-      <DependentUpon>DetailPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MasterDetail\MasterPage.xaml.cs">
+    <Compile Include="Views\Menu\MasterPage.xaml.cs">
       <DependentUpon>MasterPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MasterDetail\MenuItemPage.cs" />
-    <Compile Include="Views\ExtrenalLoginConfirmPage.xaml.cs" />
-    <Compile Include="Views\LoginPage.xaml.cs">
+    <Compile Include="Views\Menu\MenuPage.xaml.cs">
+      <DependentUpon>MenuPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Menu\MenuItemPage.cs" />
+    <Compile Include="Views\Account\ExtrenalLoginConfirmPage.xaml.cs" />
+    <Compile Include="Views\Account\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ForgotPasswordPage.xaml.cs">
+    <Compile Include="Views\Account\ForgotPasswordPage.xaml.cs">
       <DependentUpon>ForgotPasswordPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RegistrationPage.xaml.cs">
+    <Compile Include="Views\Account\RegistrationPage.xaml.cs">
       <DependentUpon>RegistrationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\NewPasswordPage.xaml.cs">
+    <Compile Include="Views\Account\NewPasswordPage.xaml.cs">
       <DependentUpon>NewPasswordPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfilePage.xaml.cs">
-      <DependentUpon>ProfilePage.xaml</DependentUpon>
+    <Compile Include="Views\BettingPage.xaml.cs">
+      <DependentUpon>BettingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StartupPage.xaml.cs">
+      <DependentUpon>StartupPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

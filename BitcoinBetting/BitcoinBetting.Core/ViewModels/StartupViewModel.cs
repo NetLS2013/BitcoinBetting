@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BitcoinBetting.Core.Views.Account;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels

@@ -2,18 +2,18 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace BitcoinBetting.Core.Views.MasterDetail
+namespace BitcoinBetting.Core.Views.Menu
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MasterPage : ContentPage
+    public partial class MenuPage : ContentPage
     {
         public ListView ListView;
 
-        public MasterPage()
+        public MenuPage()
         {
             InitializeComponent();
 
-            BindingContext = new MasterViewModel();
+            BindingContext = new MenuViewModel();
             ListView = MenuItemsListView;
         }
     }

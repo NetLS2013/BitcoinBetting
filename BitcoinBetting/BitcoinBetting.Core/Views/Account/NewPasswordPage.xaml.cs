@@ -3,7 +3,7 @@ using BitcoinBetting.Core.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace BitcoinBetting.Core.Views
+namespace BitcoinBetting.Core.Views.Account
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class NewPasswordPage : ContentPage

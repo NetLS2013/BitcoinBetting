@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BitcoinBetting.Core.Views;
+using BitcoinBetting.Core.Views.Account;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
@@ -16,12 +17,12 @@ namespace BitcoinBetting.Core.ViewModels
         private ForgotPasswordModel forgotPasswordModel;
 
         public ICommand ForgotPasswordCommand => new Command(async () => await ForgotPassword());
-        
-        public IRequestProvider requestProvider { get; set; }
 
-        public bool IsValid { get; set; }
-        public INavigation Navigation { get; set;}
-        public Page CurrentPage { get; set;}
+        private IRequestProvider requestProvider { get; set; }
+
+        private bool IsValid { get; set; }
+        private INavigation Navigation { get; set;}
+        private Page CurrentPage { get; set;}
         
         private ValidatableObject<string> email;
 
@@ -29,8 +30,8 @@ namespace BitcoinBetting.Core.ViewModels
         
         public ForgotPasswordViewModel(INavigation navigation, Page currentPage)
         {
-            this.Navigation = navigation;
-            this.CurrentPage = currentPage;
+            Navigation = navigation;
+            CurrentPage = currentPage;
 
             alertErrorMessage = "Error";
             
