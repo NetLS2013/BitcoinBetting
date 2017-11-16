@@ -2,26 +2,26 @@
 using BitcoinBetting.Core;
 using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Android.Content;
 using BitcoinBetting.Core.Views.Account;
+using BitcoinBetting.Core.Views.Menu;
+using Xamarin.Forms;
 
 namespace BitcoinBetting.Droid
 {
-    [IntentFilter(new[] { Android.Content.Intent.ActionView },
-                       AutoVerify = true,
-                       Categories = new[]
-                       {
-                            Android.Content.Intent.CategoryDefault,
-                            Android.Content.Intent.CategoryBrowsable
-                       },
-                       DataScheme = "bitcoinbetting",
-                       DataHost = "bitcoinapp.com")]
+    [IntentFilter(
+       new[] { Intent.ActionView },
+       AutoVerify = true,
+       Categories = new[]
+       {
+            Intent.CategoryDefault,
+            Intent.CategoryBrowsable
+       },
+       DataScheme = "bitcoinbetting",
+       DataHost = "bitcoinapp.com")]
     [Activity(Label = "BitcoinBetting", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle bundle)
         {
@@ -30,17 +30,19 @@ namespace BitcoinBetting.Droid
 
             base.OnCreate(bundle);
 
-            global::Xamarin.Forms.Forms.Init(this, bundle);
+            Forms.Init(this, bundle);
 
-            var intent = this.Intent;
+            var intent = Intent;
+            
             if (Intent.ActionView.Equals(intent.Action))
             {
                 Android.Net.Uri uri = intent.Data;
                 String token = uri.GetQueryParameter("token");
+                
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    Core.GlobalSetting.Instance.AuthToken = token;
-                    // TODO Open next page
+                    GlobalSetting.Instance.AuthToken = token;
+                    Xamarin.Forms.Application.Current.MainPage = new NavigationPage(new MasterPage());
 
                     LoadApplication(new App());
                 }
@@ -60,11 +62,8 @@ namespace BitcoinBetting.Droid
             }
             else
             {
-               
                 LoadApplication(new App());
             }
-
-            
         }
     }
 }

@@ -4,29 +4,21 @@ using System.Linq;
 
 using BitcoinBetting.Core;
 using BitcoinBetting.Core.Views.Account;
+using BitcoinBetting.Core.Views.Menu;
 using Foundation;
 using UIKit;
+using Xamarin.Forms;
 
 namespace BitcoinBetting.iOS
 {
-    // The UIApplicationDelegate for the application. This class is responsible for launching the 
-    // User Interface of the application, as well as listening (and optionally responding) to 
-    // application events from iOS.
     [Register("AppDelegate")]
-    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+    public partial class AppDelegate : Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
     {
-        //
-        // This method is invoked when the application has loaded and is ready to run. In this 
-        // method you should instantiate the window, load the UI into it and then make the window
-        // visible.
-        //
-        // You have 17 seconds to return from this method, or iOS will terminate your application.
-        //
         private App application;
 
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            global::Xamarin.Forms.Forms.Init();
+            Forms.Init();
             application = new App();
             LoadApplication(application);
 
@@ -40,15 +32,16 @@ namespace BitcoinBetting.iOS
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                Core.GlobalSetting.Instance.AuthToken = token;
-                // TODO Open next page
-
+                GlobalSetting.Instance.AuthToken = token;
+                
+                Xamarin.Forms.Application.Current.MainPage = new NavigationPage(new MasterPage());
+                
                 LoadApplication(application);
             }
             else
             {
-                
                 var model = new Core.Models.User.ExternalLoginConfirmModel();
+                
                 model.Email = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "email").Value;
                 model.FirstName = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "gname").Value;
                 model.LastName = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "sname").Value;
