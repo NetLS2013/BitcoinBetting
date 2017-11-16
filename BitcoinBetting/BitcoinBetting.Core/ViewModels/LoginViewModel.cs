@@ -118,7 +118,7 @@ namespace BitcoinBetting.Core.ViewModels
                     }
                     else
                     {
-                        // some logic when login success
+                        Application.Current.MainPage = new NavigationPage(new ProfilePage());
                     }
                 }
                 catch (Exception e)

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BitcoinBetting.Core.Views.ProfilePage"
+             xmlns:masterDetail="clr-namespace:BitcoinBetting.Core.Views.MasterDetail;assembly=BitcoinBetting.Core">
+    
+    <MasterDetailPage.Master>
+        <masterDetail:MasterPage x:Name="MasterPage" />
+    </MasterDetailPage.Master>
+    
+    <MasterDetailPage.Detail>
+        <NavigationPage>
+            <x:Arguments>
+                <masterDetail:DetailPage />
+            </x:Arguments>
+        </NavigationPage>
+    </MasterDetailPage.Detail>
+</MasterDetailPage>

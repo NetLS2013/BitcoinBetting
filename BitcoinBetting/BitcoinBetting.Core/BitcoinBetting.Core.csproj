@@ -5,13 +5,6 @@
     <AssemblyName>BitcoinBetting.Core</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Models\ResponseMessage.cs" />
-    <None Remove="Models\User\ExternalLoginConfirmModel.cs" />
-    <None Remove="ViewModels\ExternalLoginConfirmationViewModel.cs" />
-    <None Remove="ViewModels\MenuViewModel.cs" />
-    <None Remove="Views\ExtrenalLoginConfirmPage.xaml.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -20,8 +13,8 @@
     <Compile Include="Interfaces\IRequestProvider.cs" />
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="StartupPage.xaml.cs">
+      <DependentUpon>StartupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ResponseMessage.cs" />
     <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
@@ -36,11 +29,18 @@
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
     <Compile Include="ViewModels\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="ViewModels\MasterViewModel.cs" />
+    <Compile Include="ViewModels\StartupViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="ViewModels\NewPasswordViewModel.cs" />
+    <Compile Include="Views\MasterDetail\DetailPage.xaml.cs">
+      <DependentUpon>DetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MasterDetail\MasterPage.xaml.cs">
+      <DependentUpon>MasterPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MasterDetail\MenuItemPage.cs" />
     <Compile Include="Views\ExtrenalLoginConfirmPage.xaml.cs" />
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -53,6 +53,9 @@
     </Compile>
     <Compile Include="Views\NewPasswordPage.xaml.cs">
       <DependentUpon>NewPasswordPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProfilePage.xaml.cs">
+      <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

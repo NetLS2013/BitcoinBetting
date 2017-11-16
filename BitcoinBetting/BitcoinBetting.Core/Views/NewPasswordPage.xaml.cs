@@ -11,7 +11,8 @@ namespace BitcoinBetting.Core.Views
         public NewPasswordPage (ForgotPasswordModel model)
 		{
 			InitializeComponent ();
-            this.BindingContext = new NewPasswordViewModel(Navigation, model);
+		    
+            BindingContext = new NewPasswordViewModel(Navigation, model);
         }
     }
 }

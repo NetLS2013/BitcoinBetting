@@ -10,7 +10,8 @@ namespace BitcoinBetting.Core.Views
         public LoginPage ()
 		{
 			InitializeComponent ();
-            this.BindingContext = new LoginViewModel(Navigation);
+			
+            BindingContext = new LoginViewModel(Navigation);
         }
     }
 }

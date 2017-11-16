@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:BitcoinBetting"
-             x:Class="BitcoinBetting.Core.MainPage"
+             x:Class="BitcoinBetting.Core.StartupPage"
              Title="Bitcoin betting"
              >
     <ContentPage.ToolbarItems>
         
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout x:Name="mainStack" VerticalOptions="Center" Orientation="Vertical" Padding="30">
+        <StackLayout VerticalOptions="Center" Orientation="Vertical" Padding="30">
             <Image Source="bitcoin.png" HorizontalOptions="Center"/>
+            
             <Button Text="Registration" Command="{Binding RegisterCommnad}" />
             <Button Text="Login" Command="{Binding LoginCommnad}" />
         </StackLayout>
