@@ -17,6 +17,7 @@
     <Compile Include="Models\ResponseMessage.cs" />
     <Compile Include="Models\ListItems\BettingItemModel.cs" />
     <Compile Include="Models\ListItems\MenuItemModel.cs" />
+    <Compile Include="Models\ListItems\AddressItemModel.cs" />
     <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
     <Compile Include="Models\User\LoginModel.cs" />
     <Compile Include="Models\User\RegistrationModel.cs" />
@@ -35,6 +36,8 @@
     <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="ViewModels\NewPasswordViewModel.cs" />
     <Compile Include="ViewModels\BettingViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\AddressesViewModel.cs" />
     <Compile Include="Views\Menu\MasterPage.xaml.cs">
       <DependentUpon>MasterPage.xaml</DependentUpon>
     </Compile>
@@ -59,6 +62,15 @@
     </Compile>
     <Compile Include="Views\StartupPage.xaml.cs">
       <DependentUpon>StartupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\AddressesPage.xaml.cs">
+      <DependentUpon>AddressesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\HelpPage.xaml.cs">
+      <DependentUpon>HelpPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -124,11 +124,11 @@ namespace BitcoinBetting.Server
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
 
-            app.UseHangfireServer();
-            app.UseHangfireDashboard();
+//            app.UseHangfireServer();
+//            app.UseHangfireDashboard();
 
            //RecurringJob.AddOrUpdate(() => Console.WriteLine("Minutely Job executed"), Cron.Minutely);
-            BackgroundJob.Schedule(() => Console.WriteLine("Minutely Job executed"), TimeSpan.FromDays(10));
+//            BackgroundJob.Schedule(() => Console.WriteLine("Minutely Job executed"), TimeSpan.FromDays(10));
         }
     }
 }

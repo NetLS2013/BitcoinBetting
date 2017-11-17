@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using BitcoinBetting.Core.Models;
+using BitcoinBetting.Core.Models.ListItems;
 
 namespace BitcoinBetting.Core.ViewModels
 {

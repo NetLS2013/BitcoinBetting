@@ -1,33 +1,29 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using BitcoinBetting.Core.Models.ListItems;
 using BitcoinBetting.Core.ViewModels.Base;
 using BitcoinBetting.Core.Views;
-using BitcoinBetting.Core.Views.Account;
-using BitcoinBetting.Core.Views.Menu;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
 {
-    class MenuViewModel : BaseViewModel
+    class SettingsViewModel : BaseViewModel
     {
-        public ObservableCollection<MenuItemModel> MenuItems { get; set; }
+        public ObservableCollection<MenuItemModel> SettingsItems { get; set; }
         
         private INavigation Navigation { get; set;}
-        private MasterPage CurrentPage { get; set;}
+        private Page CurrentPage { get; set;}
         private ListView ListView { get; set;}
         
-        public MenuViewModel(INavigation navigation, MasterPage currentPage, ListView listView)
+        public SettingsViewModel(INavigation navigation, Page currentPage, ListView listView)
         {
             this.Navigation = navigation;
             this.CurrentPage = currentPage;
             this.ListView = listView;
             
-            MenuItems = new ObservableCollection<MenuItemModel>(new[]
+            SettingsItems = new ObservableCollection<MenuItemModel>(new[]
             {
-                new MenuItemModel { Title = "Betting", Page = new BettingPage()},
-                new MenuItemModel { Title = "Settings", Page = new SettingsPage()}
+                new MenuItemModel { Title = "Bitcoin addresses", Page = new AddressesPage()},
+                new MenuItemModel { Title = "Help", Page = new HelpPage()}
             });
         }
         
@@ -51,8 +47,7 @@ namespace BitcoinBetting.Core.ViewModels
             if (item == null)
                 return;
 
-            CurrentPage.Detail = new NavigationPage(item.Page);
-            CurrentPage.IsPresented = false;
+            Navigation.PushAsync(item.Page);
 
             ListView.SelectedItem = null;
         }

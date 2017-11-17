@@ -1,4 +1,4 @@
-﻿namespace BitcoinBetting.Core.Models
+﻿namespace BitcoinBetting.Core.Models.ListItems
 {
     public class BettingItemModel
     {

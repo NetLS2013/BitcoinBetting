@@ -9,7 +9,7 @@ namespace BitcoinBetting.Core
         {
             InitializeComponent();
             
-            BindingContext = new StartupViewModel(Navigation);;
+            BindingContext = new StartupViewModel(Navigation);
         }
     }
 }
