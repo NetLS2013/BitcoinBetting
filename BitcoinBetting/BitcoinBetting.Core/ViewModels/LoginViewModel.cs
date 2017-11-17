@@ -4,6 +4,7 @@ using BitcoinBetting.Core.Services;
 using BitcoinBetting.Core.Services.Validations;
 using BitcoinBetting.Core.ViewModels.Base;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BitcoinBetting.Core.Views;
@@ -24,16 +25,18 @@ namespace BitcoinBetting.Core.ViewModels
 
         public IRequestProvider requestProvider { get; set; }
 
-        public bool IsValid { get; set; }
-        public INavigation Navigation { get; set;}
+        private bool IsValid { get; set; }
+        private INavigation Navigation { get; set;}
+        private Page CurrentPage { get; set;}
         
         private ValidatableObject<string> email;
         private ValidatableObject<string> password;
         private ValidatableObject<bool> isRemember;
         
-        public LoginViewModel(INavigation navigation)
+        public LoginViewModel(INavigation navigation, Page currentPage)
         {
             this.Navigation = navigation;
+            this.CurrentPage = currentPage;
             
             requestProvider = new RequestProvider();
             loginModel = new LoginModel();
@@ -122,7 +125,7 @@ namespace BitcoinBetting.Core.ViewModels
                     {
                         GlobalSetting.Instance.AuthToken = result.token;
 
-                        Application.Current.MainPage = new NavigationPage(new MasterPage());
+                        Application.Current.MainPage = new MasterPage();
                     }
                 }
                 catch (Exception e)
@@ -153,11 +156,23 @@ namespace BitcoinBetting.Core.ViewModels
         private async Task FacebookLogin()
         {
             Device.OpenUri(new Uri(GlobalSetting.Instance.ExternalLoginFacebookEndpoint));
+            
+            CloseAndroidApp();
         }
 
         private async Task GoogleLogin()
         {
             Device.OpenUri(new Uri(GlobalSetting.Instance.ExternalLoginGoogleEndpoint));
+            
+            CloseAndroidApp();
+        }
+
+        private void CloseAndroidApp()
+        {
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                DependencyService.Get<INativeHelpers>().CloseApp();
+            }
         }
     }
 }

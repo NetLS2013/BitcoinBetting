@@ -159,7 +159,7 @@ namespace BitcoinBetting.Core.ViewModels
                     {
                         GlobalSetting.Instance.AuthToken = result.token;
 
-                        Application.Current.MainPage = new NavigationPage(new MasterPage());
+                        Application.Current.MainPage = new MasterPage();
                     }
                 }
                 catch(Exception e)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BitcoinBetting.Core.Models.ListItems;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

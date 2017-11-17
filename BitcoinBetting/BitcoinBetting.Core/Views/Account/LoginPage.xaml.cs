@@ -11,7 +11,7 @@ namespace BitcoinBetting.Core.Views.Account
 		{
 			InitializeComponent ();
 			
-            BindingContext = new LoginViewModel(Navigation);
+            BindingContext = new LoginViewModel(Navigation, this);
         }
     }
 }

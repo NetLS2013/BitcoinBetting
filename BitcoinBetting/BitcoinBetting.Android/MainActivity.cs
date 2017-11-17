@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BitcoinBetting.Core;
 using Android.App;
 using Android.Content.PM;
@@ -23,28 +24,31 @@ namespace BitcoinBetting.Droid
     [Activity(Label = "BitcoinBetting", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        private Page startupPage;
+        
         protected override void OnCreate(Bundle bundle)
         {
-            TabLayoutResource = Resource.Layout.Tabbar;
-            ToolbarResource = Resource.Layout.Toolbar;
-
             base.OnCreate(bundle);
-
             Forms.Init(this, bundle);
 
+            startupPage = new NavigationPage(new StartupPage())
+            {
+                BarBackgroundColor = Color.Transparent,
+                BarTextColor = Color.Black
+            };
+            
             var intent = Intent;
             
             if (Intent.ActionView.Equals(intent.Action))
             {
-                Android.Net.Uri uri = intent.Data;
-                String token = uri.GetQueryParameter("token");
+                var uri = intent.Data;
+                string token = uri.GetQueryParameter("token");
                 
                 if (!string.IsNullOrWhiteSpace(token))
                 {
                     GlobalSetting.Instance.AuthToken = token;
-                    Xamarin.Forms.Application.Current.MainPage = new NavigationPage(new MasterPage());
-
-                    LoadApplication(new App());
+                    
+                    LoadApplication(new App(new MasterPage()));
                 }
                 else
                 {
@@ -55,14 +59,14 @@ namespace BitcoinBetting.Droid
                     model.Cookie = uri.GetQueryParameter("externalToken");
                     model.Provider = uri.GetQueryParameter("provider");
 
-                    LoadApplication(new App());
-
+                    LoadApplication(new App(startupPage));
+                    
                     Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new ExtrenalLoginConfirmPage(model));
                 }
             }
             else
             {
-                LoadApplication(new App());
+                LoadApplication(new App(startupPage));
             }
         }
     }

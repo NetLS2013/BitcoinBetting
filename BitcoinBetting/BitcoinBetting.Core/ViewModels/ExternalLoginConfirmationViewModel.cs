@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BitcoinBetting.Core.Views.Menu;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
@@ -122,7 +123,8 @@ namespace BitcoinBetting.Core.ViewModels
                     else
                     {
                         GlobalSetting.Instance.AuthToken = result.token;
-                        // some logic when login success
+                        
+                        Application.Current.MainPage = new MasterPage();
                     }
                 }
                 catch (Exception e)

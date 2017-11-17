@@ -13,6 +13,7 @@
     <Compile Include="Interfaces\IRequestProvider.cs" />
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />
+    <Compile Include="Interfaces\INativeHelpers.cs" />
     <Compile Include="Models\ResponseMessage.cs" />
     <Compile Include="Models\ListItems\BettingItemModel.cs" />
     <Compile Include="Models\ListItems\MenuItemModel.cs" />

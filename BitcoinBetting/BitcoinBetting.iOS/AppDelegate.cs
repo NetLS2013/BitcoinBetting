@@ -14,13 +14,10 @@ namespace BitcoinBetting.iOS
     [Register("AppDelegate")]
     public partial class AppDelegate : Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
     {
-        private App application;
-
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Forms.Init();
-            application = new App();
-            LoadApplication(application);
+            LoadApplication(new App(new NavigationPage(new StartupPage())));
 
             return base.FinishedLaunching(app, options);
         }
@@ -34,9 +31,7 @@ namespace BitcoinBetting.iOS
             {
                 GlobalSetting.Instance.AuthToken = token;
                 
-                Xamarin.Forms.Application.Current.MainPage = new NavigationPage(new MasterPage());
-                
-                LoadApplication(application);
+                Xamarin.Forms.Application.Current.MainPage = new MasterPage();
             }
             else
             {
@@ -47,8 +42,6 @@ namespace BitcoinBetting.iOS
                 model.LastName = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "sname").Value;
                 model.Cookie = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "externalToken").Value;
                 model.Provider = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "provider").Value;
-
-                LoadApplication(application);
 
                 Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new ExtrenalLoginConfirmPage(model));
             }

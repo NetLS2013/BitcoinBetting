@@ -1,18 +1,15 @@
-﻿using Xamarin.Forms;
+﻿using System.Linq;
+using Xamarin.Forms;
 
 namespace BitcoinBetting.Core
 {
     public partial class App : Application
     {
-        public App()
+        public App(Page mainPage)
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new StartupPage())
-            {
-                BarBackgroundColor = Color.Transparent,
-                BarTextColor = Color.Black
-            };
+            MainPage = mainPage;
         }
 
         protected override void OnStart()
