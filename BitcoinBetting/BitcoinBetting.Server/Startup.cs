@@ -22,6 +22,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using BitcoinBetting.Server.Database.Repositories;
+using BitcoinBetting.Server.Models.Betting;
+using System.Timers;
+using Hangfire;
+using BitcoinBetting.Server.Services.Bitcoin;
+using BitcoinBetting.Server.Services.Betting;
 
 namespace BitcoinBetting.Server
 {
@@ -42,16 +48,18 @@ namespace BitcoinBetting.Server
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<AppIdentityUser, IdentityRole>(option =>
+            {
+                option.Password = new PasswordOptions
                 {
-                    option.Password = new PasswordOptions
-                    {
-                        RequireNonAlphanumeric = false,
-                        RequireUppercase = false,
-                        RequireDigit = false
-                    };
-                })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                    RequireNonAlphanumeric = false,
+                    RequireUppercase = false,
+                    RequireDigit = false
+                };
+            })
+                            .AddEntityFrameworkStores<ApplicationDbContext>()
+                            .AddDefaultTokenProviders();
+
+            services.AddDbContext<ApplicationDbContext>(builder => builder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services
                 .AddAuthentication(auth =>
@@ -91,7 +99,18 @@ namespace BitcoinBetting.Server
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IMailChimpSender, MailChimpSender>();
             services.AddTransient<IJwtToken, JwtToken>();
-            
+
+            services.AddTransient<IBitcoinAverageApi, BitcoinAverageApi>(serviceProvider =>
+            {
+                return new BitcoinAverageApi(Configuration.GetSection("BitcoinAvarageSettings:PublicKey").Value, Configuration.GetSection("BitcoinAvarageSettings:SecretKey").Value);
+            });
+
+            services.AddTransient<IGenericRepository<BidModel>, GenericRepository<BidModel>>();
+            services.AddTransient<IGenericRepository<WalletModel>, GenericRepository<WalletModel>>();
+            services.AddTransient<IGenericRepository<BettingModel>, GenericRepository<BettingModel>>();
+
+            services.AddTransient<IWalletService, WalletService>();
+
             services.AddMvc();
         }
 
@@ -104,6 +123,12 @@ namespace BitcoinBetting.Server
 
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
+
+           //RecurringJob.AddOrUpdate(() => Console.WriteLine("Minutely Job executed"), Cron.Minutely);
+            BackgroundJob.Schedule(() => Console.WriteLine("Minutely Job executed"), TimeSpan.FromDays(10));
         }
     }
 }
