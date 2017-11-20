@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BitcoinBetting.Core.Models;
 using BitcoinBetting.Core.Views;
 using BitcoinBetting.Core.Views.Account;
 using BitcoinBetting.Core.Views.Menu;

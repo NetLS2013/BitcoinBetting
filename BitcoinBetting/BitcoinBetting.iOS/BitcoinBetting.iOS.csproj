@@ -148,12 +148,9 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\bitcoin.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BundleResource Include="Resources\facebook.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BundleResource Include="Resources\google.png" />
+    <BundleResource Include="Resources\ic_plus_circle_outline.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

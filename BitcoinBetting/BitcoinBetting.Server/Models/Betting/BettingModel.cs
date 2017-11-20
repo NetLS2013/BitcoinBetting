@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace BitcoinBetting.Server.Models.Betting
     [Table("Bettings")]
     public class BettingModel
     {
+        [Key]
         public int BettingId { get; set; }
 
         public double ExchangeRate { get; set; }

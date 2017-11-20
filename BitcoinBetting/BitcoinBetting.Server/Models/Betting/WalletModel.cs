@@ -10,6 +10,7 @@ namespace BitcoinBetting.Server.Models.Betting
     [Table("Wallets")]
     public class WalletModel
     {
+        [Key]
         public int WalletId { get; set; }
 
         public string UserId { get; set; }

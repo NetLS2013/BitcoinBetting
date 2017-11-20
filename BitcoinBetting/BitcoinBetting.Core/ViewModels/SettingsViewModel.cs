@@ -1,7 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using BitcoinBetting.Core.Models.ListItems;
 using BitcoinBetting.Core.ViewModels.Base;
 using BitcoinBetting.Core.Views;
+using BitcoinBetting.Core.Views.Settings;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
@@ -22,8 +24,8 @@ namespace BitcoinBetting.Core.ViewModels
             
             SettingsItems = new ObservableCollection<MenuItemModel>(new[]
             {
-                new MenuItemModel { Title = "Bitcoin addresses", Page = new AddressesPage()},
-                new MenuItemModel { Title = "Help", Page = new HelpPage()}
+                new MenuItemModel { Title = "Bitcoin addresses", TargetType = typeof(AddressesPage)},
+                new MenuItemModel { Title = "Help", TargetType = typeof(HelpPage)}
             });
         }
         
@@ -47,7 +49,9 @@ namespace BitcoinBetting.Core.ViewModels
             if (item == null)
                 return;
 
-            Navigation.PushAsync(item.Page);
+            var page = (Page)Activator.CreateInstance(item.TargetType);
+            
+            Navigation.PushAsync(page);
 
             ListView.SelectedItem = null;
         }

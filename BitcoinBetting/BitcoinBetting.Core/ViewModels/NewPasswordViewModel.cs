@@ -6,6 +6,7 @@ using BitcoinBetting.Core.ViewModels.Base;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BitcoinBetting.Core.Models;
 using BitcoinBetting.Core.Views;
 using BitcoinBetting.Core.Views.Account;
 using Xamarin.Forms;

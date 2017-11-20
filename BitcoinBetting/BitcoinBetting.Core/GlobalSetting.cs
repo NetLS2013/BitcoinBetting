@@ -28,6 +28,9 @@ namespace BitcoinBetting.Core
         
         public string ForgotPasswordEndpoint { get; set; }
         public string ForgotPasswordConfirmationEndpoint { get; set; }
+        
+        public string AddressCreateWaletEndpoint { get; set; }
+        public string AddressGetWaletEndpoint { get; set; }
 
         private static object myLock = new object();
         private static volatile GlobalSetting instance;
@@ -83,6 +86,9 @@ namespace BitcoinBetting.Core
             
             ForgotPasswordEndpoint = string.Format("{0}/api/Account/ForgotPassword", baseEndpoint);
             ForgotPasswordConfirmationEndpoint = string.Format("{0}/api/Account/ForgotPasswordConfirmation", baseEndpoint);
+            
+            AddressCreateWaletEndpoint = string.Format("{0}/api/Wallet/Create", baseEndpoint);
+            AddressGetWaletEndpoint = string.Format("{0}/api/Wallet/Get", baseEndpoint);
         }
 
     }

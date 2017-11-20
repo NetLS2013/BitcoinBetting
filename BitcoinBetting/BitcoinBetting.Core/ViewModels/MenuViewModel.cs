@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BitcoinBetting.Core.Models.ListItems;
@@ -26,8 +27,8 @@ namespace BitcoinBetting.Core.ViewModels
             
             MenuItems = new ObservableCollection<MenuItemModel>(new[]
             {
-                new MenuItemModel { Title = "Betting", Page = new BettingPage()},
-                new MenuItemModel { Title = "Settings", Page = new SettingsPage()}
+                new MenuItemModel { Title = "Betting", TargetType = typeof(BettingPage)},
+                new MenuItemModel { Title = "Settings", TargetType = typeof(SettingsPage)}
             });
         }
         
@@ -51,7 +52,9 @@ namespace BitcoinBetting.Core.ViewModels
             if (item == null)
                 return;
 
-            CurrentPage.Detail = new NavigationPage(item.Page);
+            var page = (Page)Activator.CreateInstance(item.TargetType);
+            
+            CurrentPage.Detail = new NavigationPage(page);
             CurrentPage.IsPresented = false;
 
             ListView.SelectedItem = null;

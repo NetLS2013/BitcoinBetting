@@ -25,6 +25,7 @@ using Microsoft.IdentityModel.Tokens;
 using BitcoinBetting.Server.Database.Repositories;
 using BitcoinBetting.Server.Models.Betting;
 using System.Timers;
+using BitcoinBetting.Server.Database.Context;
 using Hangfire;
 using BitcoinBetting.Server.Services.Bitcoin;
 using BitcoinBetting.Server.Services.Betting;
@@ -59,7 +60,7 @@ namespace BitcoinBetting.Server
                             .AddEntityFrameworkStores<ApplicationDbContext>()
                             .AddDefaultTokenProviders();
 
-            services.AddDbContext<ApplicationDbContext>(builder => builder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationContext>(builder => builder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services
                 .AddAuthentication(auth =>

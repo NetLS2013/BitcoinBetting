@@ -6,6 +6,6 @@ namespace BitcoinBetting.Core.Models.ListItems
     public class MenuItemModel
     {
         public string Title { get; set; }
-        public Page Page { get; set; }
+        public Type TargetType { get; set; }
     }
 }

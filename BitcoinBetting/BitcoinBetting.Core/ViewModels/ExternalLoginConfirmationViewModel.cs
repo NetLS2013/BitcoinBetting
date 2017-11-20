@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BitcoinBetting.Core.Models;
 using BitcoinBetting.Core.Views.Menu;
 using Xamarin.Forms;
 
