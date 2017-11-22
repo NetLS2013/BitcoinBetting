@@ -1,8 +1,14 @@
-﻿namespace BitcoinBetting.Core.Models.ListItems
+﻿using System;
+using BitcoinBetting.Core.ViewModels;
+
+namespace BitcoinBetting.Core.Models.ListItems
 {
     public class BettingItemModel
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public double ExchangeRate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime FinishDate { get; set; }
+        public double Bank { get; set; }
+        public bool BetType { get; set; }
     }
 }

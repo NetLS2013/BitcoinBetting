@@ -109,7 +109,10 @@ namespace BitcoinBetting.Server
             services.AddTransient<IGenericRepository<BidModel>, GenericRepository<BidModel>>();
             services.AddTransient<IGenericRepository<WalletModel>, GenericRepository<WalletModel>>();
             services.AddTransient<IGenericRepository<BettingModel>, GenericRepository<BettingModel>>();
-
+            
+            services.AddTransient<IBettingService, BettingService>();
+            services.AddTransient<IBidService, BidService>();
+            
             services.AddTransient<IWalletService, WalletService>();
 
             services.AddMvc();

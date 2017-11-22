@@ -26,7 +26,7 @@ namespace BitcoinBetting.Core.ViewModels
         
         public ICommand ModalAddressesCommand => new Command(async () => await ModalAddressesPage());
         public ICommand AddressCreateCommand => new Command(async () => await AddressCreate());
-        public ICommand AddressCreateDismissCommand => new Command(async () => await AddressCreateDismiss());
+        public ICommand DismissModalCommand => new Command(async () => await DismissModal());
         
         private IRequestProvider requestProvider { get; set; }
         
@@ -103,18 +103,28 @@ namespace BitcoinBetting.Core.ViewModels
         private async Task LoadAddressItems()
         {
             IsBusy = true;
-            
-            var result = await requestProvider
-                .GetAsync<WalletResultModel>(GlobalSetting.Instance.AddressGetWaletEndpoint);
 
-            if (!result.result)
+            try
             {
-                await Application.Current.MainPage.DisplayAlert("Error!",
-                    Environment.NewLine + result.Message, "Ok");
+                var result = await requestProvider
+                    .GetAsync<WalletResultModel>(GlobalSetting.Instance.AddressGetWaletEndpoint);
+
+                if (!result.result)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error!",
+                        Environment.NewLine + result.Message, "Ok");
+                }
+                else
+                {
+                    AddressesItems = new ObservableCollection<AddressItemModel>(result.list);
+                }
             }
-            else
+            catch (Exception e)
             {
-                AddressesItems = new ObservableCollection<AddressItemModel>(result.list);
+                Device.BeginInvokeOnMainThread(async () => {
+                    await Application.Current.MainPage.DisplayAlert("Error!", Environment.NewLine + e.Message,
+                        "Ok");
+                });
             }
 
             OnPropertyChanged(nameof(AddressesItems));
@@ -152,7 +162,7 @@ namespace BitcoinBetting.Core.ViewModels
                         
                         OnPropertyChanged(nameof(AddressesItems));
                         
-                        await AddressCreateDismiss();
+                        await DismissModal();
                     }
                 }
                 catch (Exception e)
@@ -163,7 +173,7 @@ namespace BitcoinBetting.Core.ViewModels
             }
         }
 
-        private async Task AddressCreateDismiss()
+        private async Task DismissModal()
         {
             await Navigation.PopModalAsync();
         }

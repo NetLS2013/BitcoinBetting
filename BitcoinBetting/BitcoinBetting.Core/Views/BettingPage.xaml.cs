@@ -6,14 +6,11 @@ namespace BitcoinBetting.Core.Views
 {
     public partial class BettingPage : ContentPage
     {
-        public ListView ListView;
-        
         public BettingPage()
         {
             InitializeComponent();
             
-            BindingContext = new BettingViewModel();
-            ListView = BettingItemsListView;
+            BindingContext = new BettingViewModel(Navigation, this, BettingItemsListView);
         }
     }
 }

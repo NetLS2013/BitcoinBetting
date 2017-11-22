@@ -12,13 +12,13 @@ namespace BitcoinBetting.Server.Services.Betting
         IGenericRepository<BettingModel> repository;
         IGenericRepository<BidModel> bidRepository;
         IBitcoinAverageApi bitcoinAverage;
-        TimeSpan time;
+        private TimeSpan time = TimeSpan.FromDays(15);
 
-        public BettingService(IGenericRepository<BettingModel> repository, IBitcoinAverageApi bitcoinAverage, TimeSpan time)
+        public BettingService(IGenericRepository<BettingModel> repository, IBitcoinAverageApi bitcoinAverage, IGenericRepository<BidModel> bidRepository)
         {
             this.repository = repository;
             this.bitcoinAverage = bitcoinAverage;
-            this.time = time;
+            this.bidRepository = bidRepository;
         }
 
         public IEnumerable<BettingModel> Get()
@@ -29,7 +29,7 @@ namespace BitcoinBetting.Server.Services.Betting
 
                 foreach (var bet in bettings)
                 {
-                    bet.Bank = bidRepository.Get(x => x.BettingId == bet.BettingId).Sum<BidModel>(x => x.Amount);
+                    bet.Bank = bidRepository.Get(x => x.BettingId == bet.BettingId)?.Sum<BidModel>(x => x.Amount) ?? 0;
                 }
 
                 return bettings;

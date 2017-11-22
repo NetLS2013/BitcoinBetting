@@ -20,7 +20,7 @@ namespace BitcoinBetting.Server.Services.Security
                 issuer: jwtSettings.Issuer,
                 audience: jwtSettings.Audience,
                 claims: identity.Claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddMonths(1),
                 signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(token);

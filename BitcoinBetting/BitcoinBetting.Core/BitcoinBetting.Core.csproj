@@ -19,6 +19,7 @@
     <Compile Include="Models\ListItems\MenuItemModel.cs" />
     <Compile Include="Models\ListItems\AddressItemModel.cs" />
     <Compile Include="Models\Results\WalletResultModel.cs" />
+    <Compile Include="Models\Results\BettingResultModel.cs" />
     <Compile Include="Models\Settings\WalletModel.cs" />
     <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
     <Compile Include="Models\User\LoginModel.cs" />
@@ -48,6 +49,9 @@
     </Compile>
     <Compile Include="Views\Modals\AddressCreatePage.xaml.cs">
       <DependentUpon>AddressCreatePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modals\BettingCreatePage.xaml.cs">
+      <DependentUpon>BettingCreatePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Account\ExtrenalLoginConfirmPage.xaml.cs" />
     <Compile Include="Views\Account\LoginPage.xaml.cs">

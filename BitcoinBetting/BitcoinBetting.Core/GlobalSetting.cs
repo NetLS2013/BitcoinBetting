@@ -31,6 +31,8 @@ namespace BitcoinBetting.Core
         
         public string AddressCreateWaletEndpoint { get; set; }
         public string AddressGetWaletEndpoint { get; set; }
+        
+        public string BettingGetEndpoint { get; set; }
 
         private static object myLock = new object();
         private static volatile GlobalSetting instance;
@@ -89,6 +91,8 @@ namespace BitcoinBetting.Core
             
             AddressCreateWaletEndpoint = string.Format("{0}/api/Wallet/Create", baseEndpoint);
             AddressGetWaletEndpoint = string.Format("{0}/api/Wallet/Get", baseEndpoint);
+            
+            BettingGetEndpoint = string.Format("{0}/api/Betting/Get", baseEndpoint);
         }
 
     }

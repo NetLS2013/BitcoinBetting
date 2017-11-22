@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:BitcoinBetting.Core.Helpers;assembly=BitcoinBetting.Core"
+             x:Class="BitcoinBetting.Core.Views.Modals.BettingCreatePage"
+             Title="Detail">
+    <ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helpers:NotConverter x:Key="NotConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">
+            <Label Text="Your bet" />
+            
+            <StackLayout IsVisible="{Binding Path=SelectedItem.BetType, Converter={StaticResource NotConverter}}" VerticalOptions="FillAndExpand">
+                <Image Source="no_circle.png" />
+                <Label Text="No" HorizontalOptions="Center" />
+            </StackLayout>
+            
+            <StackLayout IsVisible="{Binding SelectedItem.BetType}" VerticalOptions="FillAndExpand">
+                <Image Source="yes_circle.png" />
+                <Label Text="Yes" HorizontalOptions="Center" />
+            </StackLayout>
+            
+            <Label Text="{Binding SelectedItem.ExchangeRate, StringFormat='Bitcoin price will reach {0:0,0} USD'}"/>
+            <Label Text="{Binding SelectedItem.FinishDate, StringFormat='End date {0:d} | xx:xx'}"/>
+            
+            <Label Text="{Binding SelectedItem.Bank, StringFormat='Total in bank {0:n} BTC'}"/>
+            <Label Text="{Binding SelectedItem.Bank, StringFormat='Opposite in bank {0:n} BTC'}"/>
+            
+            <Label Text="Enter your Bitcoin Wallet Address to receive your winnings!"/>
+            
+            <Entry Text="Enter Bitcoin wallet address" Placeholder="Address"/>
+            
+            <Button Text="Generate transfer address" Command="{Binding CreateBettingCommand}" />
+            <Button Text="Dismiss" Command="{Binding DismissModalCommand}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
