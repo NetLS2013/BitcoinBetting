@@ -8,7 +8,13 @@ namespace BitcoinBetting.Server.Services.Contracts
 {
     public interface IBettingService
     {
-        Task<bool> Create();
+        decimal? CurrentExchange { get; }
+
+        decimal GetBank(int betId, bool? side = null);
+
+        Task<bool> Create(BettingModel betting);
+
+        Task<bool> Update(BettingModel betting);
 
         IEnumerable<BettingModel> Get(Func<BettingModel, bool> predicate);
 

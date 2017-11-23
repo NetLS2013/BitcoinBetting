@@ -32,6 +32,14 @@ using BitcoinBetting.Server.Services.Betting;
 
 namespace BitcoinBetting.Server
 {
+    using BitcoinBetting.Server.Database.Context;
+    using BitcoinBetting.Server.Models;
+
+    using NBitcoin;
+
+    using Quartz;
+    using Quartz.Spi;
+
     public class Startup
     {
         public IConfiguration Configuration { get; }
@@ -106,6 +114,8 @@ namespace BitcoinBetting.Server
                 return new BitcoinAverageApi(Configuration.GetSection("BitcoinAvarageSettings:PublicKey").Value, Configuration.GetSection("BitcoinAvarageSettings:SecretKey").Value);
             });
 
+            services.Configure<BitcoinSettings>(settings => new BitcoinSettings(){});
+            
             services.AddTransient<IGenericRepository<BidModel>, GenericRepository<BidModel>>();
             services.AddTransient<IGenericRepository<WalletModel>, GenericRepository<WalletModel>>();
             services.AddTransient<IGenericRepository<BettingModel>, GenericRepository<BettingModel>>();
@@ -114,12 +124,22 @@ namespace BitcoinBetting.Server
             services.AddTransient<IBidService, BidService>();
             
             services.AddTransient<IWalletService, WalletService>();
+            services.AddTransient<IBettingService, BettingService>();
+            services.AddTransient<IBidService, BidService>();
+
+            services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "D:\\proj\\BitcoinBetting\\BitcoinBetting\\BitcoinBetting.Server\\wallet.dat" }));
+
+            services.AddScoped<CreateBettingJob>();
 
             services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, IServiceProvider container)
         {
+            //var quartz = new QuartzStartup(container);
+            //lifetime.ApplicationStarted.Register(quartz.Start);
+            //lifetime.ApplicationStopping.Register(quartz.Stop);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -127,12 +147,6 @@ namespace BitcoinBetting.Server
 
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-
-//            app.UseHangfireServer();
-//            app.UseHangfireDashboard();
-
-           //RecurringJob.AddOrUpdate(() => Console.WriteLine("Minutely Job executed"), Cron.Minutely);
-//            BackgroundJob.Schedule(() => Console.WriteLine("Minutely Job executed"), TimeSpan.FromDays(10));
         }
     }
 }

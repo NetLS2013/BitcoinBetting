@@ -40,6 +40,27 @@ namespace BitcoinBetting.Server.Services.Betting
             }
         }
 
+        public decimal? CurrentExchange => bitcoinAverage.GetShortDataAsync().Result?["BTCUSD"]?["averages"]?["day"]
+            ?.ToObject<decimal>();
+
+        public decimal GetBank(int betId, bool? side = null)
+        {
+            return this.bidRepository.Get(model => model.BettingId == betId && side.HasValue ? model.Side == side : true).Sum(model => model.Amount);
+        }
+
+        public async Task<bool> Update(BettingModel betting)
+        {
+            try
+            {
+                this.repository.Update(betting);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public IEnumerable<BettingModel> Get(Func<BettingModel, bool> predicate)
         {
             try
@@ -59,20 +80,8 @@ namespace BitcoinBetting.Server.Services.Betting
             }
         }
 
-        public async Task<bool> Create()
+        public async Task<bool> Create(BettingModel betting)
         {
-            var betting = new BettingModel();
-            betting.StartDate = DateTime.Now;
-            betting.FinishDate = DateTime.Now.Add(time);
-
-            var excangeRate = (await bitcoinAverage.GetShortDataAsync())?["BTCUSD"]?["averages"]?["day"]?.ToObject<double>();
-            if (!excangeRate.HasValue)
-            {
-                return false;
-            }
-
-            betting.ExchangeRate = excangeRate.Value;
-
             try
             {
                 this.repository.Create(betting);
