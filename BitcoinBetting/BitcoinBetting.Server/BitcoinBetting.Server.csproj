@@ -25,14 +25,26 @@
     <None Remove="Controllers\WalletController.cs" />
     <None Remove="Database\Context\ApplicationContext.cs" />
     <None Remove="Database\Repositories\GenericRepository.cs" />
+    <None Remove="Helpers\BitcoinHelper.cs" />
+    <None Remove="JobFactory.cs" />
     <None Remove="Models\Account\ForgotPasswordConfirmModel.cs" />
     <None Remove="Models\Account\ForgotPasswordModel.cs" />
     <None Remove="Models\Account\RestorePasswordModel.cs" />
+    <None Remove="Models\Betting\BettingStatus.cs" />
     <None Remove="Models\Betting\BidModel.cs" />
     <None Remove="Models\Betting\WalletModel.cs" />
+    <None Remove="Models\BitcoinSettings.cs" />
+    <None Remove="Models\Bitcoin\AddressHistoryRecord.cs" />
+    <None Remove="Models\Bitcoin\BalanceRecord.cs" />
+    <None Remove="Models\Bitcoin\PaymentStatus.cs" />
+    <None Remove="Models\Bitcoin\TransactionHistoryRecord.cs" />
+    <None Remove="QuartzStartup.cs" />
     <None Remove="Services\Betting\BettingService.cs" />
     <None Remove="Services\Betting\BidService.cs" />
+    <None Remove="Services\Betting\CheckPaymentJob.cs" />
+    <None Remove="Services\Betting\Jobs\CreateBettingJob.cs" />
     <None Remove="Services\Bitcoin\BitcoinAverageApi.cs" />
+    <None Remove="Services\Bitcoin\BitcoinWalletService.cs" />
     <None Remove="Services\Contracts\IBettingService.cs" />
     <None Remove="Services\Contracts\IBidService.cs" />
     <None Remove="Services\Contracts\IBitcoinAverageApi.cs" />
@@ -47,14 +59,27 @@
     <Compile Include="Controllers\WalletController.cs" />
     <Compile Include="Database\ApplicationDbContext.cs" />
     <Compile Include="Database\Context\ApplicationContext.cs" />
-    <Compile Include="Database\Helpers\BettingHelper.cs" />
+    <Compile Include="Helpers\BettingHelper.cs" />
     <Compile Include="Database\Repositories\GenericRepository.cs" />
-    <Compile Include="Helpers\Converter.cs" />
+    <Compile Include="Helpers\BitcoinHelper.cs" />
+    <Compile Include="JobFactory.cs" />
     <Compile Include="Models\Account\ForgotPasswordConfirmModel.cs" />
     <Compile Include="Models\Account\ForgotPasswordModel.cs" />
     <Compile Include="Models\Account\LoginModel.cs" />
     <Compile Include="Models\Account\RegisterModel.cs" />
     <Compile Include="Models\Account\RestorePasswordModel.cs" />
+    <Compile Include="Models\Betting\BettingStatus.cs" />
+    <Compile Include="Models\BitcoinSettings.cs" />
+    <Compile Include="Models\Bitcoin\AddressHistoryRecord.cs" />
+    <Compile Include="Models\Bitcoin\BalanceRecord.cs" />
+    <Compile Include="Models\Bitcoin\PaymentStatus.cs" />
+    <Compile Include="Models\Bitcoin\TransactionHistoryRecord.cs" />
+    <Compile Include="QuartzStartup.cs" />
+    <Compile Include="Services\Betting\Jobs\AwardJob.cs" />
+    <Compile Include="Services\Betting\Jobs\CheckPaymentJob.cs" />
+    <Compile Include="Services\Betting\Jobs\CreateBettingJob.cs" />
+    <Compile Include="Services\Bitcoin\BitcoinWalletService.cs" />
+    <Content Include="Models\Account\ForgotPasswordConfirmModel.cs" />
     <Compile Include="Models\Betting\BettingModel.cs" />
     <Compile Include="Models\Betting\BidModel.cs" />
     <Compile Include="Models\Betting\WalletModel.cs" />
@@ -80,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HangFire" Version="1.6.17" />
+    <PackageReference Include="HBitcoin" Version="0.1.8.2" />
     <PackageReference Include="MailChimp.Net.V3" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
@@ -87,6 +113,9 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+    <PackageReference Include="NBitcoin" Version="4.0.0.42" />
+    <PackageReference Include="QBitNinja.Client" Version="1.0.3.44" />
+    <PackageReference Include="Quartz" Version="3.0.0-beta1" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
@@ -94,5 +123,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BitcoinBetting.Enum\BitcoinBetting.Enum.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
+      <HintPath>..\..\packages\Xamarin.Android.Support.v7.RecyclerView.25.4.0.2\lib\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

@@ -21,14 +21,15 @@ namespace BitcoinBetting.Server.Services.Bitcoin
         {
             this.secretKey = secretKey;
             this.publicKey = publicKey;
-            sigHasher = new HMACSHA256(Encoding.ASCII.GetBytes(this.secretKey));
+            this.sigHasher = new HMACSHA256(Encoding.ASCII.GetBytes(this.secretKey));
         }
 
         public async Task<JToken> GetJsonAsync(string url)
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Add("X-signature", GetHeaderSignature());
+                httpClient.DefaultRequestHeaders.Add("X-signature", this.GetHeaderSignature());
+
                 return JToken.Parse(await httpClient.GetStringAsync(url));
             }
         }
@@ -39,7 +40,7 @@ namespace BitcoinBetting.Server.Services.Bitcoin
                    + "&period=alltime"
                    + "&format=json";
 
-            return GetJsonAsync(url);
+            return this.GetJsonAsync(url);
         }
 
         public Task<JToken> GetDailyDataAsync(string symbol = "BTCUSD", string market = "global")
@@ -48,7 +49,7 @@ namespace BitcoinBetting.Server.Services.Bitcoin
                    + "&period=daily"
                    + "&format=json";
 
-            return GetJsonAsync(url);
+            return this.GetJsonAsync(url);
         }
 
         public Task<JToken> GetShortDataAsync(string crypto = "BTC", string fiat = "USD", string market = "global")
@@ -56,22 +57,23 @@ namespace BitcoinBetting.Server.Services.Bitcoin
             var url = "https://apiv2.bitcoinaverage.com/indices/" + market + "/ticker/short?crypto=" + crypto
                    + "&fiat=" + fiat;
 
-            return GetJsonAsync(url);
+            return this.GetJsonAsync(url);
         }
         
         public Task<JToken> GetOhlcAsync(string symbol = "BTCUSD", string market = "global")
         {
             var url = "https://apiv2.bitcoinaverage.com/indices/" + market + "/ticker/" + symbol;
 
-            return GetJsonAsync(url);
+            return this.GetJsonAsync(url);
         }
 
         private string GetHeaderSignature()
         {
-            var timestamp = (int)((DateTime.UtcNow - epochUtc).TotalSeconds);
-            var payload = timestamp + "." + publicKey;
-            var digestValueBytes = sigHasher.ComputeHash(Encoding.ASCII.GetBytes(payload));
-            var digestValueHex = BitConverter.ToString(digestValueBytes).Replace("-", "").ToLower();
+            var timestamp = (int)(DateTime.UtcNow - this.epochUtc).TotalSeconds;
+            var payload = timestamp + "." + this.publicKey;
+            var digestValueBytes = this.sigHasher.ComputeHash(Encoding.ASCII.GetBytes(payload));
+            var digestValueHex = BitConverter.ToString(digestValueBytes).Replace("-", string.Empty).ToLower();
+
             return payload + "." + digestValueHex;
         }
     }

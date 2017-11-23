@@ -12,48 +12,60 @@ using System.Threading.Tasks;
 
 namespace BitcoinBetting.Server.Controllers
 {
+    using BitcoinBetting.Server.Models.Bitcoin;
+    using BitcoinBetting.Server.Services.Bitcoin;
+
     [Authorize]
     [Route("api/[controller]/[action]")]
     public class BidController : Controller
     {
-        public IBidService bidService;
-        public IBettingService bettingService;
+        private IBidService bidService;
+        private IBettingService bettingService;
+
+        private BitcoinWalletService bitcoinWalletService;
+
         private readonly UserManager<AppIdentityUser> userManager;
 
         public BidController(
             IBidService bidService,
             IBettingService bettingService,
+            BitcoinWalletService bitcoinWalletService,
             UserManager<AppIdentityUser> userManager)
         {
             this.bidService = bidService;
             this.userManager = userManager;
             this.bettingService = bettingService;
+            this.bitcoinWalletService = bitcoinWalletService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BidModel model)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return BadRequest();
+                return this.BadRequest();
             }
 
             var bet = this.bettingService.GetById(model.BettingId);
             if (bet != null)
             {
                 model.Date = DateTime.Now;
-                model.UserId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
-                model.Coefficient = BettingHelper.GetTimeCoeficient(bet.StartDate, bet.FinishDate, model.Date);
+                model.UserId = (await this.userManager.FindByNameAsync(this.User.Identity.Name)).Id;
+                model.Coefficient = BettingHelper.GetTimeCoefficient(bet.StartDate, bet.FinishDate, model.Date);
+                model.PaymentStatus = PaymentStatus.None;
+                
 
                 var result = this.bidService.Create(model);
+                model.PaymentAddress = this.bitcoinWalletService.GetAddressById(model.BidId).ToString();
+                this.bidService.Update(model);
 
                 if (result)
                 {
-                    return Ok(new { result = true });
+                    return this.Ok(new { result = true, bid = model });
                 }
             }
 
-            return Ok(new { result = false });
+            return this.Ok(new { result = false });
         }
 
         [HttpGet]

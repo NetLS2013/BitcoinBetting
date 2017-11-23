@@ -10,6 +10,8 @@ namespace BitcoinBetting.Server.Services.Contracts
     {
         bool Create(BidModel model);
 
+        bool Update(BidModel model);
+
         IEnumerable<BidModel> Get(Func<BidModel, bool> predicate);
 
         BidModel GetById(int id);

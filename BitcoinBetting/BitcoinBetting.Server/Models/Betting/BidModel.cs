@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace BitcoinBetting.Server.Models.Betting
 {
+    using System.ComponentModel.DataAnnotations;
+
+    using BitcoinBetting.Server.Models.Bitcoin;
+
     [Table("Bids")]
     public class BidModel
     {
@@ -19,16 +23,23 @@ namespace BitcoinBetting.Server.Models.Betting
 
         public int WalletId { get; set; }
 
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         public string PaymentAddress { get; set; }
 
         public DateTime Date { get; set; }
 
-        public double Coefficient { get; set; }
+        public decimal Coefficient { get; set; }
 
         public bool Status { get; set; }
 
         public bool Side { get; set; }
+
+        public PaymentStatus PaymentStatus { get; set; }
+
+        public string TransactionId { get; set; }
+
+        [NotMapped]
+        public decimal PossibleWin { get; set; }
     }
 }

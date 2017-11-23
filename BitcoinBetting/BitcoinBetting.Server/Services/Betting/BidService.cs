@@ -11,6 +11,7 @@ namespace BitcoinBetting.Server.Services.Betting
     public class BidService : IBidService
     {
         private IGenericRepository<BidModel> repository;
+        private IGenericRepository<BettingModel> bettingRepository;
 
         public BidService(IGenericRepository<BidModel> repository)
         {
@@ -24,6 +25,19 @@ namespace BitcoinBetting.Server.Services.Betting
                 this.repository.Create(model);
                 return true;
             }
+            catch(Exception e)
+            {
+                return false;
+            }
+        }
+
+        public bool Update(BidModel model)
+        {
+            try
+            {
+                this.repository.Update(model);
+                return true;
+            }
             catch
             {
                 return false;
@@ -34,8 +48,8 @@ namespace BitcoinBetting.Server.Services.Betting
         {
             try
             {
-                var wallets = this.repository.Get(predicate);
-                return wallets;
+                var bids = this.repository.Get(predicate);
+                return bids;
             }
             catch
             {
@@ -47,8 +61,8 @@ namespace BitcoinBetting.Server.Services.Betting
         {
             try
             {
-                var wallet = this.repository.FindById(id);
-                return wallet;
+                var bid = this.repository.FindById(id);
+                return bid;
             }
             catch
             {
