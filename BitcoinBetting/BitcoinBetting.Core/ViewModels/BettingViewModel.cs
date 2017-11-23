@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BitcoinBetting.Core.Interfaces;
+using BitcoinBetting.Core.Models.Betting;
 using BitcoinBetting.Core.Models.ListItems;
 using BitcoinBetting.Core.Models.Results;
 using BitcoinBetting.Core.Services;
@@ -18,8 +19,8 @@ namespace BitcoinBetting.Core.ViewModels
     {
         public ObservableCollection<BettingItemModel> BettingItems { get; set; }
         
-        public ICommand BetNoCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, betType: false));
-        public ICommand BetYesCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, betType: true));
+        public ICommand BetNoCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, side: false));
+        public ICommand BetYesCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, side: true));
 
         public ICommand DismissModalCommand => new Command(async () => await DismissModal());
         
@@ -57,11 +58,11 @@ namespace BitcoinBetting.Core.ViewModels
             }
         }
         
-        private async Task ModalBettingPage(BettingItemModel bettingItem, bool betType)
+        private async Task ModalBettingPage(BettingItemModel bettingItem, bool side)
         {
             var item = bettingItem;
             
-            item.BetType = betType;
+            item.Side = side;
             item.Address = String.Empty;
             
             SelectedItem = item;
@@ -106,7 +107,40 @@ namespace BitcoinBetting.Core.ViewModels
         
         private async Task CreateBetting()
         {
-            
+            IsValid = Validate();
+
+            if (IsValid)
+            {
+                try
+                {
+                    var createBid = new BidModel
+                    {
+                        BettingId = SelectedItem.BettingId,
+                        WalletId = SelectedItem.WalletId,
+                        Side = SelectedItem.Side
+                    };
+                    
+                    var result = await requestProvider
+                        .PostAsync<BidModel, BidResultModel>(GlobalSetting.Instance.BidCreateEndpoint, createBid);
+
+                    if (!result.result)
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Error!",
+                            Environment.NewLine + result.Message, "Ok");
+                    }
+                    else
+                    {
+                        SelectedItem.Address = result.bid.PaymentAddress;
+                        
+                        OnPropertyChanged(nameof(SelectedItem));
+                    }
+                }
+                catch (Exception e)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error!", Environment.NewLine + e.Message,
+                        "Ok");
+                }   
+            }
         }        
         
         private async Task ChooseBitcoinAddress()
@@ -117,6 +151,18 @@ namespace BitcoinBetting.Core.ViewModels
         private async Task DismissModal()
         {
             await Navigation.PopModalAsync();
+        }
+        
+        private bool Validate()
+        {
+            if (String.IsNullOrWhiteSpace(SelectedItem.Address))
+            {
+                Application.Current.MainPage.DisplayAlert("Error!", "A address is required", "Ok");
+                
+                return false;
+            }
+
+            return true;
         }
     }
 }

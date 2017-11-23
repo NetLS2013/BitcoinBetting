@@ -14,12 +14,14 @@
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />
     <Compile Include="Interfaces\INativeHelpers.cs" />
+    <Compile Include="Models\Betting\BidModel.cs" />
     <Compile Include="Models\ResponseMessage.cs" />
     <Compile Include="Models\ListItems\BettingItemModel.cs" />
     <Compile Include="Models\ListItems\MenuItemModel.cs" />
     <Compile Include="Models\ListItems\AddressItemModel.cs" />
     <Compile Include="Models\Results\WalletResultModel.cs" />
     <Compile Include="Models\Results\BettingResultModel.cs" />
+    <Compile Include="Models\Results\BidResultModel.cs" />
     <Compile Include="Models\Settings\WalletModel.cs" />
     <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
     <Compile Include="Models\User\LoginModel.cs" />

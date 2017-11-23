@@ -116,7 +116,9 @@ namespace BitcoinBetting.Core.ViewModels
             if (bettingViewModel != null)
             {
                 var bettingItem = bettingViewModel.SelectedItem;
+                
                 bettingItem.Address = item.Address;
+                bettingItem.WalletId = item.WalletId;
                 
                 bettingViewModel.SelectedItem = bettingItem;
                 
