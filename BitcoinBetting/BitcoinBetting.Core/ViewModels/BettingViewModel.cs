@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BitcoinBetting.Core.Interfaces;
@@ -8,6 +9,7 @@ using BitcoinBetting.Core.Models.Results;
 using BitcoinBetting.Core.Services;
 using BitcoinBetting.Core.ViewModels.Base;
 using BitcoinBetting.Core.Views.Modals;
+using BitcoinBetting.Core.Views.Settings;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
@@ -20,6 +22,9 @@ namespace BitcoinBetting.Core.ViewModels
         public ICommand BetYesCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, betType: true));
 
         public ICommand DismissModalCommand => new Command(async () => await DismissModal());
+        
+        public ICommand CreateBettingCommand => new Command(async () => await CreateBetting());
+        public ICommand ChooseBitcoinAddressCommand => new Command(async () => await ChooseBitcoinAddress());
         
         private IRequestProvider requestProvider { get; set; }
         
@@ -55,9 +60,11 @@ namespace BitcoinBetting.Core.ViewModels
         private async Task ModalBettingPage(BettingItemModel bettingItem, bool betType)
         {
             var item = bettingItem;
-            item.BetType = betType;
             
-            ListView.SelectedItem = item;
+            item.BetType = betType;
+            item.Address = String.Empty;
+            
+            SelectedItem = item;
                 
             await Navigation.PushModalAsync (new BettingCreatePage(this));
         }
@@ -95,6 +102,16 @@ namespace BitcoinBetting.Core.ViewModels
             OnPropertyChanged(nameof(BettingItems));
             
             IsBusy = false;
+        }
+        
+        private async Task CreateBetting()
+        {
+            
+        }        
+        
+        private async Task ChooseBitcoinAddress()
+        {
+            await Navigation.PushModalAsync(new AddressesPage(viewModelContext: this));
         }
         
         private async Task DismissModal()

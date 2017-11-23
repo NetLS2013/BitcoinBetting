@@ -35,7 +35,10 @@
             
             <Label Text="Enter your Bitcoin Wallet Address to receive your winnings!"/>
             
-            <Entry Text="Enter Bitcoin wallet address" Placeholder="Address"/>
+            <StackLayout Orientation="Horizontal">
+                <Entry Text="{Binding SelectedItem.Address}" Placeholder="Enter Bitcoin wallet address"/>
+                <Button Text="Choose address" Command="{Binding ChooseBitcoinAddressCommand}" />
+            </StackLayout>
             
             <Button Text="Generate transfer address" Command="{Binding CreateBettingCommand}" />
             <Button Text="Dismiss" Command="{Binding DismissModalCommand}" />

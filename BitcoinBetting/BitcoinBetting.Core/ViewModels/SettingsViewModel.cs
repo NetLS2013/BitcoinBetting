@@ -25,6 +25,7 @@ namespace BitcoinBetting.Core.ViewModels
             SettingsItems = new ObservableCollection<MenuItemModel>(new[]
             {
                 new MenuItemModel { Title = "Bitcoin addresses", TargetType = typeof(AddressesPage)},
+                new MenuItemModel { Title = "History", TargetType = typeof(HistoryPage)},
                 new MenuItemModel { Title = "Help", TargetType = typeof(HelpPage)}
             });
         }

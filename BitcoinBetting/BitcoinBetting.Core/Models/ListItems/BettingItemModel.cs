@@ -10,5 +10,6 @@ namespace BitcoinBetting.Core.Models.ListItems
         public DateTime FinishDate { get; set; }
         public double Bank { get; set; }
         public bool BetType { get; set; }
+        public string Address { get; set; }
     }
 }
