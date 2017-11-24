@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace BitcoinBetting.Server.Services.Betting.Jobs
 {
+    using BitcoinBetting.Enum;
     using BitcoinBetting.Server.Models.Betting;
     using BitcoinBetting.Server.Services.Contracts;
 

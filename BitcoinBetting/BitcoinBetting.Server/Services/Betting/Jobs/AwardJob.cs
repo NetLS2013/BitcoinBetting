@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using BitcoinBetting.Enum;
     using BitcoinBetting.Server.Database.Helpers;
     using BitcoinBetting.Server.Models.Betting;
     using BitcoinBetting.Server.Services.Bitcoin;

@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
+    using BitcoinBetting.Enum;
     using BitcoinBetting.Server.Database.Helpers;
     using BitcoinBetting.Server.Models.Betting;
     using BitcoinBetting.Server.Models.Bitcoin;
@@ -86,10 +87,17 @@
         {
             var bids = this.bidService.Get(x => x.BettingId == bettingId);
 
+            string userId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
+
             if (bids != null)
             {
                 foreach (var bid in bids)
                 {
+                    if (bid.UserId != userId)
+                    {
+                        bid.PaymentAddress = null;
+                    }
+
                     bid.PossibleWin = BettingHelper.GetAmountPayment(
                         bid.Amount,
                         bid.Coefficient,

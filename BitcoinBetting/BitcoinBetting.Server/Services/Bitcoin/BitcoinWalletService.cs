@@ -249,15 +249,17 @@
                     safe,
                     this.settings.Network,
                     ids,
-                    hdPathType: HdPathType.Change);
+                    HdPathType.Receive);
 
-            foreach (var elem in operationsPerChangeAddresses)
-            {
-                if (elem.Value.Count == 0)
-                {
-                    changeScriptPubKey = safe.FindPrivateKey(elem.Key).ScriptPubKey;
-                }
-            }
+            changeScriptPubKey = safe.FindPrivateKey(BitcoinAddress.Create("mhheFUrieWV2zVsdWXNZkqSmeSVjkbXWer", Network.TestNet)).Neuter().ScriptPubKey;
+
+            //foreach (var elem in operationsPerChangeAddresses)
+            //{
+            //    if (elem.Value.Count == 0)
+            //    {
+
+            //    }
+            //}
 
             if (changeScriptPubKey == null)
             {

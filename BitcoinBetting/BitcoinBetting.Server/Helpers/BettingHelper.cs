@@ -16,6 +16,10 @@ namespace BitcoinBetting.Server.Database.Helpers
 
         public static decimal GetAmountPayment(decimal bet, decimal coefficient, decimal betBank, decimal oppositeBank)
         {
+            if (betBank == 0)
+            {
+                return bet;
+            }
             return bet + (((bet * coefficient * percent) / (betBank * coefficient)) * oppositeBank);
         }
 

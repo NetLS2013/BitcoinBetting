@@ -1,4 +1,4 @@
-﻿namespace BitcoinBetting.Server.Models.Betting
+﻿namespace BitcoinBetting.Enum
 {
     public enum BettingStatus : byte
     {
