@@ -10,6 +10,7 @@
     </Compile>
     <Compile Include="GlobalSetting.cs" />
     <Compile Include="Helpers\NotConverter.cs" />
+    <Compile Include="Helpers\SideConverter.cs" />
     <Compile Include="Interfaces\IRequestProvider.cs" />
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />

@@ -28,7 +28,7 @@
                                             <StackLayout HorizontalOptions="FillAndExpand" Padding="16">
                                                 <Image Source="no_circle.png" />
                                                 <Label Text="No" HorizontalOptions="Center" />
-                                                <Label Text="x2.426" HorizontalOptions="Center" TextColor="#818183" FontSize="12" />
+                                                <Label Text="{Binding CoefficientLess, StringFormat='x{0:#.###}'}" HorizontalOptions="Center" TextColor="#818183" FontSize="12" />
                                                 <Button
                                                     Text="Bet"
                                                     BackgroundColor="#00a99d" TextColor="White"
@@ -42,7 +42,7 @@
                                             <StackLayout HorizontalOptions="FillAndExpand" Padding="16">
                                                 <Image Source="yes_circle.png" />
                                                 <Label Text="Yes" HorizontalOptions="Center" />
-                                                <Label Text="x2.426" HorizontalOptions="Center" TextColor="#818183" FontSize="12" />
+                                                <Label Text="{Binding CoefficientMore, StringFormat='x{0:#.###}'}" HorizontalOptions="Center" TextColor="#818183" FontSize="12" />
                                                 <Button
                                                     Text="Bet"
                                                     BackgroundColor="#00a99d" TextColor="White"
@@ -57,7 +57,8 @@
                                         <StackLayout BackgroundColor="#f7f7f7" Padding="16">
                                             <StackLayout>
                                                 <Label Text="{Binding ExchangeRate, StringFormat='Bitcoin price will reach {0:0,0} USD'}" FontSize="12"/>
-                                                <Label Text="{Binding FinishDate, StringFormat='End date {0:d} | xx:xx'}" FontSize="14"/>
+                                                <Label Text="{Binding FinishDate, StringFormat='End date {0:d}'}" FontSize="14"/>
+                                                <Label Text="{Binding TimeLeft, StringFormat='Time left {0}'}" FontSize="14"/>
                                             </StackLayout>
                                             
                                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">

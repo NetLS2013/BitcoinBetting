@@ -14,24 +14,28 @@
     </ContentPage.Resources>
     
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">
-            <Label Text="Your bet" />
+        <StackLayout Orientation="Vertical" Padding="20">
+            <Label Text="Your bet" HorizontalOptions="Center"/>
             
-            <StackLayout IsVisible="{Binding Path=SelectedItem.Side, Converter={StaticResource NotConverter}}" VerticalOptions="FillAndExpand">
+            <StackLayout IsVisible="{Binding Path=SelectedItem.Side, Converter={StaticResource NotConverter}}">
                 <Image Source="no_circle.png" />
-                <Label Text="No" HorizontalOptions="Center" />
+                <Label Text="No" HorizontalOptions="Center"/>
+                
+                <Label Text="{Binding SelectedItem.Bank, StringFormat='Total in bank {0:n} BTC'}"/>
+                <Label Text="{Binding SelectedItem.BankLess, StringFormat='Opposite in bank {0:n} BTC'}"/>
             </StackLayout>
             
-            <StackLayout IsVisible="{Binding SelectedItem.Side}" VerticalOptions="FillAndExpand">
+            <StackLayout IsVisible="{Binding SelectedItem.Side}">
                 <Image Source="yes_circle.png" />
-                <Label Text="Yes" HorizontalOptions="Center" />
+                <Label Text="Yes" HorizontalOptions="Center"/>
+                
+                <Label Text="{Binding SelectedItem.Bank, StringFormat='Total in bank {0:n} BTC'}"/>
+                <Label Text="{Binding SelectedItem.BankMore, StringFormat='Opposite in bank {0:n} BTC'}"/>
             </StackLayout>
             
             <Label Text="{Binding SelectedItem.ExchangeRate, StringFormat='Bitcoin price will reach {0:0,0} USD'}"/>
-            <Label Text="{Binding SelectedItem.FinishDate, StringFormat='End date {0:d} | xx:xx'}"/>
-            
-            <Label Text="{Binding SelectedItem.Bank, StringFormat='Total in bank {0:n} BTC'}"/>
-            <Label Text="{Binding SelectedItem.Bank, StringFormat='Opposite in bank {0:n} BTC'}"/>
+            <Label Text="{Binding SelectedItem.FinishDate, StringFormat='End date {0:d}'}"/>
+            <Label Text="{Binding SelectedItem.TimeLeft, StringFormat='Time left {0}'}"/>
             
             <Label Text="Enter your Bitcoin Wallet Address to receive your winnings!"/>
             
