@@ -2,6 +2,7 @@
 {
     public enum BettingStatus : byte
     {
+        Continue,
         Waiting,
         Done
     }

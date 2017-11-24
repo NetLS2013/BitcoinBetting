@@ -1,5 +1,6 @@
 ﻿namespace BitcoinBetting.Server.Services.Betting
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@
 
     using Quartz;
 
-    public class AwardService : IJob
+    public class AwardJob : IJob
     {
         private IBettingService bettingService;
 
@@ -27,14 +28,14 @@
 
         private readonly IEmailSender emailSender;
 
-        public AwardService(
-            IBettingService bettingService,
-            IBidService bidService,
-            BitcoinWalletService bitcoinWalletService)
+        public AwardJob(IBettingService bettingService, IBidService bidService, IWalletService walletService, BitcoinWalletService bitcoinWalletService, UserManager<AppIdentityUser> userManager, IEmailSender emailSender)
         {
             this.bettingService = bettingService;
             this.bidService = bidService;
+            this.walletService = walletService;
             this.bitcoinWalletService = bitcoinWalletService;
+            this.userManager = userManager;
+            this.emailSender = emailSender;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -44,8 +45,6 @@
 
             if (bet != null)
             {
-                bet.Status = BettingStatus.Done;
-
                 decimal? currentExchange;
 
                 do
@@ -54,10 +53,17 @@
                 }
                 while (!currentExchange.HasValue);
 
-                var sideWin = currentExchange.Value > bet.Bank;
+                var sideWin = currentExchange.Value > bet.ExchangeRate;
+
+                // Set status and who win
+                bet.Result = sideWin;
+                bet.Status = BettingStatus.Done;
+                await this.bettingService.Update(bet);
 
                 var bankMore = this.bettingService.GetBank(bet.BettingId, true);
                 var bankLess = this.bettingService.GetBank(bet.BettingId, false);
+
+                var ids = this.bidService.Get(model => true).Select(model => model.BidId);
 
                 foreach (var bid in this.bidService.Get(
                     model => model.Side == sideWin && model.BettingId == bet.BettingId && !model.Status))
@@ -68,10 +74,10 @@
 
                     try
                     {
-                        var address = this.walletService.GetById(bid.BidId);
+                        var address = this.walletService.GetById(bid.WalletId);
                         if (address != null)
                         {
-                            this.bitcoinWalletService.Send(address.Address, award);
+                            this.bitcoinWalletService.Send(address.Address, award, ids);
 
                             var user = await this.userManager.FindByIdAsync(bid.UserId);
                             await this.emailSender.SendEmailAsync(
@@ -84,7 +90,7 @@
                             this.bidService.Update(bid);
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
                         // ignored
                     }

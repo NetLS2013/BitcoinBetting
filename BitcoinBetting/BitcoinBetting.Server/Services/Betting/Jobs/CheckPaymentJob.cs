@@ -1,5 +1,6 @@
 ﻿namespace BitcoinBetting.Server.Services.Betting
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -61,33 +62,6 @@
                     }
                 }
             }
-            //foreach (var bid in bids)
-            //{
-            //    if (balances[])
-            //    {
-            //        balances
-            //    }
-
-            //    //uint256 transaction;
-            //    //bid.PaymentStatus = this.bitcoinWalletService.IsPaymentDone(
-            //    //    out transaction,
-            //    //    BitcoinAddress.Create(this.walletService.GetById(bid.WalletId).Address),
-            //    //    BitcoinAddress.Create(bid.PaymentAddress),
-            //    //    bid.Amount,
-            //    //    bid.Date);
-
-            //    //if (bid.PaymentStatus != PaymentStatus.None)
-            //    //{
-            //    //    var transactionId = transaction.ToString();
-            //    //    var sameBid = this.bidService.Get(model => model.WalletId == bid.WalletId && model.Amount == bid.Amount && model.TransactionId == transactionId);
-            //    //    if (sameBid.Any())
-            //    //    {
-            //    //        bid.TransactionId = transactionId;
-
-            //    //        this.bidService.Update(bid);
-            //    //    }
-            //    //}
-            //}
 
             return Task.CompletedTask;
         }

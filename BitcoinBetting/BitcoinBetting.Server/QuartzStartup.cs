@@ -4,6 +4,7 @@
     using System.Collections.Specialized;
 
     using BitcoinBetting.Server.Services.Betting;
+    using BitcoinBetting.Server.Services.Betting.Jobs;
 
     using Quartz;
     using Quartz.Impl;
@@ -31,15 +32,55 @@
             this.scheduler.JobFactory = new JobFactory(this.container);
             this.scheduler.Start().Wait();
 
-            var userEmailsJob = JobBuilder.Create<CreateBettingJob>()
+            //var userEmailsJob = JobBuilder.Create<CreateBettingJob>()
+            //    .Build();
+
+            //var userEmailsTrigger = TriggerBuilder.Create()
+            //    .StartNow()
+            //    .WithSimpleSchedule(builder => builder.WithIntervalInSeconds(1).RepeatForever())
+            //    .Build();
+
+            //this.scheduler.ScheduleJob(userEmailsJob, userEmailsTrigger).Wait();
+
+            //var checkPayment = JobBuilder.Create<CheckPaymentJob>()
+            //    .Build();
+
+            //var checkPaymentTrigger = TriggerBuilder.Create()
+            //    .StartNow()
+            //    .WithCronSchedule("0 0/5 * * * ?")
+            //    .Build();
+
+            //this.scheduler.ScheduleJob(checkPayment, checkPaymentTrigger).Wait();
+
+            //var createBetting = JobBuilder.Create<CreateBettingJob>()
+            //    .Build();
+
+            //var createBettingTrigger = TriggerBuilder.Create()
+            //    .StartNow()
+            //    .WithCronSchedule("0 0 0 1/10 * ?")
+            //    .Build();
+
+            //this.scheduler.ScheduleJob(createBetting, createBettingTrigger).Wait();
+
+            //var setWait = JobBuilder.Create<SetWaitJob>()
+            //    .Build();
+
+            //var setWaitTrigger = TriggerBuilder.Create()
+            //    .StartNow()
+            //    .WithCronSchedule("0 0 1 1/10 * ?")
+            //    .Build();
+
+            //this.scheduler.ScheduleJob(setWait, setWaitTrigger).Wait();
+
+            var award = JobBuilder.Create<AwardJob>()
                 .Build();
 
-            var userEmailsTrigger = TriggerBuilder.Create()
+            var awardTrigger = TriggerBuilder.Create()
                 .StartNow()
-                .WithSimpleSchedule(builder => builder.WithIntervalInSeconds(1).RepeatForever())
+                .WithCronSchedule("30 25 15 * * ?")
                 .Build();
 
-            this.scheduler.ScheduleJob(userEmailsJob, userEmailsTrigger).Wait();
+            this.scheduler.ScheduleJob(award, awardTrigger).Wait();
         }
 
         public void Stop()

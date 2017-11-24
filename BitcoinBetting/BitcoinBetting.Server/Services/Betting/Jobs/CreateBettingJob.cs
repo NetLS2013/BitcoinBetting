@@ -12,7 +12,7 @@
     {
         private IBettingService bettingService;
 
-        private TimeSpan time = TimeSpan.FromDays(15);
+        private TimeSpan time = TimeSpan.FromDays(30);
 
         public CreateBettingJob(IBettingService bettingService)
         {
@@ -23,7 +23,8 @@
         {
             var betting = new BettingModel();
             betting.StartDate = DateTime.Now.Date;
-            betting.FinishDate = DateTime.Now.Add(this.time);
+            betting.FinishDate = DateTime.Now.Date.Add(this.time);
+            betting.Status = BettingStatus.Continue;
 
             decimal? exchangeRate;
 

@@ -12,7 +12,6 @@ namespace BitcoinBetting.Server.Services.Betting
         IGenericRepository<BettingModel> repository;
         IGenericRepository<BidModel> bidRepository;
         IBitcoinAverageApi bitcoinAverage;
-        private TimeSpan time = TimeSpan.FromDays(15);
 
         public BettingService(IGenericRepository<BettingModel> repository, IBitcoinAverageApi bitcoinAverage, IGenericRepository<BidModel> bidRepository)
         {
@@ -29,12 +28,14 @@ namespace BitcoinBetting.Server.Services.Betting
 
                 foreach (var bet in bettings)
                 {
-                    bet.Bank = bidRepository.Get(x => x.BettingId == bet.BettingId)?.Sum<BidModel>(x => x.Amount) ?? 0;
+                    bet.Bank = this.GetBank(bet.BettingId);
+                    bet.BankLess = this.GetBank(bet.BettingId, false);
+                    bet.BankMore = this.GetBank(bet.BettingId, true);
                 }
 
                 return bettings;
             }
-            catch
+            catch (Exception e)
             {
                 return null;
             }
@@ -45,7 +46,12 @@ namespace BitcoinBetting.Server.Services.Betting
 
         public decimal GetBank(int betId, bool? side = null)
         {
-            return this.bidRepository.Get(model => model.BettingId == betId && side.HasValue ? model.Side == side : true).Sum(model => model.Amount);
+            if (side.HasValue)
+            {
+                return this.bidRepository.Get(model => model.BettingId == betId && model.Side == side).Sum(model => model.Amount);
+            }
+
+            return this.bidRepository.Get(model => model.BettingId == betId).Sum(model => model.Amount);
         }
 
         public async Task<bool> Update(BettingModel betting)
@@ -55,7 +61,7 @@ namespace BitcoinBetting.Server.Services.Betting
                 this.repository.Update(betting);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 return false;
             }
@@ -74,7 +80,7 @@ namespace BitcoinBetting.Server.Services.Betting
 
                 return bettings;
             }
-            catch
+            catch(Exception e)
             {
                 return null;
             }
@@ -87,7 +93,7 @@ namespace BitcoinBetting.Server.Services.Betting
                 this.repository.Create(betting);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 return false;
             }
@@ -97,10 +103,14 @@ namespace BitcoinBetting.Server.Services.Betting
         {
             try
             {
-                var wallet = this.repository.FindById(id);
-                return wallet;
+                var bet = this.repository.FindById(id);
+                bet.Bank = this.GetBank(bet.BettingId);
+                bet.BankLess = this.GetBank(bet.BettingId, false);
+                bet.BankMore = this.GetBank(bet.BettingId, true);
+
+                return bet;
             }
-            catch
+            catch (Exception e)
             {
                 return null;
             }

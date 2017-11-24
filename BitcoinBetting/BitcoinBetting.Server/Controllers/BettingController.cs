@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using BitcoinBetting.Server.Services.Identity;
-using BitcoinBetting.Server.Services.Contracts;
-using Microsoft.AspNetCore.Authorization;
-
-namespace BitcoinBetting.Server.Controllers
+﻿namespace BitcoinBetting.Server.Controllers
 {
+    using System.Threading.Tasks;
+
+    using BitcoinBetting.Server.Models.Betting;
+    using BitcoinBetting.Server.Services.Contracts;
+    using BitcoinBetting.Server.Services.Identity;
+
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+
     [Authorize]
     [Route("api/[controller]/[action]")]
     public class BettingController : Controller
@@ -31,29 +31,53 @@ namespace BitcoinBetting.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var bids = this.bettingService.Get();
+            var bettings = this.bettingService.Get();
 
-            if (bids != null)
+            if (bettings != null)
             {
-                return Ok(new { result = true, list = bids });
+                return this.Ok(new { result = true, list = bettings });
             }
 
-            return Ok(new { result = false });
+            return this.Ok(new { result = false });
         }
 
         [HttpGet]
         public async Task<IActionResult> GetById(int bettingId)
         {
-            var bid = this.bettingService.GetById(bettingId);
+            var betting = this.bettingService.GetById(bettingId);
 
-            if (bid != null)
+            if (betting != null)
             {
-                return Ok(new { result = true, list = bid });
+                return this.Ok(new { result = true, list = betting });
             }
 
-            return Ok(new { result = false });
+            return this.Ok(new { result = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCurrent()
+        {
+            var bettings = this.bettingService.Get(model => model.Status != BettingStatus.Done);
 
+            if (bettings != null)
+            {
+                return this.Ok(new { result = true, list = bettings });
+            }
+
+            return this.Ok(new { result = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetArchive()
+        {
+            var bettings = this.bettingService.Get(model => model.Status == BettingStatus.Done);
+
+            if (bettings != null)
+            {
+                return this.Ok(new { result = true, list = bettings });
+            }
+
+            return this.Ok(new { result = false });
+        }
     }
 }

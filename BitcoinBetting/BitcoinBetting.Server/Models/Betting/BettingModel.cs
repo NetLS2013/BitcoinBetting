@@ -25,7 +25,7 @@ namespace BitcoinBetting.Server.Models.Betting
 
         public BettingStatus Status { get; set; }
 
-       // public BettingStatus BettingStatus { get; set; }
+        public bool? Result { get; set; }
 
         [NotMapped]
         public decimal Bank { get; set; }

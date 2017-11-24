@@ -1,19 +1,18 @@
-﻿using BitcoinBetting.Server.Database.Helpers;
-using BitcoinBetting.Server.Models.Betting;
-using BitcoinBetting.Server.Services.Contracts;
-using BitcoinBetting.Server.Services.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BitcoinBetting.Server.Controllers
+﻿namespace BitcoinBetting.Server.Controllers
 {
+    using System;
+    using System.Threading.Tasks;
+
+    using BitcoinBetting.Server.Database.Helpers;
+    using BitcoinBetting.Server.Models.Betting;
     using BitcoinBetting.Server.Models.Bitcoin;
     using BitcoinBetting.Server.Services.Bitcoin;
+    using BitcoinBetting.Server.Services.Contracts;
+    using BitcoinBetting.Server.Services.Identity;
+
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
 
     [Authorize]
     [Route("api/[controller]/[action]")]
@@ -47,7 +46,7 @@ namespace BitcoinBetting.Server.Controllers
             }
 
             var bet = this.bettingService.GetById(model.BettingId);
-            if (bet != null)
+            if (bet != null && bet.Status == BettingStatus.Continue)
             {
                 model.Date = DateTime.Now;
                 model.UserId = (await this.userManager.FindByNameAsync(this.User.Identity.Name)).Id;
@@ -83,12 +82,21 @@ namespace BitcoinBetting.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int bettingId)
+        public async Task<IActionResult> GetById(int bettingId)
         {
             var bids = this.bidService.Get(x => x.BettingId == bettingId);
 
             if (bids != null)
             {
+                foreach (var bid in bids)
+                {
+                    bid.PossibleWin = BettingHelper.GetAmountPayment(
+                        bid.Amount,
+                        bid.Coefficient,
+                        this.bettingService.GetBank(bid.BettingId, bid.Side),
+                        this.bettingService.GetBank(bid.BettingId, !bid.Side));
+                }
+
                 return Ok(new { result = true, list = bids });
             }
 

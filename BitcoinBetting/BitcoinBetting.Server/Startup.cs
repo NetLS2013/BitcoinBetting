@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using BitcoinBetting.Server.Database;
 using BitcoinBetting.Server.Services.Contracts;
@@ -10,13 +7,10 @@ using BitcoinBetting.Server.Services.Email;
 using BitcoinBetting.Server.Services.Identity;
 using BitcoinBetting.Server.Services.MailChimp;
 using BitcoinBetting.Server.Services.Security;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Facebook;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,9 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using BitcoinBetting.Server.Database.Repositories;
 using BitcoinBetting.Server.Models.Betting;
-using System.Timers;
-using BitcoinBetting.Server.Database.Context;
-using Hangfire;
 using BitcoinBetting.Server.Services.Bitcoin;
 using BitcoinBetting.Server.Services.Betting;
 
@@ -34,11 +25,9 @@ namespace BitcoinBetting.Server
 {
     using BitcoinBetting.Server.Database.Context;
     using BitcoinBetting.Server.Models;
+    using BitcoinBetting.Server.Services.Betting.Jobs;
 
     using NBitcoin;
-
-    using Quartz;
-    using Quartz.Spi;
 
     public class Startup
     {
@@ -67,7 +56,10 @@ namespace BitcoinBetting.Server
             })
                             .AddEntityFrameworkStores<ApplicationDbContext>()
                             .AddDefaultTokenProviders();
+            //var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
+            //optionsBuilder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
 
+            //services.AddSingleton<ApplicationContext>(builder => new ApplicationContext(optionsBuilder.Options));
             services.AddDbContext<ApplicationContext>(builder => builder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services
@@ -129,16 +121,19 @@ namespace BitcoinBetting.Server
 
             services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "D:\\proj\\BitcoinBetting\\BitcoinBetting\\BitcoinBetting.Server\\wallet.dat" }));
 
-            services.AddScoped<CreateBettingJob>();
+            services.AddTransient<CreateBettingJob>();
+            services.AddTransient<SetWaitJob>();
+            services.AddTransient<CheckPaymentJob>();
+            services.AddTransient<AwardJob>();
 
             services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, IServiceProvider container)
         {
-            //var quartz = new QuartzStartup(container);
-            //lifetime.ApplicationStarted.Register(quartz.Start);
-            //lifetime.ApplicationStopping.Register(quartz.Stop);
+            var quartz = new QuartzStartup(container);
+            lifetime.ApplicationStarted.Register(quartz.Start);
+            lifetime.ApplicationStopping.Register(quartz.Stop);
 
             if (env.IsDevelopment())
             {

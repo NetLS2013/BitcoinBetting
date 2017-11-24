@@ -25,7 +25,7 @@ namespace BitcoinBetting.Server.Services.Betting
                 this.repository.Create(model);
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return false;
             }
@@ -38,7 +38,7 @@ namespace BitcoinBetting.Server.Services.Betting
                 this.repository.Update(model);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 return false;
             }
@@ -51,7 +51,7 @@ namespace BitcoinBetting.Server.Services.Betting
                 var bids = this.repository.Get(predicate);
                 return bids;
             }
-            catch
+            catch (Exception e)
             {
                 return null;
             }
@@ -64,7 +64,7 @@ namespace BitcoinBetting.Server.Services.Betting
                 var bid = this.repository.FindById(id);
                 return bid;
             }
-            catch
+            catch (Exception e)
             {
                 return null;
             }

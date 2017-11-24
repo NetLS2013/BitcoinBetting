@@ -43,6 +43,7 @@
     <None Remove="Services\Betting\BidService.cs" />
     <None Remove="Services\Betting\CheckPaymentJob.cs" />
     <None Remove="Services\Betting\Jobs\CreateBettingJob.cs" />
+    <None Remove="Services\Betting\Jobs\SetWaitJob.cs" />
     <None Remove="Services\Bitcoin\BitcoinAverageApi.cs" />
     <None Remove="Services\Bitcoin\BitcoinWalletService.cs" />
     <None Remove="Services\Contracts\IBettingService.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Services\Betting\Jobs\AwardJob.cs" />
     <Compile Include="Services\Betting\Jobs\CheckPaymentJob.cs" />
     <Compile Include="Services\Betting\Jobs\CreateBettingJob.cs" />
+    <Compile Include="Services\Betting\Jobs\SetWaitJob.cs" />
     <Compile Include="Services\Bitcoin\BitcoinWalletService.cs" />
     <Content Include="Models\Account\ForgotPasswordConfirmModel.cs" />
     <Compile Include="Models\Betting\BettingModel.cs" />

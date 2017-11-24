@@ -15,8 +15,6 @@ namespace BitcoinBetting.Server.Database
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            
         }
     }
 }

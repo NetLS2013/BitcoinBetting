@@ -39,11 +39,15 @@ namespace BitcoinBetting.Server.Database.Repositories
         {
             dbSet.Add(item);
             context.SaveChanges();
+
+            context.Entry(item).State = EntityState.Detached;
         }
         public void Update(TEntity item)
         {
             context.Entry(item).State = EntityState.Modified;
             context.SaveChanges();
+
+            context.Entry(item).State = EntityState.Detached;
         }
         public void Remove(TEntity item)
         {

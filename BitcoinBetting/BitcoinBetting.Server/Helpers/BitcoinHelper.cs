@@ -110,63 +110,63 @@
             return operationsPerTransactions;
         }
 
-        public static Dictionary<BitcoinAddress, List<BalanceOperation>> QueryOperationsPerSafeAddresses(Safe safe, Network network, int minUnusedKeys = 7, HdPathType? hdPathType = null)
-        {
-            if (hdPathType == null)
-            {
-                Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerReceiveAddresses = QueryOperationsPerSafeAddresses(safe, network, minUnusedKeys, HdPathType.Receive);
-                Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerChangeAddresses = QueryOperationsPerSafeAddresses(safe, network, minUnusedKeys, HdPathType.Change);
+        //public static Dictionary<BitcoinAddress, List<BalanceOperation>> QueryOperationsPerSafeAddresses(Safe safe, Network network, int minUnusedKeys = 7, HdPathType? hdPathType = null)
+        //{
+        //    if (hdPathType == null)
+        //    {
+        //        Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerReceiveAddresses = QueryOperationsPerSafeAddresses(safe, network, minUnusedKeys, HdPathType.Receive);
+        //        Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerChangeAddresses = QueryOperationsPerSafeAddresses(safe, network, minUnusedKeys, HdPathType.Change);
 
-                var operationsPerAllAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
-                foreach (var elem in operationsPerReceiveAddresses)
-                {
-                    operationsPerAllAddresses.Add(elem.Key, elem.Value);
-                }
+        //        var operationsPerAllAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
+        //        foreach (var elem in operationsPerReceiveAddresses)
+        //        {
+        //            operationsPerAllAddresses.Add(elem.Key, elem.Value);
+        //        }
 
-                foreach (var elem in operationsPerChangeAddresses)
-                {
-                    operationsPerAllAddresses.Add(elem.Key, elem.Value);
-                }
+        //        foreach (var elem in operationsPerChangeAddresses)
+        //        {
+        //            operationsPerAllAddresses.Add(elem.Key, elem.Value);
+        //        }
 
-                return operationsPerAllAddresses;
-            }
+        //        return operationsPerAllAddresses;
+        //    }
 
-            var addresses = safe.GetFirstNAddresses(minUnusedKeys, hdPathType.GetValueOrDefault());
+        //    var addresses = safe.GetFirstNAddresses(minUnusedKeys, hdPathType.GetValueOrDefault());
 
-            var operationsPerAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
-            var unusedKeyCount = 0;
-            foreach (var elem in QueryOperationsPerAddresses(addresses, network))
-            {
-                operationsPerAddresses.Add(elem.Key, elem.Value);
-                if (elem.Value.Count == 0)
-                {
-                    unusedKeyCount++;
-                }
-            }
+        //    var operationsPerAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
+        //    var unusedKeyCount = 0;
+        //    foreach (var elem in QueryOperationsPerAddresses(addresses, network))
+        //    {
+        //        operationsPerAddresses.Add(elem.Key, elem.Value);
+        //        if (elem.Value.Count == 0)
+        //        {
+        //            unusedKeyCount++;
+        //        }
+        //    }
 
-            var startIndex = minUnusedKeys;
-            while (unusedKeyCount < minUnusedKeys)
-            {
-                addresses = new List<BitcoinAddress>();
-                for (int i = startIndex; i < startIndex + minUnusedKeys; i++)
-                {
-                    addresses.Add(safe.GetAddress(i, hdPathType.GetValueOrDefault()));
-                }
+        //    var startIndex = minUnusedKeys;
+        //    while (unusedKeyCount < minUnusedKeys)
+        //    {
+        //        addresses = new List<BitcoinAddress>();
+        //        for (int i = startIndex; i < startIndex + minUnusedKeys; i++)
+        //        {
+        //            addresses.Add(safe.GetAddress(i, hdPathType.GetValueOrDefault()));
+        //        }
 
-                foreach (var elem in QueryOperationsPerAddresses(addresses, network))
-                {
-                    operationsPerAddresses.Add(elem.Key, elem.Value);
-                    if (elem.Value.Count == 0)
-                    {
-                        unusedKeyCount++;
-                    }
-                }
+        //        foreach (var elem in QueryOperationsPerAddresses(addresses, network))
+        //        {
+        //            operationsPerAddresses.Add(elem.Key, elem.Value);
+        //            if (elem.Value.Count == 0)
+        //            {
+        //                unusedKeyCount++;
+        //            }
+        //        }
 
-                startIndex += minUnusedKeys;
-            }
+        //        startIndex += minUnusedKeys;
+        //    }
 
-            return operationsPerAddresses;
-        }
+        //    return operationsPerAddresses;
+        //}
 
         public static Dictionary<BitcoinAddress, List<BalanceOperation>> QueryOperationsPerSafeAddresses1(Safe safe, Network network, IEnumerable<int> addressIds, HdPathType? hdPathType = null)
         {
@@ -196,7 +196,6 @@
             }
 
             var operationsPerAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
-
             foreach (var elem in QueryOperationsPerAddresses(addresses, network))
             {
                 operationsPerAddresses.Add(elem.Key, elem.Value);
@@ -210,10 +209,10 @@
             var operationsPerAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
             var client = new QBitNinjaClient(network);
 
-            foreach (var addr in addresses)
+            foreach (var address in addresses)
             {
-                var operations = client.GetBalance(addr, unspentOnly: false).Result.Operations;
-                operationsPerAddresses.Add(addr, operations);
+                var operations = client.GetBalance(address, unspentOnly: false).Result.Operations;
+                operationsPerAddresses.Add(address, operations);
             }
 
             return operationsPerAddresses;

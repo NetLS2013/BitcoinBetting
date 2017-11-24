@@ -41,5 +41,6 @@ namespace BitcoinBetting.Server.Models.Betting
 
         [NotMapped]
         public decimal PossibleWin { get; set; }
+
     }
 }

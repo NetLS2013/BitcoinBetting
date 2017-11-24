@@ -34,11 +34,11 @@
             return mnemonic.Words;
         }
 
-        public List<TransactionHistoryRecord> GetHistory()
+        public List<TransactionHistoryRecord> GetHistory(IEnumerable<int> ids)
         {
             var safe = Helpers.BitcoinHelper.DecryptWalletByAskingForPassword(this.settings.Path, this.settings.Password);
 
-            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses(safe, this.settings.Network);
+            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses1(safe, this.settings.Network, ids);
             var operationsPerTransactions = Helpers.BitcoinHelper.GetOperationsPerTransactions(operationsPerAddresses);
 
             var historyRecords = new List<TransactionHistoryRecord>();
@@ -63,36 +63,7 @@
             return orderedTxHistoryRecords.ToList();
         }
 
-        public PaymentStatus IsPaymentDone(out uint256 transactionId, BitcoinAddress sender, BitcoinAddress receiver, decimal amount, DateTime? afterTime)
-        {
-            transactionId = null;
-
-            var client = new QBitNinjaClient(Network.TestNet);
-
-            var transactions = this.GetHistory().Where(record => record.Date >= (afterTime ?? DateTime.MinValue));
-
-            foreach (var record in transactions)
-            {
-                if (record.Money.ToUnit(MoneyUnit.BTC) == amount && record.IsConfirmed)
-                {
-                    var transaction = client.GetTransaction(record.TransactionId).Result.Transaction;
-
-                    var isCorrectSender = transaction.Inputs.AsIndexedInputs().FirstOrDefault(x => x.TxIn.ScriptSig.GetSignerAddress(this.settings.Network) == sender);
-                    var isCorrectReceiver = transaction.Outputs.AsIndexedOutputs().FirstOrDefault(x => x.TxOut.ScriptPubKey.GetDestinationAddress(this.settings.Network) == receiver);
-
-                    if (isCorrectSender != null && isCorrectReceiver != null)
-                    {
-                        transactionId = record.TransactionId;
-
-                        return record.IsConfirmed ? PaymentStatus.Confirmed : PaymentStatus.Unconfirmed;
-                    }
-                }
-            }
-
-            return PaymentStatus.None;
-        }
-
-        //public PaymentStatus IsPaymentDone1(out uint256 transactionId, BitcoinAddress sender, BitcoinAddress receiver, decimal amount, DateTime? afterTime)
+        //public PaymentStatus IsPaymentDone(out uint256 transactionId, BitcoinAddress sender, BitcoinAddress receiver, decimal amount, DateTime? afterTime)
         //{
         //    transactionId = null;
 
@@ -121,11 +92,11 @@
         //    return PaymentStatus.None;
         //}
 
-        public IEnumerable<BitcoinAddress> GetAddresses()
+        public IEnumerable<BitcoinAddress> GetAddresses(IEnumerable<int> ids)
         {
             var safe = Helpers.BitcoinHelper.DecryptWalletByAskingForPassword(this.settings.Path, this.settings.Password);
 
-            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses(safe, this.settings.Network);
+            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses1(safe, this.settings.Network, ids);
 
             foreach (var operationsPerAddress in operationsPerAddresses)
             {
@@ -142,63 +113,63 @@
             return address.Key;
         }
 
-        public IEnumerable<BalanceRecord> GetBalances(out Money confirmedWalletBalance, out Money unconfirmedWalletBalance)
-        {
-            var safe = Helpers.BitcoinHelper.DecryptWalletByAskingForPassword(this.settings.Path, this.settings.Password);
+        //public IEnumerable<BalanceRecord> GetBalances(out Money confirmedWalletBalance, out Money unconfirmedWalletBalance)
+        //{
+        //    var safe = Helpers.BitcoinHelper.DecryptWalletByAskingForPassword(this.settings.Path, this.settings.Password);
 
-            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses(safe, this.settings.Network);
+        //    var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses(safe, this.settings.Network);
 
-            var addressHistoryRecords = new List<AddressHistoryRecord>();
-            foreach (var elem in operationsPerAddresses)
-            {
-                foreach (var op in elem.Value)
-                {
-                    addressHistoryRecords.Add(new AddressHistoryRecord(elem.Key, op));
-                }
-            }
+        //    var addressHistoryRecords = new List<AddressHistoryRecord>();
+        //    foreach (var elem in operationsPerAddresses)
+        //    {
+        //        foreach (var op in elem.Value)
+        //        {
+        //            addressHistoryRecords.Add(new AddressHistoryRecord(elem.Key, op));
+        //        }
+        //    }
 
-            Helpers.BitcoinHelper.GetBalances(addressHistoryRecords, out confirmedWalletBalance, out unconfirmedWalletBalance);
+        //    Helpers.BitcoinHelper.GetBalances(addressHistoryRecords, out confirmedWalletBalance, out unconfirmedWalletBalance);
 
-            var addressHistoryRecordsPerAddresses = new Dictionary<BitcoinAddress, HashSet<AddressHistoryRecord>>();
-            foreach (var address in operationsPerAddresses.Keys)
-            {
-                var recs = new HashSet<AddressHistoryRecord>();
-                foreach (var record in addressHistoryRecords)
-                {
-                    if (record.Address == address)
-                    {
-                        recs.Add(record);
-                    }
-                }
+        //    var addressHistoryRecordsPerAddresses = new Dictionary<BitcoinAddress, HashSet<AddressHistoryRecord>>();
+        //    foreach (var address in operationsPerAddresses.Keys)
+        //    {
+        //        var recs = new HashSet<AddressHistoryRecord>();
+        //        foreach (var record in addressHistoryRecords)
+        //        {
+        //            if (record.Address == address)
+        //            {
+        //                recs.Add(record);
+        //            }
+        //        }
 
-                addressHistoryRecordsPerAddresses.Add(address, recs);
-            }
+        //        addressHistoryRecordsPerAddresses.Add(address, recs);
+        //    }
 
-            var listBalance = new List<BalanceRecord>();
+        //    var listBalance = new List<BalanceRecord>();
 
-            foreach (var elem in addressHistoryRecordsPerAddresses)
-            {
-                Money confirmedBalance;
-                Money unconfirmedBalance;
-                Helpers.BitcoinHelper.GetBalances(elem.Value, out confirmedBalance, out unconfirmedBalance);
+        //    foreach (var elem in addressHistoryRecordsPerAddresses)
+        //    {
+        //        Money confirmedBalance;
+        //        Money unconfirmedBalance;
+        //        Helpers.BitcoinHelper.GetBalances(elem.Value, out confirmedBalance, out unconfirmedBalance);
 
-                listBalance.Add(
-                    new BalanceRecord()
-                        {
-                            BitcoinAddress = elem.Key,
-                            ConfirmMoney = confirmedBalance,
-                            UnconfirmMoney = unconfirmedBalance
-                        });
-            }
+        //        listBalance.Add(
+        //            new BalanceRecord()
+        //                {
+        //                    BitcoinAddress = elem.Key,
+        //                    ConfirmMoney = confirmedBalance,
+        //                    UnconfirmMoney = unconfirmedBalance
+        //                });
+        //    }
 
-            return listBalance;
-        }
+        //    return listBalance;
+        //}
 
         public IEnumerable<BalanceRecord> GetBalances1(IEnumerable<int> ids, out Money confirmedWalletBalance, out Money unconfirmedWalletBalance)
         {
             var safe = Helpers.BitcoinHelper.DecryptWalletByAskingForPassword(this.settings.Path, this.settings.Password);
 
-            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses1(safe, this.settings.Network, ids);
+            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses1(safe, this.settings.Network, ids, HdPathType.Receive);
 
             var addressHistoryRecords = new List<AddressHistoryRecord>();
             foreach (var elem in operationsPerAddresses)
@@ -247,12 +218,12 @@
         }
 
 
-        public void Send(string address, decimal amount)
+        public void Send(string address, decimal amount, IEnumerable<int> ids)
         {
             var addressToSend = BitcoinAddress.Create(address, this.settings.Network);
             var safe = Helpers.BitcoinHelper.DecryptWalletByAskingForPassword(this.settings.Path, this.settings.Password);
 
-            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses(safe, this.settings.Network, 7);
+            var operationsPerAddresses = Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses1(safe, this.settings.Network, ids, HdPathType.Receive);
 
             // Find all the not empty private keys
             var operationsPerNotEmptyPrivateKeys = new Dictionary<BitcoinExtKey, List<BalanceOperation>>();
@@ -274,10 +245,10 @@
             // Get the script pubkey of the change.
             Script changeScriptPubKey = null;
             Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerChangeAddresses =
-                Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses(
+                Helpers.BitcoinHelper.QueryOperationsPerSafeAddresses1(
                     safe,
                     this.settings.Network,
-                    minUnusedKeys: 1,
+                    ids,
                     hdPathType: HdPathType.Change);
 
             foreach (var elem in operationsPerChangeAddresses)
