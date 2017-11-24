@@ -110,70 +110,12 @@
             return operationsPerTransactions;
         }
 
-        //public static Dictionary<BitcoinAddress, List<BalanceOperation>> QueryOperationsPerSafeAddresses(Safe safe, Network network, int minUnusedKeys = 7, HdPathType? hdPathType = null)
-        //{
-        //    if (hdPathType == null)
-        //    {
-        //        Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerReceiveAddresses = QueryOperationsPerSafeAddresses(safe, network, minUnusedKeys, HdPathType.Receive);
-        //        Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerChangeAddresses = QueryOperationsPerSafeAddresses(safe, network, minUnusedKeys, HdPathType.Change);
-
-        //        var operationsPerAllAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
-        //        foreach (var elem in operationsPerReceiveAddresses)
-        //        {
-        //            operationsPerAllAddresses.Add(elem.Key, elem.Value);
-        //        }
-
-        //        foreach (var elem in operationsPerChangeAddresses)
-        //        {
-        //            operationsPerAllAddresses.Add(elem.Key, elem.Value);
-        //        }
-
-        //        return operationsPerAllAddresses;
-        //    }
-
-        //    var addresses = safe.GetFirstNAddresses(minUnusedKeys, hdPathType.GetValueOrDefault());
-
-        //    var operationsPerAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
-        //    var unusedKeyCount = 0;
-        //    foreach (var elem in QueryOperationsPerAddresses(addresses, network))
-        //    {
-        //        operationsPerAddresses.Add(elem.Key, elem.Value);
-        //        if (elem.Value.Count == 0)
-        //        {
-        //            unusedKeyCount++;
-        //        }
-        //    }
-
-        //    var startIndex = minUnusedKeys;
-        //    while (unusedKeyCount < minUnusedKeys)
-        //    {
-        //        addresses = new List<BitcoinAddress>();
-        //        for (int i = startIndex; i < startIndex + minUnusedKeys; i++)
-        //        {
-        //            addresses.Add(safe.GetAddress(i, hdPathType.GetValueOrDefault()));
-        //        }
-
-        //        foreach (var elem in QueryOperationsPerAddresses(addresses, network))
-        //        {
-        //            operationsPerAddresses.Add(elem.Key, elem.Value);
-        //            if (elem.Value.Count == 0)
-        //            {
-        //                unusedKeyCount++;
-        //            }
-        //        }
-
-        //        startIndex += minUnusedKeys;
-        //    }
-
-        //    return operationsPerAddresses;
-        //}
-
-        public static Dictionary<BitcoinAddress, List<BalanceOperation>> QueryOperationsPerSafeAddresses1(Safe safe, Network network, IEnumerable<int> addressIds, HdPathType? hdPathType = null)
+        public static Dictionary<BitcoinAddress, List<BalanceOperation>> QueryOperationsPerSafeAddresses(Safe safe, Network network, IEnumerable<int> addressIds, HdPathType? hdPathType = null)
         {
             if (hdPathType == null)
             {
-                Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerReceiveAddresses = QueryOperationsPerSafeAddresses1(safe, network, addressIds, HdPathType.Receive);
-                Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerChangeAddresses = QueryOperationsPerSafeAddresses1(safe, network, addressIds, HdPathType.Change);
+                Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerReceiveAddresses = QueryOperationsPerSafeAddresses(safe, network, addressIds, HdPathType.Receive);
+                Dictionary<BitcoinAddress, List<BalanceOperation>> operationsPerChangeAddresses = QueryOperationsPerSafeAddresses(safe, network, addressIds, HdPathType.Change);
 
                 var operationsPerAllAddresses = new Dictionary<BitcoinAddress, List<BalanceOperation>>();
                 foreach (var elem in operationsPerReceiveAddresses)

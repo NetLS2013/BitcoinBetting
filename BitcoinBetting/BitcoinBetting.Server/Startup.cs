@@ -106,7 +106,7 @@ namespace BitcoinBetting.Server
                 return new BitcoinAverageApi(Configuration.GetSection("BitcoinAvarageSettings:PublicKey").Value, Configuration.GetSection("BitcoinAvarageSettings:SecretKey").Value);
             });
 
-            services.Configure<BitcoinSettings>(settings => new BitcoinSettings(){});
+            services.Configure<BitcoinSettings>(settings => this.Configuration.GetSection("BitcoinSettings"));
             
             services.AddTransient<IGenericRepository<BidModel>, GenericRepository<BidModel>>();
             services.AddTransient<IGenericRepository<WalletModel>, GenericRepository<WalletModel>>();
@@ -119,8 +119,8 @@ namespace BitcoinBetting.Server
             services.AddTransient<IBettingService, BettingService>();
             services.AddTransient<IBidService, BidService>();
 
-            //services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "D:\\proj\\BitcoinBetting\\BitcoinBetting\\BitcoinBetting.Server\\wallet.dat" }));
-            services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "/Users/keiqsa/Projects/BitcoinBetting/BitcoinBetting/BitcoinBetting.Server/wallet.dat" }));
+           // services.AddTransient<BitcoinWalletService>();//(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "D:\\proj\\BitcoinBetting\\BitcoinBetting\\BitcoinBetting.Server\\wallet.dat" }));
+           services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "/Users/keiqsa/Projects/BitcoinBetting/BitcoinBetting/BitcoinBetting.Server/wallet.dat" }));
 
             services.AddTransient<CreateBettingJob>();
             services.AddTransient<SetWaitJob>();

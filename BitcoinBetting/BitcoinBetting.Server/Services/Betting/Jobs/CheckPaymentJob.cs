@@ -43,7 +43,7 @@
                 {
                     var bidsIds = bids.Select(model => model.BidId);
 
-                    var balances = this.bitcoinWalletService.GetBalances1(bidsIds, out _, out _).ToList();
+                    var balances = this.bitcoinWalletService.GetBalances(bidsIds, out _, out _).ToList();
 
                     for (int i = 0; i < bids.Count; i++)
                     {

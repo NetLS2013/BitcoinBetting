@@ -77,7 +77,7 @@
 
             var awardTrigger = TriggerBuilder.Create()
                 .StartNow()
-                .WithCronSchedule("30 25 15 * * ?")
+                .WithCronSchedule("10 54 18 * * ?")
                 .Build();
 
             this.scheduler.ScheduleJob(award, awardTrigger).Wait();

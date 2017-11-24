@@ -7,6 +7,7 @@
     using BitcoinBetting.Enum;
     using BitcoinBetting.Server.Database.Helpers;
     using BitcoinBetting.Server.Models.Betting;
+    using BitcoinBetting.Server.Models.Bitcoin;
     using BitcoinBetting.Server.Services.Bitcoin;
     using BitcoinBetting.Server.Services.Contracts;
     using BitcoinBetting.Server.Services.Identity;
@@ -39,6 +40,8 @@
             this.emailSender = emailSender;
         }
 
+        private int BasicAddressId = 0;
+
         public async Task Execute(IJobExecutionContext context)
         {
             var bet = this.bettingService.Get(model => model.Status == BettingStatus.Waiting)
@@ -64,37 +67,51 @@
                 var bankMore = this.bettingService.GetBank(bet.BettingId, true);
                 var bankLess = this.bettingService.GetBank(bet.BettingId, false);
 
-                var ids = this.bidService.Get(model => true).Select(model => model.BidId);
+                var bids = this.bidService.Get(
+                    model => model.BettingId == bet.BettingId && !model.Status
+                             && model.PaymentStatus == PaymentStatus.Confirmed);
+               
+                // select ids of addresses where can be coins
+                var ids = bids.Select(model => model.BidId).ToList();
 
-                foreach (var bid in this.bidService.Get(
-                    model => model.Side == sideWin && model.BettingId == bet.BettingId && !model.Status))
+                // use first address as basic
+                ids.Add(this.BasicAddressId);
+
+                foreach (var bid in bids)
                 {
-                    var award = sideWin
-                                    ? BettingHelper.GetAmountPayment(bid.Amount, bid.Coefficient, bankMore, bankLess)
-                                    : BettingHelper.GetAmountPayment(bid.Amount, bid.Coefficient, bankLess, bankMore);
-
-                    try
+                    if (bid.Side == sideWin)
                     {
-                        var address = this.walletService.GetById(bid.WalletId);
-                        if (address != null)
+                        var award = sideWin
+                                        ? BettingHelper.GetAmountPayment(bid.Amount, bid.Coefficient, bankMore, bankLess)
+                                        : BettingHelper.GetAmountPayment(bid.Amount, bid.Coefficient, bankLess, bankMore);
+
+                        try
                         {
-                            this.bitcoinWalletService.Send(address.Address, award, ids);
+                            var address = this.walletService.GetById(bid.WalletId);
+                            if (address != null)
+                            {
+                                // send to winners and send remainder sum to first address
+                                this.bitcoinWalletService.Send(address.Address, award, ids, this.BasicAddressId);
 
-                            var user = await this.userManager.FindByIdAsync(bid.UserId);
-                            await this.emailSender.SendEmailAsync(
-                                user.Email,
-                                "Bitcoin app payment",
-                                "You win " + (decimal)award + " on your wallet " + bid.PaymentAddress);
+                                bid.Paid = true;
+                                
 
-                            bid.Status = true;
-
-                            this.bidService.Update(bid);
+                                var user = await this.userManager.FindByIdAsync(bid.UserId);
+                                await this.emailSender.SendEmailAsync(
+                                    user.Email,
+                                    "Bitcoin app payment",
+                                    "You win " + (decimal)award + " on your wallet " + bid.PaymentAddress);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            // ignored
                         }
                     }
-                    catch (Exception e)
-                    {
-                        // ignored
-                    }
+
+                    bid.Status = true;
+
+                    this.bidService.Update(bid);
                 }
             }
         }

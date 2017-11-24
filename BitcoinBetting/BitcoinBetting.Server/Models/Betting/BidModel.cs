@@ -37,7 +37,7 @@ namespace BitcoinBetting.Server.Models.Betting
 
         public PaymentStatus PaymentStatus { get; set; }
 
-        public string TransactionId { get; set; }
+        public bool Paid { get; set; }
 
         [NotMapped]
         public decimal PossibleWin { get; set; }
