@@ -127,8 +127,8 @@ namespace BitcoinBetting.Server
             services.AddTransient<IBettingService, BettingService>();
             services.AddTransient<IBidService, BidService>();
 
-            services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "D:\\proj\\BitcoinBetting\\BitcoinBetting\\BitcoinBetting.Server\\wallet.dat" }));
-            //services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "/Users/keiqsa/Projects/BitcoinBetting/BitcoinBetting/BitcoinBetting.Server/wallet.dat" }));
+            //services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "D:\\proj\\BitcoinBetting\\BitcoinBetting\\BitcoinBetting.Server\\wallet.dat" }));
+            services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "/Users/keiqsa/Projects/BitcoinBetting/BitcoinBetting/BitcoinBetting.Server/wallet.dat" }));
 
             services.AddScoped<CreateBettingJob>();
 

@@ -75,7 +75,6 @@ namespace BitcoinBetting.Core.ViewModels
                 {
                     PickerItemSelected(selectedItem);
                 }
-                
             }
         }
         

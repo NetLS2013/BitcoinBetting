@@ -21,6 +21,8 @@ namespace BitcoinBetting.Core.ViewModels
         
         public ICommand BetNoCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, side: false));
         public ICommand BetYesCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, side: true));
+        
+        public ICommand BetHistoryCommnad => new Command(async e => await ModalHistoryPage(e as BettingItemModel));
 
         public ICommand DismissModalCommand => new Command(async () => await DismissModal());
         
@@ -70,6 +72,13 @@ namespace BitcoinBetting.Core.ViewModels
             await Navigation.PushModalAsync (new BettingCreatePage(this));
         }
         
+        private async Task ModalHistoryPage(BettingItemModel bettingItem)
+        {
+            SelectedItem = bettingItem;
+            
+            await Navigation.PushModalAsync(new HistoryPage(viewModelContext: this));
+        }
+        
         private async Task LoadAddressItems()
         {
             IsBusy = true;
@@ -107,6 +116,8 @@ namespace BitcoinBetting.Core.ViewModels
         
         private async Task CreateBetting()
         {
+            IsBusy = true;
+            
             IsValid = Validate();
 
             if (IsValid)
@@ -139,9 +150,11 @@ namespace BitcoinBetting.Core.ViewModels
                 {
                     await Application.Current.MainPage.DisplayAlert("Error!", Environment.NewLine + e.Message,
                         "Ok");
-                }   
+                }
             }
-        }        
+            
+            IsBusy = false;
+        }
         
         private async Task ChooseBitcoinAddress()
         {

@@ -6,7 +6,9 @@ namespace BitcoinBetting.Core.Views.Settings
 {
     public partial class AddressesPage : ContentPage
     {
-        public AddressesPage(BaseViewModel viewModelContext = null)
+        public AddressesPage() : this(viewModelContext: null) { }
+        
+        public AddressesPage(BaseViewModel viewModelContext)
         {
             InitializeComponent();
             

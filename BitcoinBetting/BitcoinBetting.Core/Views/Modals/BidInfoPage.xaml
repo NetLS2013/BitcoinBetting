@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BitcoinBetting.Core.Views.Modals.BidInfoPage"
+             Title="Detail">
+    <ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">
+            <Label FontSize="16" Text="How to calculate the result with time-weight multiplier:"/>
+            <Label FontSize="12" Text="(bet amount) + [(weighted bet amount) / (total weighted volume on bet side) * (total volume on the opposite side)]"/>
+            <Label FontSize="12" FontAttributes="Bold" Text="0.001 + (0.0017 / 0.5544 * 0.1403)"/>
+            <Label FontSize="14" Text="Current winning estimation:"/>
+            <Label FontSize="18" TextColor="#00a99d" Text="{Binding SelectedItem.PossibleWin, StringFormat='{0:n} BTC'}"/>
+            
+            <Button Text="Dismiss" Command="{Binding DismissModalCommand}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

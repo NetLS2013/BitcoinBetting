@@ -83,7 +83,7 @@ namespace BitcoinBetting.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int bettingId)
+        public async Task<IActionResult> GetById(int bettingId)
         {
             var bids = this.bidService.Get(x => x.BettingId == bettingId);
 

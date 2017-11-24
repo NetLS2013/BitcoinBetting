@@ -59,10 +59,21 @@
                                                 <Label Text="{Binding ExchangeRate, StringFormat='Bitcoin price will reach {0:0,0} USD'}" FontSize="12"/>
                                                 <Label Text="{Binding FinishDate, StringFormat='End date {0:d} | xx:xx'}" FontSize="14"/>
                                             </StackLayout>
-            
-                                            <StackLayout>
-                                                <Label Text="In Bank" FontSize="12" />
-                                                <Label Text="{Binding Bank, StringFormat='{0:n} BTC'}" FontSize="14"/>
+                                            
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                                <StackLayout>
+                                                    <Label Text="In Bank" FontSize="12" />
+                                                    <Label Text="{Binding Bank, StringFormat='{0:n} BTC'}" FontSize="14"/>
+                                                </StackLayout>
+                                                
+                                                <Button
+                                                    HorizontalOptions="EndAndExpand"
+                                                    VerticalOptions="Center"
+                                                    Text="history"
+                                                    BackgroundColor="White" TextColor="#00a99d"
+                                                    BindingContext="{Binding Source={x:Reference BettingItemsListView}, Path=BindingContext}"
+                                                    Command="{Binding BetHistoryCommnad}"
+                                                    CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"/>
                                             </StackLayout>
                                         </StackLayout>
                                     </StackLayout>

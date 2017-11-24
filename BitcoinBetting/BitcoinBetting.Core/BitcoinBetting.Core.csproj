@@ -19,6 +19,7 @@
     <Compile Include="Models\ListItems\BettingItemModel.cs" />
     <Compile Include="Models\ListItems\MenuItemModel.cs" />
     <Compile Include="Models\ListItems\AddressItemModel.cs" />
+    <Compile Include="Models\ListItems\BidItemModel.cs" />
     <Compile Include="Models\Results\WalletResultModel.cs" />
     <Compile Include="Models\Results\BettingResultModel.cs" />
     <Compile Include="Models\Results\BidResultModel.cs" />
@@ -43,6 +44,7 @@
     <Compile Include="ViewModels\BettingViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\AddressesViewModel.cs" />
+    <Compile Include="ViewModels\HistoryViewModel.cs" />
     <Compile Include="Views\Menu\MasterPage.xaml.cs">
       <DependentUpon>MasterPage.xaml</DependentUpon>
     </Compile>
@@ -51,6 +53,9 @@
     </Compile>
     <Compile Include="Views\Modals\AddressCreatePage.xaml.cs">
       <DependentUpon>AddressCreatePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modals\BidInfoPage.xaml.cs">
+      <DependentUpon>BidInfoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Modals\BettingCreatePage.xaml.cs">
       <DependentUpon>BettingCreatePage.xaml</DependentUpon>

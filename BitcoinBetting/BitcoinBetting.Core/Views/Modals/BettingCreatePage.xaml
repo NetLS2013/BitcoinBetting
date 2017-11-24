@@ -40,7 +40,11 @@
                 <Button Text="Choose address" Command="{Binding ChooseBitcoinAddressCommand}" />
             </StackLayout>
             
-            <Button Text="Generate transfer address" Command="{Binding CreateBettingCommand}" />
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Generate transfer address" Command="{Binding CreateBettingCommand}" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </StackLayout>
+            
             <Button Text="Dismiss" Command="{Binding DismissModalCommand}" />
         </StackLayout>
     </ContentPage.Content>
