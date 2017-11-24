@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BitcoinBetting.Core.Models.ListItems;
 using BitcoinBetting.Core.ViewModels;
 using BitcoinBetting.Core.Views.Menu;

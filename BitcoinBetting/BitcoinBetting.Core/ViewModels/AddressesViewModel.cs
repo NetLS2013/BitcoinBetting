@@ -31,17 +31,20 @@ namespace BitcoinBetting.Core.ViewModels
         private IRequestProvider requestProvider { get; set; }
         
         private bool IsValid { get; set; }
+        private BaseViewModel ViewModelContext { get; set; }
+        
         private INavigation Navigation { get; set;}
         private Page CurrentPage { get; set;}
         private ListView ListView { get; set;}
         
         private ValidatableObject<string> address;
         
-        public AddressesViewModel(INavigation navigation, Page context, ListView listView)
+        public AddressesViewModel(INavigation navigation, Page context, ListView listView, BaseViewModel viewModelContext = null)
         {
             this.Navigation = navigation;
             this.CurrentPage = context;
             this.ListView = listView;
+            this.ViewModelContext = viewModelContext;
             
             requestProvider = new RequestProvider();
             walletModel = new WalletModel();
@@ -53,9 +56,9 @@ namespace BitcoinBetting.Core.ViewModels
             AddValidations();
         }
         
-        private MenuItemModel selectedItem;
+        private AddressItemModel selectedItem;
         
-        public MenuItemModel SelectedItem
+        public AddressItemModel SelectedItem
         {
             get { return selectedItem; }
             set
@@ -64,7 +67,14 @@ namespace BitcoinBetting.Core.ViewModels
                 
                 OnPropertyChanged(nameof(SelectedItem));
 
-                ListViewItemSelected(selectedItem);
+                if (ViewModelContext == null)
+                {
+                    ListViewItemSelected(selectedItem);
+                }
+                else
+                {
+                    PickerItemSelected(selectedItem);
+                }
             }
         }
         
@@ -87,12 +97,32 @@ namespace BitcoinBetting.Core.ViewModels
             }
         }
 
-        private void ListViewItemSelected(MenuItemModel item)
+        private void ListViewItemSelected(AddressItemModel item)
         {
             if (item == null)
                 return;
 
             ListView.SelectedItem = null;
+        }
+        
+        private void PickerItemSelected(AddressItemModel item)
+        {
+            if (item == null)
+                return;
+
+            var bettingViewModel = ViewModelContext as BettingViewModel;
+
+            if (bettingViewModel != null)
+            {
+                var bettingItem = bettingViewModel.SelectedItem;
+                
+                bettingItem.Address = item.Address;
+                bettingItem.WalletId = item.WalletId;
+                
+                bettingViewModel.SelectedItem = bettingItem;
+                
+                Navigation.PopModalAsync();
+            }
         }
 
         private async Task ModalAddressesPage()

@@ -14,12 +14,15 @@
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />
     <Compile Include="Interfaces\INativeHelpers.cs" />
+    <Compile Include="Models\Betting\BidModel.cs" />
     <Compile Include="Models\ResponseMessage.cs" />
     <Compile Include="Models\ListItems\BettingItemModel.cs" />
     <Compile Include="Models\ListItems\MenuItemModel.cs" />
     <Compile Include="Models\ListItems\AddressItemModel.cs" />
+    <Compile Include="Models\ListItems\BidItemModel.cs" />
     <Compile Include="Models\Results\WalletResultModel.cs" />
     <Compile Include="Models\Results\BettingResultModel.cs" />
+    <Compile Include="Models\Results\BidResultModel.cs" />
     <Compile Include="Models\Settings\WalletModel.cs" />
     <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
     <Compile Include="Models\User\LoginModel.cs" />
@@ -41,6 +44,7 @@
     <Compile Include="ViewModels\BettingViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\AddressesViewModel.cs" />
+    <Compile Include="ViewModels\HistoryViewModel.cs" />
     <Compile Include="Views\Menu\MasterPage.xaml.cs">
       <DependentUpon>MasterPage.xaml</DependentUpon>
     </Compile>
@@ -49,6 +53,9 @@
     </Compile>
     <Compile Include="Views\Modals\AddressCreatePage.xaml.cs">
       <DependentUpon>AddressCreatePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modals\BidInfoPage.xaml.cs">
+      <DependentUpon>BidInfoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Modals\BettingCreatePage.xaml.cs">
       <DependentUpon>BettingCreatePage.xaml</DependentUpon>
@@ -80,6 +87,9 @@
     </Compile>
     <Compile Include="Views\Settings\HelpPage.xaml.cs">
       <DependentUpon>HelpPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HistoryPage.xaml.cs">
+      <DependentUpon>HistoryPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

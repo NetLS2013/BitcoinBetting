@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BitcoinBetting.Core.Interfaces;
+using BitcoinBetting.Core.Models.Betting;
 using BitcoinBetting.Core.Models.ListItems;
 using BitcoinBetting.Core.Models.Results;
 using BitcoinBetting.Core.Services;
 using BitcoinBetting.Core.ViewModels.Base;
 using BitcoinBetting.Core.Views.Modals;
+using BitcoinBetting.Core.Views.Settings;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.ViewModels
@@ -16,10 +19,15 @@ namespace BitcoinBetting.Core.ViewModels
     {
         public ObservableCollection<BettingItemModel> BettingItems { get; set; }
         
-        public ICommand BetNoCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, betType: false));
-        public ICommand BetYesCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, betType: true));
+        public ICommand BetNoCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, side: false));
+        public ICommand BetYesCommnad => new Command(async e => await ModalBettingPage(e as BettingItemModel, side: true));
+        
+        public ICommand BetHistoryCommnad => new Command(async e => await ModalHistoryPage(e as BettingItemModel));
 
         public ICommand DismissModalCommand => new Command(async () => await DismissModal());
+        
+        public ICommand CreateBettingCommand => new Command(async () => await CreateBetting());
+        public ICommand ChooseBitcoinAddressCommand => new Command(async () => await ChooseBitcoinAddress());
         
         private IRequestProvider requestProvider { get; set; }
         
@@ -52,14 +60,23 @@ namespace BitcoinBetting.Core.ViewModels
             }
         }
         
-        private async Task ModalBettingPage(BettingItemModel bettingItem, bool betType)
+        private async Task ModalBettingPage(BettingItemModel bettingItem, bool side)
         {
             var item = bettingItem;
-            item.BetType = betType;
             
-            ListView.SelectedItem = item;
+            item.Side = side;
+            item.Address = String.Empty;
+            
+            SelectedItem = item;
                 
             await Navigation.PushModalAsync (new BettingCreatePage(this));
+        }
+        
+        private async Task ModalHistoryPage(BettingItemModel bettingItem)
+        {
+            SelectedItem = bettingItem;
+            
+            await Navigation.PushModalAsync(new HistoryPage(viewModelContext: this));
         }
         
         private async Task LoadAddressItems()
@@ -97,9 +114,68 @@ namespace BitcoinBetting.Core.ViewModels
             IsBusy = false;
         }
         
+        private async Task CreateBetting()
+        {
+            IsBusy = true;
+            
+            IsValid = Validate();
+
+            if (IsValid)
+            {
+                try
+                {
+                    var createBid = new BidModel
+                    {
+                        BettingId = SelectedItem.BettingId,
+                        WalletId = SelectedItem.WalletId,
+                        Side = SelectedItem.Side
+                    };
+                    
+                    var result = await requestProvider
+                        .PostAsync<BidModel, BidResultModel>(GlobalSetting.Instance.BidCreateEndpoint, createBid);
+
+                    if (!result.result)
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Error!",
+                            Environment.NewLine + result.Message, "Ok");
+                    }
+                    else
+                    {
+                        SelectedItem.Address = result.bid.PaymentAddress;
+                        
+                        OnPropertyChanged(nameof(SelectedItem));
+                    }
+                }
+                catch (Exception e)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error!", Environment.NewLine + e.Message,
+                        "Ok");
+                }
+            }
+            
+            IsBusy = false;
+        }
+        
+        private async Task ChooseBitcoinAddress()
+        {
+            await Navigation.PushModalAsync(new AddressesPage(viewModelContext: this));
+        }
+        
         private async Task DismissModal()
         {
             await Navigation.PopModalAsync();
+        }
+        
+        private bool Validate()
+        {
+            if (String.IsNullOrWhiteSpace(SelectedItem.Address))
+            {
+                Application.Current.MainPage.DisplayAlert("Error!", "A address is required", "Ok");
+                
+                return false;
+            }
+
+            return true;
         }
     }
 }

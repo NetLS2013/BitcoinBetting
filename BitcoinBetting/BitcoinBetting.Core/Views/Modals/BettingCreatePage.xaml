@@ -17,12 +17,12 @@
         <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">
             <Label Text="Your bet" />
             
-            <StackLayout IsVisible="{Binding Path=SelectedItem.BetType, Converter={StaticResource NotConverter}}" VerticalOptions="FillAndExpand">
+            <StackLayout IsVisible="{Binding Path=SelectedItem.Side, Converter={StaticResource NotConverter}}" VerticalOptions="FillAndExpand">
                 <Image Source="no_circle.png" />
                 <Label Text="No" HorizontalOptions="Center" />
             </StackLayout>
             
-            <StackLayout IsVisible="{Binding SelectedItem.BetType}" VerticalOptions="FillAndExpand">
+            <StackLayout IsVisible="{Binding SelectedItem.Side}" VerticalOptions="FillAndExpand">
                 <Image Source="yes_circle.png" />
                 <Label Text="Yes" HorizontalOptions="Center" />
             </StackLayout>
@@ -35,9 +35,16 @@
             
             <Label Text="Enter your Bitcoin Wallet Address to receive your winnings!"/>
             
-            <Entry Text="Enter Bitcoin wallet address" Placeholder="Address"/>
+            <StackLayout Orientation="Horizontal">
+                <Entry Text="{Binding SelectedItem.Address}" Placeholder="Enter Bitcoin wallet address"/>
+                <Button Text="Choose address" Command="{Binding ChooseBitcoinAddressCommand}" />
+            </StackLayout>
             
-            <Button Text="Generate transfer address" Command="{Binding CreateBettingCommand}" />
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Generate transfer address" Command="{Binding CreateBettingCommand}" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </StackLayout>
+            
             <Button Text="Dismiss" Command="{Binding DismissModalCommand}" />
         </StackLayout>
     </ContentPage.Content>

@@ -33,6 +33,10 @@ namespace BitcoinBetting.Core
         public string AddressGetWaletEndpoint { get; set; }
         
         public string BettingGetEndpoint { get; set; }
+        
+        public string BidCreateEndpoint { get; set; }
+        public string BidGetEndpoint { get; set; }
+        public string BidGetByIdEndpoint { get; set; }
 
         private static object myLock = new object();
         private static volatile GlobalSetting instance;
@@ -93,6 +97,10 @@ namespace BitcoinBetting.Core
             AddressGetWaletEndpoint = string.Format("{0}/api/Wallet/Get", baseEndpoint);
             
             BettingGetEndpoint = string.Format("{0}/api/Betting/Get", baseEndpoint);
+            
+            BidCreateEndpoint = string.Format("{0}/api/Bid/Create", baseEndpoint);
+            BidGetEndpoint = string.Format("{0}/api/Bid/Get", baseEndpoint);
+            BidGetByIdEndpoint = string.Format("{0}/api/Bid/GetById", baseEndpoint);
         }
 
     }

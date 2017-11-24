@@ -36,10 +36,10 @@ namespace BitcoinBetting.Server.Models.Betting
         [NotMapped]
         public decimal BankMore { get; set; }
 
-        [NotMapped]
-        public decimal CoefficientMore => BettingHelper.GetCoefficient(StartDate, FinishDate, BankMore, BankLess);
-
-        [NotMapped]
-        public decimal CoefficientLess => BettingHelper.GetCoefficient(StartDate, FinishDate, BankLess, BankMore);
+//        [NotMapped]
+//        public decimal CoefficientMore => BettingHelper.GetCoefficient(StartDate, FinishDate, BankMore, BankLess);
+//
+//        [NotMapped]
+//        public decimal CoefficientLess => BettingHelper.GetCoefficient(StartDate, FinishDate, BankLess, BankMore);
     }
 }
