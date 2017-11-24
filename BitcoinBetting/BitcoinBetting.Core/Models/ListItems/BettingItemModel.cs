@@ -17,6 +17,17 @@ namespace BitcoinBetting.Core.Models.ListItems
         
         public string Address { get; set; }
         public int WalletId { get; set; }
+        public string TimeLeft {
+            get
+            {
+                var timeSpan = FinishDate - DateTime.Now;
+
+                return timeSpan.ToString("d'd 'm'm 's's'");
+            }
+        }
+        
+        public decimal CoefficientMore { get; set; }
+        public decimal CoefficientLess { get; set; }
     }
     
     public enum BettingStatus : byte

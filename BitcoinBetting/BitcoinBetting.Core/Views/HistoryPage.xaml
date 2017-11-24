@@ -1,8 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:BitcoinBetting.Core.Helpers;assembly=BitcoinBetting.Core"
              x:Class="BitcoinBetting.Core.HistoryPage"
              Title="Settings">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helpers:SideConverter x:Key="SideConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout Padding="10" HorizontalOptions="FillAndExpand">
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
@@ -18,7 +24,7 @@
                                 <StackLayout Spacing="0" x:Name="Item">
                                     <StackLayout VerticalOptions="FillAndExpand" Padding="16">
                                         <Label Text="{Binding PaymentAddress}" />
-                                        <Label Text="{Binding Side}" />
+                                        <Label Text="{Binding Side, Converter={StaticResource SideConverter}}" />
                                         
                                         <StackLayout Orientation="Horizontal">
                                             <Label VerticalOptions="Center" Text="{Binding Coefficient, StringFormat='{0:#.###}'}" />
