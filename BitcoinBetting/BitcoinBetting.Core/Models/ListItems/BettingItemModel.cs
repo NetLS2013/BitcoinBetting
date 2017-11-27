@@ -1,5 +1,5 @@
 ﻿using System;
-using BitcoinBetting.Core.ViewModels;
+using BitcoinBetting.Enum;
 
 namespace BitcoinBetting.Core.Models.ListItems
 {
@@ -28,11 +28,7 @@ namespace BitcoinBetting.Core.Models.ListItems
         
         public decimal CoefficientMore { get; set; }
         public decimal CoefficientLess { get; set; }
-    }
-    
-    public enum BettingStatus : byte
-    {
-        Waiting,
-        Done
+        
+        public bool? Result { get; set; }
     }
 }

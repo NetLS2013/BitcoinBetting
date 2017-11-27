@@ -154,6 +154,7 @@
     <BundleResource Include="Resources\ic_plus_circle_outline.png" />
     <BundleResource Include="Resources\yes_circle.png" />
     <BundleResource Include="Resources\no_circle.png" />
+    <BundleResource Include="Resources\icon_cup.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

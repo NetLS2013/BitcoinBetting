@@ -1,9 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:BitcoinBetting.Core.Helpers;assembly=BitcoinBetting.Core"
              x:Class="BitcoinBetting.Core.Views.BettingPage"
              Title="Betting">
-    <ContentPage.ToolbarItems></ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helpers:BetWaitingConverter x:Key="BetWaitingConverter"/>
+            <helpers:BetStatusConverter x:Key="BetStatusConverter"/>
+            <helpers:NotConverter x:Key="NotConverter"/>
+            <helpers:NotNullConverter x:Key="NotNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout BackgroundColor="#f7f7fc">
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
@@ -29,28 +37,49 @@
                                                 <Image Source="no_circle.png" />
                                                 <Label Text="No" HorizontalOptions="Center" />
                                                 <Label Text="{Binding CoefficientLess, StringFormat='x{0:#.###}'}" HorizontalOptions="Center" TextColor="#818183" FontSize="12" />
-                                                <Button
-                                                    Text="Bet"
-                                                    BackgroundColor="#00a99d" TextColor="White"
-                                                    BindingContext="{Binding Source={x:Reference BettingItemsListView}, Path=BindingContext}"
-                                                    Command="{Binding BetNoCommnad}" 
-                                                    CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"/>
+                                                
+                                                <StackLayout IsVisible="{Binding Status, Converter={StaticResource BetStatusConverter}}">
+                                                    <Button
+                                                        Text="Bet"
+                                                        BackgroundColor="#00a99d" TextColor="White"
+                                                        BindingContext="{Binding Source={x:Reference BettingItemsListView}, Path=BindingContext}"
+                                                        Command="{Binding BetNoCommnad}"
+                                                        CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"/>
+                                                </StackLayout>
+                                                
+                                                <StackLayout IsVisible="{Binding Result, Converter={StaticResource NotConverter}}">
+                                                    <Image Source="icon_cup.png" WidthRequest="20" HeightRequest="20" />
+                                                    <Label Text="Winner" HorizontalOptions="Center" />
+                                                </StackLayout>
                                             </StackLayout>
             
                                             <BoxView BackgroundColor="#e5e5e5" WidthRequest="1" />
                                             
                                             <StackLayout HorizontalOptions="FillAndExpand" Padding="16">
-                                                <Image Source="yes_circle.png" />
-                                                <Label Text="Yes" HorizontalOptions="Center" />
+                                                <Image Source="yes_circle.png"/>
+                                                <Label Text="Yes" HorizontalOptions="Center"/>
                                                 <Label Text="{Binding CoefficientMore, StringFormat='x{0:#.###}'}" HorizontalOptions="Center" TextColor="#818183" FontSize="12" />
-                                                <Button
-                                                    Text="Bet"
-                                                    BackgroundColor="#00a99d" TextColor="White"
-                                                    BindingContext="{Binding Source={x:Reference BettingItemsListView}, Path=BindingContext}"
-                                                    Command="{Binding BetYesCommnad}" 
-                                                    CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"/>
+                                                
+                                                <StackLayout IsVisible="{Binding Status, Converter={StaticResource BetStatusConverter}}">
+                                                    <Button
+                                                        Text="Bet"
+                                                        BackgroundColor="#00a99d" TextColor="White"
+                                                        BindingContext="{Binding Source={x:Reference BettingItemsListView}, Path=BindingContext}"
+                                                        Command="{Binding BetYesCommnad}"
+                                                        CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"/>
+                                                </StackLayout>
+                                                    
+                                                <StackLayout IsVisible="{Binding Result, Converter={StaticResource NotNullConverter}}">
+                                                    <Image Source="icon_cup.png" WidthRequest="20" HeightRequest="20" />
+                                                    <Label Text="Winner" HorizontalOptions="Center" />
+                                                </StackLayout>
                                             </StackLayout>
                                         </StackLayout>
+                                        
+                                        <Label
+                                            Text="Waiting for score..."
+                                            IsVisible="{Binding Status, Converter={StaticResource BetWaitingConverter}}"
+                                            HorizontalOptions="Center"/>
     
                                         <BoxView BackgroundColor="#e5e5e5" HeightRequest="1" />
                                         
