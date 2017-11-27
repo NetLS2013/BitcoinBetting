@@ -31,7 +31,7 @@
 
         public Task Execute(IJobExecutionContext context)
         {
-            var bettings = this.bettingService.Get(model => model.Status == BettingStatus.Waiting)
+            var bettings = this.bettingService.Get(model => model.Status == BettingStatus.Continue)
                 ?.Select(model => model.BettingId).ToList();
 
             if (bettings != null && bettings.Any())
