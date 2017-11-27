@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
+using BitcoinBetting.Enum;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.Helpers
 {
-    public class NotConverter : IValueConverter
+    public class BetStatusConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
-                return false;
-            
-            if (targetType != typeof(bool))
-                throw new InvalidOperationException("The target must be a boolean");
+                return true;
 
-            return !(bool)value;
+
+            if (value.Equals(BettingStatus.Waiting) || value.Equals(BettingStatus.Done))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -24,4 +26,5 @@ namespace BitcoinBetting.Core.Helpers
             throw new NotImplementedException();
         }
     }
+    
 }
