@@ -11,6 +11,8 @@
 
     using HBitcoin.KeyManagement;
 
+    using Microsoft.Extensions.Options;
+
     using NBitcoin;
 
     using Newtonsoft.Json.Linq;
@@ -27,9 +29,9 @@
             this.settings = settings;
         }
 
-        public string[] GenerateWallet(string password, string path, Network network)
+        public string[] GenerateWallet()
         {
-            Safe.Create(out var mnemonic, password, path, network);
+            Safe.Create(out var mnemonic, this.settings.Password, this.settings.Path, this.settings.Network);
 
             return mnemonic.Words;
         }

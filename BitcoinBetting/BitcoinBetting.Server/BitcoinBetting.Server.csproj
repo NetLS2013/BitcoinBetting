@@ -32,6 +32,7 @@
     <None Remove="Models\Account\RestorePasswordModel.cs" />
     <None Remove="Models\Betting\BidModel.cs" />
     <None Remove="Models\Betting\WalletModel.cs" />
+    <None Remove="Models\BitcoinAvarageSettings.cs" />
     <None Remove="Models\BitcoinSettings.cs" />
     <None Remove="Models\Bitcoin\AddressHistoryRecord.cs" />
     <None Remove="Models\Bitcoin\BalanceRecord.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Models\Account\LoginModel.cs" />
     <Compile Include="Models\Account\RegisterModel.cs" />
     <Compile Include="Models\Account\RestorePasswordModel.cs" />
+    <Compile Include="Models\BitcoinAvarageSettings.cs" />
     <Compile Include="Models\BitcoinSettings.cs" />
     <Compile Include="Models\Bitcoin\AddressHistoryRecord.cs" />
     <Compile Include="Models\Bitcoin\BalanceRecord.cs" />

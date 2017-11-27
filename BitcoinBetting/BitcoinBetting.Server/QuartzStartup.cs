@@ -32,52 +32,42 @@
             this.scheduler.JobFactory = new JobFactory(this.container);
             this.scheduler.Start().Wait();
 
-            //var userEmailsJob = JobBuilder.Create<CreateBettingJob>()
-            //    .Build();
+            var checkPayment = JobBuilder.Create<CheckPaymentJob>()
+                .Build();
 
-            //var userEmailsTrigger = TriggerBuilder.Create()
-            //    .StartNow()
-            //    .WithSimpleSchedule(builder => builder.WithIntervalInSeconds(1).RepeatForever())
-            //    .Build();
+            var checkPaymentTrigger = TriggerBuilder.Create()
+                .StartNow()
+                .WithCronSchedule("0 0/5 * * * ?")
+                .Build();
 
-            //this.scheduler.ScheduleJob(userEmailsJob, userEmailsTrigger).Wait();
+            this.scheduler.ScheduleJob(checkPayment, checkPaymentTrigger).Wait();
 
-            //var checkPayment = JobBuilder.Create<CheckPaymentJob>()
-            //    .Build();
+            var createBetting = JobBuilder.Create<CreateBettingJob>()
+                .Build();
 
-            //var checkPaymentTrigger = TriggerBuilder.Create()
-            //    .StartNow()
-            //    .WithCronSchedule("0 0/5 * * * ?")
-            //    .Build();
+            var createBettingTrigger = TriggerBuilder.Create()
+                .StartNow()
+                .WithCronSchedule("0 0 0 1,10,20 * ?")
+                .Build();
 
-            //this.scheduler.ScheduleJob(checkPayment, checkPaymentTrigger).Wait();
+            this.scheduler.ScheduleJob(createBetting, createBettingTrigger).Wait();
 
-            //var createBetting = JobBuilder.Create<CreateBettingJob>()
-            //    .Build();
+            var setWait = JobBuilder.Create<SetWaitJob>()
+                .Build();
 
-            //var createBettingTrigger = TriggerBuilder.Create()
-            //    .StartNow()
-            //    .WithCronSchedule("0 0 0 1/10 * ?")
-            //    .Build();
+            var setWaitTrigger = TriggerBuilder.Create()
+                .StartNow()
+                .WithCronSchedule("0 0 1 1,10,20 * ?")
+                .Build();
 
-            //this.scheduler.ScheduleJob(createBetting, createBettingTrigger).Wait();
-
-            //var setWait = JobBuilder.Create<SetWaitJob>()
-            //    .Build();
-
-            //var setWaitTrigger = TriggerBuilder.Create()
-            //    .StartNow()
-            //    .WithCronSchedule("0 0 1 1/10 * ?")
-            //    .Build();
-
-            //this.scheduler.ScheduleJob(setWait, setWaitTrigger).Wait();
+            this.scheduler.ScheduleJob(setWait, setWaitTrigger).Wait();
 
             var award = JobBuilder.Create<AwardJob>()
                 .Build();
 
             var awardTrigger = TriggerBuilder.Create()
                 .StartNow()
-                .WithCronSchedule("10 54 18 * * ?")
+                .WithCronSchedule("0 0 3 1,10,20 * ?")
                 .Build();
 
             this.scheduler.ScheduleJob(award, awardTrigger).Wait();
