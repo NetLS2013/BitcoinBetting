@@ -24,6 +24,8 @@ using BitcoinBetting.Server.Services.Betting;
 
 namespace BitcoinBetting.Server
 {
+    using System.IO;
+
     using BitcoinBetting.Server.Models;
     using BitcoinBetting.Server.Services.Betting.Jobs;
 
@@ -35,15 +37,18 @@ namespace BitcoinBetting.Server
         
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<JwtSettings>(Configuration.GetSection("JWTSettings"));
-            
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddOptions();
+
+            services.Configure<JwtSettings>(this.Configuration.GetSection("JWTSettings"));
+            services.Configure<BitcoinAvarageSettings>(this.Configuration.GetSection("BitcoinAvarageSettings"));
+
+            services.AddDbContext<ApplicationDbContext>(
+                options => options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<AppIdentityUser, IdentityRole>(option =>
             {
@@ -56,13 +61,7 @@ namespace BitcoinBetting.Server
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-            
-            //var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
-            //optionsBuilder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
-
-            //services.AddSingleton<ApplicationContext>(builder => new ApplicationContext(optionsBuilder.Options));
-            //services.AddDbContext<ApplicationContext>(builder => builder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
-
+      
             services
                 .AddAuthentication(auth =>
                 {
@@ -86,7 +85,7 @@ namespace BitcoinBetting.Server
                     };
 
                     bearer.RequireHttpsMetadata = false;
-
+                    
                     bearer.Events = new JwtBearerEvents
                     {
                         OnTokenValidated = context =>
@@ -108,33 +107,34 @@ namespace BitcoinBetting.Server
                     google.ClientSecret = "KvA6TwyqVFMgxxPdhDFyH09p";
                 });
             
+            services.AddTransient<IBitcoinAverageApi, BitcoinAverageApi>();
+            
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IMailChimpSender, MailChimpSender>();
             services.AddTransient<IJwtToken, JwtToken>();
             
             services.AddTransient<IJwtValidator, JwtValidator>();
 
-            services.AddTransient<IBitcoinAverageApi, BitcoinAverageApi>(serviceProvider =>
-            {
-                return new BitcoinAverageApi(Configuration.GetSection("BitcoinAvarageSettings:PublicKey").Value, Configuration.GetSection("BitcoinAvarageSettings:SecretKey").Value);
-            });
-
-            services.Configure<BitcoinSettings>(settings => this.Configuration.GetSection("BitcoinSettings"));
-            
             services.AddTransient<IGenericRepository<BidModel>, GenericRepository<BidModel>>();
             services.AddTransient<IGenericRepository<WalletModel>, GenericRepository<WalletModel>>();
             services.AddTransient<IGenericRepository<BettingModel>, GenericRepository<BettingModel>>();
+
             services.AddTransient<IGenericRepository<UserToken>, GenericRepository<UserToken>>();
-            
-            services.AddTransient<IBettingService, BettingService>();
-            services.AddTransient<IBidService, BidService>();
             
             services.AddTransient<IWalletService, WalletService>();
             services.AddTransient<IBettingService, BettingService>();
             services.AddTransient<IBidService, BidService>();
 
-           // services.AddTransient<BitcoinWalletService>();//(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "D:\\proj\\BitcoinBetting\\BitcoinBetting\\BitcoinBetting.Server\\wallet.dat" }));
-           services.AddTransient<BitcoinWalletService>(provider => new BitcoinWalletService(new BitcoinSettings() { Password = "sdfdisghdsghiusdg", Network = Network.TestNet, Path = "/Users/keiqsa/Projects/BitcoinBetting/BitcoinBetting/BitcoinBetting.Server/wallet.dat" }));
+            services.AddTransient<BitcoinWalletService>(
+                provider => new BitcoinWalletService(
+                    new BitcoinSettings()
+                        {
+                            Password =
+                                this.Configuration.GetSection("BitcoinSettings:Password").Value,
+                            Path = this.Configuration.GetSection("BitcoinSettings:Path").Value,
+                            NetworkStr =
+                                this.Configuration.GetSection("BitcoinSettings:NetworkStr").Value
+                        }));       
 
             services.AddTransient<CreateBettingJob>();
             services.AddTransient<SetWaitJob>();
@@ -147,9 +147,15 @@ namespace BitcoinBetting.Server
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, IServiceProvider container)
         {
             var quartz = new QuartzStartup(container);
+
             lifetime.ApplicationStarted.Register(quartz.Start);
             lifetime.ApplicationStopping.Register(quartz.Stop);
 
+            if (!File.Exists(this.Configuration.GetSection("BitcoinSettings:Path").Value))
+            {
+                container.GetService<BitcoinWalletService>().GenerateWallet();
+            }
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

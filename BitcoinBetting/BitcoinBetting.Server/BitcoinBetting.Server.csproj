@@ -20,6 +20,39 @@
     <None Remove="Database\Tables\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Controllers\BettingController.cs" />
+    <None Remove="Controllers\BidController.cs" />
+    <None Remove="Controllers\WalletController.cs" />
+    <None Remove="Database\Context\ApplicationContext.cs" />
+    <None Remove="Database\Repositories\GenericRepository.cs" />
+    <None Remove="Helpers\BitcoinHelper.cs" />
+    <None Remove="JobFactory.cs" />
+    <None Remove="Models\Account\ForgotPasswordConfirmModel.cs" />
+    <None Remove="Models\Account\ForgotPasswordModel.cs" />
+    <None Remove="Models\Account\RestorePasswordModel.cs" />
+    <None Remove="Models\Betting\BidModel.cs" />
+    <None Remove="Models\Betting\WalletModel.cs" />
+    <None Remove="Models\BitcoinAvarageSettings.cs" />
+    <None Remove="Models\BitcoinSettings.cs" />
+    <None Remove="Models\Bitcoin\AddressHistoryRecord.cs" />
+    <None Remove="Models\Bitcoin\BalanceRecord.cs" />
+    <None Remove="Models\Bitcoin\PaymentStatus.cs" />
+    <None Remove="Models\Bitcoin\TransactionHistoryRecord.cs" />
+    <None Remove="QuartzStartup.cs" />
+    <None Remove="Services\Betting\BettingService.cs" />
+    <None Remove="Services\Betting\BidService.cs" />
+    <None Remove="Services\Betting\CheckPaymentJob.cs" />
+    <None Remove="Services\Betting\Jobs\CreateBettingJob.cs" />
+    <None Remove="Services\Betting\Jobs\SetWaitJob.cs" />
+    <None Remove="Services\Bitcoin\BitcoinAverageApi.cs" />
+    <None Remove="Services\Bitcoin\BitcoinWalletService.cs" />
+    <None Remove="Services\Contracts\IBettingService.cs" />
+    <None Remove="Services\Contracts\IBidService.cs" />
+    <None Remove="Services\Contracts\IBitcoinAverageApi.cs" />
+    <None Remove="Services\Contracts\IGenericRepository.cs" />
+    <None Remove="Services\Contracts\IWalletService.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BettingController.cs" />
     <Compile Include="Controllers\BidController.cs" />
@@ -36,6 +69,7 @@
     <Compile Include="Models\Account\RegisterModel.cs" />
     <Compile Include="Models\Account\RestorePasswordModel.cs" />
     <Compile Include="Models\Account\UserToken.cs" />
+    <Compile Include="Models\BitcoinAvarageSettings.cs" />
     <Compile Include="Models\BitcoinSettings.cs" />
     <Compile Include="Models\Bitcoin\AddressHistoryRecord.cs" />
     <Compile Include="Models\Bitcoin\BalanceRecord.cs" />

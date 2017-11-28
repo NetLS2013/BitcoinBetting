@@ -4,7 +4,9 @@
 
     public class BitcoinSettings
     {
-        public Network Network { get; set; }
+        public Network Network => Network.GetNetwork(this.NetworkStr);
+
+        public string NetworkStr { get; set; }
 
         public string Path { get; set; }
 

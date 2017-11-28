@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace BitcoinBetting.Server.Services.Bitcoin
 {
+    using BitcoinBetting.Server.Models;
+
+    using Microsoft.Extensions.Options;
+
     public class BitcoinAverageApi : IBitcoinAverageApi
     {
         private readonly string publicKey;
@@ -17,10 +21,10 @@ namespace BitcoinBetting.Server.Services.Bitcoin
         private readonly HMACSHA256 sigHasher;
         private readonly DateTime epochUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        public BitcoinAverageApi(string publicKey, string secretKey)
+        public BitcoinAverageApi(IOptions<BitcoinAvarageSettings> options)
         {
-            this.secretKey = secretKey;
-            this.publicKey = publicKey;
+            secretKey = options.Value.SecretKey;
+            publicKey = options.Value.PublicKey;
             this.sigHasher = new HMACSHA256(Encoding.ASCII.GetBytes(this.secretKey));
         }
 
