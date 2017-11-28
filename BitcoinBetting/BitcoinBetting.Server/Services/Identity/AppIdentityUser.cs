@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BitcoinBetting.Server.Models.Account;
+using Microsoft.AspNetCore.Identity;
 
 namespace BitcoinBetting.Server.Services.Identity
 {

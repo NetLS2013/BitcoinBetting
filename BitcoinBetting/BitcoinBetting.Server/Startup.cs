@@ -17,13 +17,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using BitcoinBetting.Server.Database.Repositories;
+using BitcoinBetting.Server.Models.Account;
 using BitcoinBetting.Server.Models.Betting;
 using BitcoinBetting.Server.Services.Bitcoin;
 using BitcoinBetting.Server.Services.Betting;
 
 namespace BitcoinBetting.Server
 {
-    using BitcoinBetting.Server.Database.Context;
     using BitcoinBetting.Server.Models;
     using BitcoinBetting.Server.Services.Betting.Jobs;
 
@@ -54,13 +54,14 @@ namespace BitcoinBetting.Server
                     RequireDigit = false
                 };
             })
-                            .AddEntityFrameworkStores<ApplicationDbContext>()
-                            .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+            
             //var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
             //optionsBuilder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
 
             //services.AddSingleton<ApplicationContext>(builder => new ApplicationContext(optionsBuilder.Options));
-            services.AddDbContext<ApplicationContext>(builder => builder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<ApplicationContext>(builder => builder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services
                 .AddAuthentication(auth =>
@@ -85,6 +86,16 @@ namespace BitcoinBetting.Server
                     };
 
                     bearer.RequireHttpsMetadata = false;
+
+                    bearer.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = context =>
+                        {
+                            var tokenValidatorService = context.HttpContext.RequestServices.GetRequiredService<IJwtValidator>();
+                            
+                            return tokenValidatorService.ValidateAsync(context);
+                        }
+                    };
                 })
                 .AddFacebook(facebook =>
                 {
@@ -100,6 +111,8 @@ namespace BitcoinBetting.Server
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IMailChimpSender, MailChimpSender>();
             services.AddTransient<IJwtToken, JwtToken>();
+            
+            services.AddTransient<IJwtValidator, JwtValidator>();
 
             services.AddTransient<IBitcoinAverageApi, BitcoinAverageApi>(serviceProvider =>
             {
@@ -111,6 +124,7 @@ namespace BitcoinBetting.Server
             services.AddTransient<IGenericRepository<BidModel>, GenericRepository<BidModel>>();
             services.AddTransient<IGenericRepository<WalletModel>, GenericRepository<WalletModel>>();
             services.AddTransient<IGenericRepository<BettingModel>, GenericRepository<BettingModel>>();
+            services.AddTransient<IGenericRepository<UserToken>, GenericRepository<UserToken>>();
             
             services.AddTransient<IBettingService, BettingService>();
             services.AddTransient<IBidService, BidService>();
