@@ -96,9 +96,9 @@ namespace BitcoinBetting.Server.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            var user = await userManager.FindByEmailAsync(context.HttpContext.User.Identity.Name);
+            string accessToken = context.HttpContext.Request.Headers["Authorization"];
             
-            await jwtToken.InvalidateUserTokensAsync(user.Id);
+            await jwtToken.InvalidateUserTokensAsync(accessToken.Substring("Bearer ".Length));
             
             return StatusCode(StatusCodes.Status204NoContent);
         }

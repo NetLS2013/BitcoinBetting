@@ -68,14 +68,11 @@ namespace BitcoinBetting.Server.Services.Security
             return await repository.FindAsync(x => x.RefreshTokenIdHash == GetSha256Hash(refreshToken));
         }
         
-        public async Task InvalidateUserTokensAsync(string userId)
+        public async Task InvalidateUserTokensAsync(string accessToken)
         {
-            var userTokens = repository.Get(x => x.UserId == userId);
+            var userTokens = await repository.FindAsync(x => x.AccessTokenHash == GetSha256Hash(accessToken));
             
-            foreach (var userToken in userTokens)
-            {
-                repository.Remove(userToken);
-            }
+            repository.Remove(userTokens);
         }
         
         public async Task<bool> IsValidTokenAsync(string accessToken, string userId)
