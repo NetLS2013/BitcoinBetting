@@ -65,6 +65,8 @@ namespace BitcoinBetting.Core.ViewModels
                 SignOut();
                 
                 Application.Current.MainPage = new NavigationPage(new LoginPage());
+                Application.Current.Properties.Remove("token");
+                Application.Current.Properties.Remove("refresh_token");
                 
                 return;
             }

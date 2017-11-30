@@ -17,7 +17,8 @@ namespace BitcoinBetting.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Forms.Init();
-            LoadApplication(new App(new NavigationPage(new StartupPage())));
+            
+            LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
         }

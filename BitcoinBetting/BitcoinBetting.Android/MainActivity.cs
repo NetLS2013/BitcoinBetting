@@ -24,18 +24,10 @@ namespace BitcoinBetting.Droid
     [Activity(Label = "BitcoinBetting", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        private Page startupPage;
-        
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             Forms.Init(this, bundle);
-
-            startupPage = new NavigationPage(new StartupPage())
-            {
-                BarBackgroundColor = Color.Transparent,
-                BarTextColor = Color.Black
-            };
             
             var intent = Intent;
             
@@ -47,10 +39,10 @@ namespace BitcoinBetting.Droid
                 
                 if (!string.IsNullOrWhiteSpace(token))
                 {
+                    LoadApplication(new App(true));
+                    
                     Xamarin.Forms.Application.Current.Properties["token"] = token;
                     Xamarin.Forms.Application.Current.Properties["refresh_token"] = refreshToken;
-                    
-                    LoadApplication(new App(new MasterPage()));
                 }
                 else
                 {
@@ -61,14 +53,14 @@ namespace BitcoinBetting.Droid
                     model.Cookie = uri.GetQueryParameter("externalToken");
                     model.Provider = uri.GetQueryParameter("provider");
 
-                    LoadApplication(new App(startupPage));
+                    LoadApplication(new App());
                     
                     Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new ExtrenalLoginConfirmPage(model));
                 }
             }
             else
             {
-                LoadApplication(new App(startupPage));
+                LoadApplication(new App());
             }
         }
     }
