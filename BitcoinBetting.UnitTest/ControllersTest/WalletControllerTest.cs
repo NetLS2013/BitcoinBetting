@@ -8,7 +8,6 @@
 
     using BitcoinBetting.Server.Controllers;
     using BitcoinBetting.Server.Database;
-    using BitcoinBetting.Server.Database.Context;
     using BitcoinBetting.Server.Database.Repositories;
     using BitcoinBetting.Server.Models.Betting;
     using BitcoinBetting.Server.Services.Betting;
@@ -38,9 +37,6 @@
             services.AddOptions();
 
             services.AddDbContext<ApplicationDbContext>(
-                b => b.UseInMemoryDatabase("bitcoinbetting").UseInternalServiceProvider(efServiceProvider));
-
-            services.AddDbContext<ApplicationContext>(
                 b => b.UseInMemoryDatabase("bitcoinbetting").UseInternalServiceProvider(efServiceProvider));
 
             services.AddIdentity<AppIdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();

@@ -24,18 +24,10 @@ namespace BitcoinBetting.Droid
     [Activity(Label = "BitcoinBetting", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        private Page startupPage;
-        
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             Forms.Init(this, bundle);
-
-            startupPage = new NavigationPage(new StartupPage())
-            {
-                BarBackgroundColor = Color.Transparent,
-                BarTextColor = Color.Black
-            };
             
             var intent = Intent;
             
@@ -43,12 +35,14 @@ namespace BitcoinBetting.Droid
             {
                 var uri = intent.Data;
                 string token = uri.GetQueryParameter("token");
+                string refreshToken = uri.GetQueryParameter("refresh_token");
                 
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    GlobalSetting.Instance.AuthToken = token;
+                    LoadApplication(new App(true));
                     
-                    LoadApplication(new App(new MasterPage()));
+                    Xamarin.Forms.Application.Current.Properties["token"] = token;
+                    Xamarin.Forms.Application.Current.Properties["refresh_token"] = refreshToken;
                 }
                 else
                 {
@@ -59,14 +53,14 @@ namespace BitcoinBetting.Droid
                     model.Cookie = uri.GetQueryParameter("externalToken");
                     model.Provider = uri.GetQueryParameter("provider");
 
-                    LoadApplication(new App(startupPage));
+                    LoadApplication(new App());
                     
                     Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(new ExtrenalLoginConfirmPage(model));
                 }
             }
             else
             {
-                LoadApplication(new App(startupPage));
+                LoadApplication(new App());
             }
         }
     }

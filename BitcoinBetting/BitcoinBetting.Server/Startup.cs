@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using BitcoinBetting.Server.Database.Repositories;
+using BitcoinBetting.Server.Models.Account;
 using BitcoinBetting.Server.Models.Betting;
 using BitcoinBetting.Server.Services.Bitcoin;
 using BitcoinBetting.Server.Services.Betting;
@@ -25,7 +26,6 @@ namespace BitcoinBetting.Server
 {
     using System.IO;
 
-    using BitcoinBetting.Server.Database.Context;
     using BitcoinBetting.Server.Models;
     using BitcoinBetting.Server.Services.Betting.Jobs;
 
@@ -45,85 +45,82 @@ namespace BitcoinBetting.Server
             services.AddOptions();
 
             services.Configure<JwtSettings>(this.Configuration.GetSection("JWTSettings"));
-
             services.Configure<BitcoinAvarageSettings>(this.Configuration.GetSection("BitcoinAvarageSettings"));
 
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<ApplicationContext>(
-                builder => builder.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<AppIdentityUser, IdentityRole>(
-                option =>
+            services.AddIdentity<AppIdentityUser, IdentityRole>(option =>
+            {
+                option.Password = new PasswordOptions
+                {
+                    RequireNonAlphanumeric = false,
+                    RequireUppercase = false,
+                    RequireDigit = false
+                };
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+      
+            services
+                .AddAuthentication(auth =>
+                {
+                    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(bearer =>
+                {
+                    bearer.TokenValidationParameters = new TokenValidationParameters
                     {
-                        option.Password = new PasswordOptions
-                                              {
-                                                  RequireNonAlphanumeric = false,
-                                                  RequireUppercase = false,
-                                                  RequireDigit = false
-                                              };
-                    }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+                        ValidIssuer = Configuration.GetSection("JWTSettings:Issuer").Value,
+                        ValidAudience = Configuration.GetSection("JWTSettings:Audience").Value,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(
+                                Encoding.ASCII.GetBytes(Configuration.GetSection("JWTSettings:SecretKey").Value)),
 
-            services.AddAuthentication(
-                auth =>
-                    {
-                        auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    }).AddJwtBearer(
-                bearer =>
-                    {
-                        bearer.TokenValidationParameters = new TokenValidationParameters
-                                                               {
-                                                                   ValidIssuer =
-                                                                       this.Configuration
-                                                                           .GetSection(
-                                                                               "JWTSettings:Issuer")
-                                                                           .Value,
-                                                                   ValidAudience =
-                                                                       this.Configuration
-                                                                           .GetSection(
-                                                                               "JWTSettings:Audience")
-                                                                           .Value,
-                                                                   IssuerSigningKey =
-                                                                       new
-                                                                           SymmetricSecurityKey(
-                                                                               Encoding.ASCII
-                                                                                   .GetBytes(
-                                                                                       this
-                                                                                           .Configuration
-                                                                                           .GetSection(
-                                                                                               "JWTSettings:SecretKey")
-                                                                                           .Value)),
-                                                                   ValidateIssuer = true,
-                                                                   ValidateAudience = true,
-                                                                   ValidateIssuerSigningKey =
-                                                                       true,
-                                                                   ValidateLifetime = false
-                                                               };
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true
+                    };
 
-                        bearer.RequireHttpsMetadata = false;
-                    }).AddFacebook(
-                facebook =>
+                    bearer.RequireHttpsMetadata = false;
+                    
+                    bearer.Events = new JwtBearerEvents
                     {
-                        facebook.AppId = "158276314781134";
-                        facebook.AppSecret = "6a46eb840dbe945a1c4717f3f79700b4";
-                    }).AddGoogle(
-                google =>
-                    {
-                        google.ClientId = "727512244362-2gm10t4ulfo72b79emnko9ikgf74lf46.apps.googleusercontent.com";
-                        google.ClientSecret = "KvA6TwyqVFMgxxPdhDFyH09p";
-                    });
-
+                        OnTokenValidated = context =>
+                        {
+                            var tokenValidatorService = context.HttpContext.RequestServices.GetRequiredService<IJwtValidator>();
+                            
+                            return tokenValidatorService.ValidateAsync(context);
+                        }
+                    };
+                })
+                .AddFacebook(facebook =>
+                {
+                    facebook.AppId = "158276314781134";
+                    facebook.AppSecret = "6a46eb840dbe945a1c4717f3f79700b4";
+                })
+                .AddGoogle(google =>
+                {
+                    google.ClientId = "727512244362-2gm10t4ulfo72b79emnko9ikgf74lf46.apps.googleusercontent.com";
+                    google.ClientSecret = "KvA6TwyqVFMgxxPdhDFyH09p";
+                });
+            
             services.AddTransient<IBitcoinAverageApi, BitcoinAverageApi>();
-
+            
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IMailChimpSender, MailChimpSender>();
             services.AddTransient<IJwtToken, JwtToken>();
+            
+            services.AddTransient<IJwtValidator, JwtValidator>();
 
             services.AddTransient<IGenericRepository<BidModel>, GenericRepository<BidModel>>();
             services.AddTransient<IGenericRepository<WalletModel>, GenericRepository<WalletModel>>();
             services.AddTransient<IGenericRepository<BettingModel>, GenericRepository<BettingModel>>();
 
+            services.AddTransient<IGenericRepository<UserToken>, GenericRepository<UserToken>>();
+            
             services.AddTransient<IWalletService, WalletService>();
             services.AddTransient<IBettingService, BettingService>();
             services.AddTransient<IBidService, BidService>();

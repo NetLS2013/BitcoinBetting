@@ -13,7 +13,8 @@ namespace BitcoinBetting.Server.Services.Contracts
         TEntity FindById(int id);
 
         IEnumerable<TEntity> Get(params Expression<Func<TEntity, object>>[] includeProperties);
-
+        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> match);
+        
         IEnumerable<TEntity> Get(Func<TEntity, bool> predicate, params Expression<Func<TEntity, object>>[] includeProperties);
 
         void Remove(TEntity item);

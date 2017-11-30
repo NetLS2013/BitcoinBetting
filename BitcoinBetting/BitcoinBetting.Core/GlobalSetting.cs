@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace BitcoinBetting.Core
 {
@@ -11,12 +12,12 @@ namespace BitcoinBetting.Core
         public const string DefaultEndpoint = "http://bitcoinapp.com:50276";
         private string baseEndpoint;
 
-        public string AuthToken { get; set; }
-
         public string RegisterEndpoint { get; set; }
 
         public string LoginEndpoint { get; set; }
         public string LogoutEndpoint { get; set; }
+        
+        public string RefreshTokenEndpoint { get; set; }
 
         public string ExternalLoginEndpoint { get; set; }
         public string ExternalLoginFacebookEndpoint { get; set; }
@@ -81,14 +82,16 @@ namespace BitcoinBetting.Core
             RegisterEndpoint = string.Format("{0}/api/Account/Register", baseEndpoint);
             LoginEndpoint = string.Format("{0}/api/Account/Login", baseEndpoint);
             LogoutEndpoint = string.Format("{0}/api/Account/Logout", baseEndpoint);
+            RefreshTokenEndpoint = string.Format("{0}/api/Account/RefreshToken", baseEndpoint);
+            
             ExternalLoginEndpoint = string.Format("{0}/api/Account/ExternalLogin", baseEndpoint);
             ExternalLoginCallbackEndpoint = string.Format("{0}/api/Account/ExternalLoginCallback", baseEndpoint);
             ExternalLoginConfirmationEndpoint = string.Format("{0}/api/Account/ExternalLoginConfirmation", baseEndpoint);
             ExternalLoginNextEndpoint = string.Format("{0}/api/Account/next", baseEndpoint);
             ExternalLoginFinalEndpoint = string.Format("{0}/api/Account/final", baseEndpoint);
 
-            ExternalLoginFacebookEndpoint = string.Format("{0}?provider={1}", ExternalLoginEndpoint, "Facebook");
-            ExternalLoginGoogleEndpoint = string.Format("{0}?provider={1}", ExternalLoginEndpoint, "Google");
+            ExternalLoginFacebookEndpoint = string.Format("{0}?provider={1}&deviceId={2}", ExternalLoginEndpoint, "Facebook", (string) Application.Current.Properties["device_id"]);
+            ExternalLoginGoogleEndpoint = string.Format("{0}?provider={1}&deviceId={2}", ExternalLoginEndpoint, "Google", (string) Application.Current.Properties["device_id"]);
             
             ForgotPasswordEndpoint = string.Format("{0}/api/Account/ForgotPassword", baseEndpoint);
             ForgotPasswordConfirmationEndpoint = string.Format("{0}/api/Account/ForgotPasswordConfirmation", baseEndpoint);

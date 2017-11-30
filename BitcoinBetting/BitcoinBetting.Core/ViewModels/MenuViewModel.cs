@@ -41,10 +41,13 @@ namespace BitcoinBetting.Core.ViewModels
             set
             {
                 selectedItem = value;
-                
-                OnPropertyChanged("SelectedItem");
 
-                ListViewItemSelected(selectedItem);
+                if (selectedItem != null)
+                {
+                    OnPropertyChanged("SelectedItem");
+
+                    ListViewItemSelected(selectedItem);
+                }
             }
         }
 

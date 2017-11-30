@@ -10,6 +10,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using BitcoinBetting.Core.Models;
+using BitcoinBetting.Core.Views.Account;
+using Xamarin.Forms;
 
 namespace BitcoinBetting.Core.Services
 {
@@ -21,7 +24,7 @@ namespace BitcoinBetting.Core.Services
 
         public RequestProvider()
         {
-            this.serializerSettings = new JsonSerializerSettings
+            serializerSettings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
@@ -46,6 +49,16 @@ namespace BitcoinBetting.Core.Services
                 catch (Exception e)
                 {
                     throw new HttpRequestException("Network error");
+                }
+                
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    var resultRefresh = await RefreshTokenAsync();
+
+                    if (resultRefresh)
+                    {
+                        return await GetAsync<TResult>(uri);
+                    }
                 }
 
                 await HandleResponse(response);
@@ -74,6 +87,16 @@ namespace BitcoinBetting.Core.Services
                 {
                     throw new HttpRequestException("Network error");
                 }
+                
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    var resultRefresh = await RefreshTokenAsync();
+
+                    if (resultRefresh)
+                    {
+                        return await PostAsync<TData, TResult>(uri, data, cookies);
+                    }
+                }
 
                 await HandleResponse(response);
 
@@ -84,49 +107,111 @@ namespace BitcoinBetting.Core.Services
                 return result;
             }
         }
-
-        public async Task DeleteAsync(string uri)
+        
+        public async Task PostAsync(string uri)
         {
             using (var httpClient = CreateHttpClient())
             {
+                HttpResponseMessage response = null;
+                
                 try
                 {
-                    await httpClient.DeleteAsync(uri);
+                    response = await httpClient.PostAsync(uri, null);
                 }
                 catch (Exception e)
                 {
                     throw new HttpRequestException("Network error");
                 }
+                
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    var resultRefresh = await RefreshTokenAsync();
+
+                    if (resultRefresh)
+                    {
+                        await PostAsync(uri);
+                    }
+                }
+                
+                await HandleResponse(response);
             }
+        }
+
+        public async Task DeleteAsync(string uri)
+        {
+            using (var httpClient = CreateHttpClient())
+            {
+                HttpResponseMessage response = null;
+                
+                try
+                {
+                    response = await httpClient.DeleteAsync(uri);
+                }
+                catch (Exception e)
+                {
+                    throw new HttpRequestException("Network error");
+                }
+                
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    var resultRefresh = await RefreshTokenAsync();
+
+                    if (resultRefresh)
+                    {
+                        await DeleteAsync(uri);
+                    }
+                }
+                
+                await HandleResponse(response);
+            }
+        }
+        
+        private async Task<bool> RefreshTokenAsync()
+        {
+            var result = await PostAsync<RefreshTokenModel, Result>(GlobalSetting.Instance.RefreshTokenEndpoint, 
+                new RefreshTokenModel { refreshToken = (string) Application.Current.Properties["refresh_token"]});
+
+            if (!result.result)
+            {
+                Device.BeginInvokeOnMainThread(async () => {
+                     Application.Current.MainPage = new NavigationPage(new LoginPage());
+                });
+            }
+            else
+            {
+                Application.Current.Properties["token"] = result.token;
+                Application.Current.Properties["refresh_token"] = result.refresh_token;
+            }
+
+            return result.result;
         }
 
         private HttpClient CreateHttpClient(List<KeyValuePair<string, string>> cookies = null)
         {
             HttpClient httpClient = null;
+            
             if (cookies != null)
             {
-                CookieContainer cookieContainer = new CookieContainer();
-
                 foreach (var cookie in cookies)
                 {
                     cookieContainer.Add(new Cookie(cookie.Key, cookie.Value) { Domain = new Uri(GlobalSetting.Instance.BaseEndpoint).Host });
                 }
 
-                var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
-                httpClient = new HttpClient(handler);
+                httpClient = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
             }
             else
             {
                 httpClient = new HttpClient();
             }
 
-            if (!string.IsNullOrWhiteSpace(GlobalSetting.Instance.AuthToken))
+            if (Application.Current.Properties.ContainsKey("token"))
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GlobalSetting.Instance.AuthToken);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", (string) Application.Current.Properties["token"]);
             }
 
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
+            httpClient.DefaultRequestHeaders.Add("device_id", (string) Application.Current.Properties["device_id"]);
+            
             return httpClient;
         }
 

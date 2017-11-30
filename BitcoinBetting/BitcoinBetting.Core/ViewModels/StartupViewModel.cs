@@ -24,7 +24,7 @@ namespace BitcoinBetting.Core.ViewModels
         public StartupViewModel(INavigation Navigation)
         {
             this.Navigation = Navigation;
-            
+
             loginPage = new LoginPage();
             registrationPage = new RegistrationPage();
             

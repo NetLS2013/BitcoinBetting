@@ -60,7 +60,6 @@
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\WalletController.cs" />
     <Compile Include="Database\ApplicationDbContext.cs" />
-    <Compile Include="Database\Context\ApplicationContext.cs" />
     <Compile Include="Helpers\BettingHelper.cs" />
     <Compile Include="Database\Repositories\GenericRepository.cs" />
     <Compile Include="Helpers\BitcoinHelper.cs" />
@@ -70,6 +69,8 @@
     <Compile Include="Models\Account\LoginModel.cs" />
     <Compile Include="Models\Account\RegisterModel.cs" />
     <Compile Include="Models\Account\RestorePasswordModel.cs" />
+    <Compile Include="Models\Account\UserToken.cs" />
+    <Compile Include="Models\Account\RefreshTokenModel.cs" />
     <Compile Include="Models\BitcoinAvarageSettings.cs" />
     <Compile Include="Models\BitcoinSettings.cs" />
     <Compile Include="Models\Bitcoin\AddressHistoryRecord.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Services\MailChimp\MailChimpSender.cs" />
     <Compile Include="Services\Security\JwtSettings.cs" />
     <Compile Include="Services\Security\JwtToken.cs" />
+    <Compile Include="Services\Security\JwtValidator.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -132,5 +134,8 @@
     <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
       <HintPath>..\..\packages\Xamarin.Android.Support.v7.RecyclerView.25.4.0.2\lib\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database\Context" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,6 @@
 
     using BitcoinBetting.Server.Controllers;
     using BitcoinBetting.Server.Database;
-    using BitcoinBetting.Server.Database.Context;
     using BitcoinBetting.Server.Models.Account;
     using BitcoinBetting.Server.Services.Contracts;
     using BitcoinBetting.Server.Services.Identity;
@@ -39,9 +38,6 @@
 
             services
                 .AddDbContext<ApplicationDbContext>(b => b.UseInMemoryDatabase("bitcoinbetting").UseInternalServiceProvider(efServiceProvider));
-
-            services
-                .AddDbContext<ApplicationContext>(b => b.UseInMemoryDatabase("bitcoinbetting").UseInternalServiceProvider(efServiceProvider));
 
             services.AddIdentity<AppIdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -87,13 +83,17 @@
             var settingsMock = new Mock<IOptions<JwtSettings>>();
             var jwtMock = new Mock<IJwtToken>();
             var urlHelperMock = new Mock<IUrlHelper>();
-            jwtMock.Setup(token => token.GetAccessToken(It.IsAny<AppIdentityUser>(), settingsMock.Object.Value))
-                .Returns(() => "UserToken");
+            jwtMock.Setup(
+                token => token.CreateJwtTokens(
+                    settingsMock.Object.Value,
+                    It.IsAny<AppIdentityUser>(),
+                    It.IsAny<string>())).ReturnsAsync(() => ("Token", "Token"));
+              //  .ReturnsAsync(() => Task.FromResult(Tuple<string, string>("UserToken", "UserToken")));
 
             // sign in test user
-            var httpContext = this.serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+            var httpContext = this.serviceProvider.GetRequiredService<IHttpContextAccessor>();
 
-            httpContext.RequestServices = this.serviceProvider;
+            httpContext.HttpContext.RequestServices = this.serviceProvider;
 
             this.accountController = new AccountController(
                 userManager,
@@ -101,8 +101,9 @@
                 emailMock.Object,
                 mailChimpMock.Object,
                 settingsMock.Object,
-                jwtMock.Object);
-            this.accountController.ControllerContext.HttpContext = httpContext;
+                jwtMock.Object,
+                httpContext);
+            this.accountController.ControllerContext.HttpContext = httpContext.HttpContext;
             this.accountController.Url = urlHelperMock.Object;
         }
 
