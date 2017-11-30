@@ -8,6 +8,7 @@
 
     using BitcoinBetting.Server.Models;
     using BitcoinBetting.Server.Models.Bitcoin;
+    using BitcoinBetting.Server.Services.Contracts;
 
     using HBitcoin.KeyManagement;
 
@@ -20,7 +21,7 @@
     using QBitNinja.Client;
     using QBitNinja.Client.Models;
 
-    public class BitcoinWalletService
+    public class BitcoinWalletService : IBitcoinWalletService
     {
         private BitcoinSettings settings;
 

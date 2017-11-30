@@ -1,5 +1,4 @@
-﻿using BitcoinBetting.Server.Database.Helpers;
-using BitcoinBetting.Server.Models.Betting;
+﻿using BitcoinBetting.Server.Models.Betting;
 using BitcoinBetting.Server.Services.Contracts;
 using System;
 using System.Collections.Generic;

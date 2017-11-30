@@ -49,6 +49,7 @@
     <None Remove="Services\Contracts\IBettingService.cs" />
     <None Remove="Services\Contracts\IBidService.cs" />
     <None Remove="Services\Contracts\IBitcoinAverageApi.cs" />
+    <None Remove="Services\Contracts\IBitcoinWalletService.cs" />
     <None Remove="Services\Contracts\IGenericRepository.cs" />
     <None Remove="Services\Contracts\IWalletService.cs" />
   </ItemGroup>
@@ -81,6 +82,7 @@
     <Compile Include="Services\Betting\Jobs\CreateBettingJob.cs" />
     <Compile Include="Services\Betting\Jobs\SetWaitJob.cs" />
     <Compile Include="Services\Bitcoin\BitcoinWalletService.cs" />
+    <Compile Include="Services\Contracts\IBitcoinWalletService.cs" />
     <Content Include="Models\Account\ForgotPasswordConfirmModel.cs" />
     <Compile Include="Models\Betting\BettingModel.cs" />
     <Compile Include="Models\Betting\BidModel.cs" />

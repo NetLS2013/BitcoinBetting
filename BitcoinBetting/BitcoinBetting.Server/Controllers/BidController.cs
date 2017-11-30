@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     using BitcoinBetting.Enum;
-    using BitcoinBetting.Server.Database.Helpers;
+    using BitcoinBetting.Server.Helpers;
     using BitcoinBetting.Server.Models.Betting;
     using BitcoinBetting.Server.Models.Bitcoin;
     using BitcoinBetting.Server.Services.Bitcoin;
@@ -22,14 +22,14 @@
         private IBidService bidService;
         private IBettingService bettingService;
 
-        private BitcoinWalletService bitcoinWalletService;
+        private IBitcoinWalletService bitcoinWalletService;
 
         private readonly UserManager<AppIdentityUser> userManager;
 
         public BidController(
             IBidService bidService,
             IBettingService bettingService,
-            BitcoinWalletService bitcoinWalletService,
+            IBitcoinWalletService bitcoinWalletService,
             UserManager<AppIdentityUser> userManager)
         {
             this.bidService = bidService;

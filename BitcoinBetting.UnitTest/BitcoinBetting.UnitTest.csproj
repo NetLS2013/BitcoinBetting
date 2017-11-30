@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ControllersTest\AccountControllerTest.cs" />
+    <None Remove="ControllersTest\BidControllerTest.cs" />
+    <None Remove="DynamicObjectResultValue.cs" />
+    <None Remove="HelpersTest\BettingHelperTest.cs" />
+    <None Remove="WalletControllerTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="ControllersTest\AccountControllerTest.cs" />
+    <Compile Include="ControllersTest\BidControllerTest.cs" />
+    <Compile Include="DynamicObjectResultValue.cs" />
+    <Compile Include="HelpersTest\BettingHelperTest.cs" />
+    <Compile Include="ControllersTest\WalletControllerTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
+    <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
+    <PackageReference Include="Xamarin.Forms" Version="2.4.0.280" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BitcoinBetting\BitcoinBetting.Server\BitcoinBetting.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Xamarin.Forms.Platform.Android">
+      <HintPath>..\packages\Xamarin.Forms.2.4.0.280\lib\MonoAndroid10\Xamarin.Forms.Platform.Android.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

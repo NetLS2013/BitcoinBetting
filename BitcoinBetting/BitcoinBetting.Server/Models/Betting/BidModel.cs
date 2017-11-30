@@ -42,5 +42,20 @@ namespace BitcoinBetting.Server.Models.Betting
         [NotMapped]
         public decimal PossibleWin { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            BidModel other = obj as BidModel;
+            if ((Object)other == null)
+                return false;
+
+            return this.BidId == other.BidId && this.BettingId == other.BettingId && this.UserId == other.UserId
+                   && this.WalletId == other.WalletId && this.Amount == other.Amount
+                   && this.PaymentAddress == other.PaymentAddress && this.Date == other.Date
+                   && this.Coefficient == other.Coefficient && this.Status == other.Status && this.Side == other.Side
+                   && this.PaymentStatus == other.PaymentStatus && this.Paid == other.Paid;
+        }
     }
 }

@@ -17,5 +17,19 @@ namespace BitcoinBetting.Server.Models.Betting
 
         [Required]
         public string Address { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            WalletModel other = obj as WalletModel;
+            if ((Object)other == null)
+                return false;
+
+            return this.WalletId == other.WalletId
+                   && this.Address == other.Address
+                   && this.UserId == other.UserId;
+        }
     }
 }

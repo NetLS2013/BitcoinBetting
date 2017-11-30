@@ -36,8 +36,7 @@ namespace BitcoinBetting.Server.Controllers
             IEmailSender emailSender,
             IMailChimpSender mailChimp,
             IOptions<JwtSettings> jwtOptions,
-            IJwtToken jwtToken
-            )
+            IJwtToken jwtToken)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;

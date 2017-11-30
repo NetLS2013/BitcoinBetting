@@ -62,7 +62,7 @@ namespace BitcoinBetting.Server.Controllers
             var model = this.walletService.GetById(id);
             string userId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
 
-            if (model.UserId == userId)
+            if (model != null && model.UserId == userId)
             {
                 if (this.walletService.Remove(model))
                 {

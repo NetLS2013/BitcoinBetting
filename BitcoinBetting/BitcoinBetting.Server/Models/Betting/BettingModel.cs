@@ -5,7 +5,7 @@
     using System.ComponentModel.DataAnnotations.Schema;
 
     using BitcoinBetting.Enum;
-    using BitcoinBetting.Server.Database.Helpers;
+    using BitcoinBetting.Server.Helpers;
 
     [Table("Bettings")]
     public class BettingModel

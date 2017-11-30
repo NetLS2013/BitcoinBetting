@@ -128,7 +128,7 @@ namespace BitcoinBetting.Server
             services.AddTransient<IBettingService, BettingService>();
             services.AddTransient<IBidService, BidService>();
 
-            services.AddTransient<BitcoinWalletService>(
+            services.AddTransient<IBitcoinWalletService, BitcoinWalletService>(
                 provider => new BitcoinWalletService(
                     new BitcoinSettings()
                         {
@@ -156,7 +156,7 @@ namespace BitcoinBetting.Server
 
             if (!File.Exists(this.Configuration.GetSection("BitcoinSettings:Path").Value))
             {
-                container.GetService<BitcoinWalletService>().GenerateWallet();
+                container.GetService<IBitcoinWalletService>().GenerateWallet();
             }
             
             if (env.IsDevelopment())
