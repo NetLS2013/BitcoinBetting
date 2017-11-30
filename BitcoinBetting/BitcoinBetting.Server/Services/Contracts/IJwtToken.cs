@@ -12,6 +12,7 @@ namespace BitcoinBetting.Server.Services.Contracts
         Task<UserToken> FindTokenAsync(string refreshToken, string deviceId);
         Task InvalidateTokensByDevice(string userId, string deviceId);
         Task<bool> IsValidTokenAsync(string accessToken, string userId);
+        Task DeleteExpiredTokensAsync();
         string GetDeviceId(IHttpContextAccessor context);
         string GetSha256Hash(string input);
     }

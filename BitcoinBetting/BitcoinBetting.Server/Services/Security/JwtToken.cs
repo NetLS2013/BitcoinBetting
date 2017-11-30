@@ -27,8 +27,8 @@ namespace BitcoinBetting.Server.Services.Security
         public async Task<(string accessToken, string refreshToken)> CreateJwtTokens(JwtSettings jwtSettings, AppIdentityUser user, string deviceId)
         {
             var now = DateTimeOffset.UtcNow;
-            var accessTokenExpiresDateTime = now.AddMinutes(10);
-            var refreshTokenExpiresDateTime = now.AddMinutes(60);
+            var accessTokenExpiresDateTime = now.AddHours(24);
+            var refreshTokenExpiresDateTime = now.AddMonths(1);
             
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey));
             var identity = new ClaimsIdentity(new GenericIdentity(user.Email), new[] { new Claim("ID", user.Id) });
@@ -85,6 +85,16 @@ namespace BitcoinBetting.Server.Services.Security
             var userToken = await repository.FindAsync(x => x.AccessTokenHash == GetSha256Hash(accessToken) && x.UserId == userId);
             
             return userToken?.AccessTokenExpiresDateTime >= DateTime.UtcNow;
+        }
+
+        public async Task DeleteExpiredTokensAsync()
+        {
+            var userTokens = repository.Get(x => x.RefreshTokenExpiresDateTime < DateTimeOffset.UtcNow);
+            
+            foreach (var userToken in userTokens)
+            {
+                repository.Remove(userToken);
+            }
         }
 
         public string GetDeviceId(IHttpContextAccessor context)

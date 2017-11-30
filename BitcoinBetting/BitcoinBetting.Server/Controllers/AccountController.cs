@@ -102,6 +102,7 @@ namespace BitcoinBetting.Server.Controllers
             var userId = claimsIdentity.FindFirst("ID")?.Value;
             
             await jwtToken.InvalidateTokensByDevice(userId, jwtToken.GetDeviceId(context));
+            await jwtToken.DeleteExpiredTokensAsync();
             
             return StatusCode(StatusCodes.Status204NoContent);
         }
