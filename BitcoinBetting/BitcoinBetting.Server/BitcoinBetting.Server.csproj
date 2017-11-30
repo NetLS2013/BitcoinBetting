@@ -69,6 +69,7 @@
     <Compile Include="Models\Account\RegisterModel.cs" />
     <Compile Include="Models\Account\RestorePasswordModel.cs" />
     <Compile Include="Models\Account\UserToken.cs" />
+    <Compile Include="Models\Account\RefreshTokenModel.cs" />
     <Compile Include="Models\BitcoinAvarageSettings.cs" />
     <Compile Include="Models\BitcoinSettings.cs" />
     <Compile Include="Models\Bitcoin\AddressHistoryRecord.cs" />

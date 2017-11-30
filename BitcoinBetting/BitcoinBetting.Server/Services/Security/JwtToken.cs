@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using BitcoinBetting.Server.Models.Account;
 using BitcoinBetting.Server.Services.Contracts;
 using BitcoinBetting.Server.Services.Identity;
-
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BitcoinBetting.Server.Services.Security
@@ -24,7 +24,7 @@ namespace BitcoinBetting.Server.Services.Security
             this.repository = repository;
         }
         
-        public async Task<(string accessToken, string refreshToken)> CreateJwtTokens(JwtSettings jwtSettings, AppIdentityUser user)
+        public async Task<(string accessToken, string refreshToken)> CreateJwtTokens(JwtSettings jwtSettings, AppIdentityUser user, string deviceId)
         {
             var now = DateTimeOffset.UtcNow;
             var accessTokenExpiresDateTime = now.AddMinutes(10);
@@ -43,13 +43,14 @@ namespace BitcoinBetting.Server.Services.Security
             var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
             var refreshToken = Guid.NewGuid().ToString().Replace("-", "");
             
-            await AddUserTokenAsync(user, refreshToken, accessToken, refreshTokenExpiresDateTime, accessTokenExpiresDateTime);
+            await InvalidateTokensByDevice(user.Id, deviceId);
+            await AddUserTokenAsync(user, refreshToken, accessToken, refreshTokenExpiresDateTime, accessTokenExpiresDateTime, deviceId);
             
             return (accessToken, refreshToken);
         }
 
         private async Task AddUserTokenAsync(AppIdentityUser user, string refreshToken, string accessToken,
-            DateTimeOffset refreshTokenExpiresDateTime, DateTimeOffset accessTokenExpiresDateTime)
+            DateTimeOffset refreshTokenExpiresDateTime, DateTimeOffset accessTokenExpiresDateTime, string deviceId)
         {
             var token = new UserToken
             {
@@ -57,22 +58,26 @@ namespace BitcoinBetting.Server.Services.Security
                 RefreshTokenIdHash = GetSha256Hash(refreshToken),
                 AccessTokenHash = GetSha256Hash(accessToken),
                 RefreshTokenExpiresDateTime = refreshTokenExpiresDateTime,
-                AccessTokenExpiresDateTime = accessTokenExpiresDateTime
+                AccessTokenExpiresDateTime = accessTokenExpiresDateTime,
+                DeviceId = deviceId
             };
             
             repository.Create(token);
         }
         
-        public async Task<UserToken> FindTokenAsync(string refreshToken)
+        public async Task InvalidateTokensByDevice(string userId, string deviceId)
         {
-            return await repository.FindAsync(x => x.RefreshTokenIdHash == GetSha256Hash(refreshToken));
+            var userTokens = repository.Get(x => x.UserId == userId && x.DeviceId == deviceId);
+            
+            foreach (var userToken in userTokens)
+            {
+                repository.Remove(userToken);
+            }
         }
         
-        public async Task InvalidateUserTokensAsync(string accessToken)
+        public async Task<UserToken> FindTokenAsync(string refreshToken, string deviceId)
         {
-            var userTokens = await repository.FindAsync(x => x.AccessTokenHash == GetSha256Hash(accessToken));
-            
-            repository.Remove(userTokens);
+            return await repository.FindAsync(x => x.RefreshTokenIdHash == GetSha256Hash(refreshToken) && x.DeviceId == deviceId);
         }
         
         public async Task<bool> IsValidTokenAsync(string accessToken, string userId)
@@ -81,7 +86,12 @@ namespace BitcoinBetting.Server.Services.Security
             
             return userToken?.AccessTokenExpiresDateTime >= DateTime.UtcNow;
         }
-        
+
+        public string GetDeviceId(IHttpContextAccessor context)
+        {
+            return GetSha256Hash(context.HttpContext.Request.Headers["device_id"]);
+        }
+
         public string GetSha256Hash(string input)
         {
             using (var hashAlgorithm = new SHA256CryptoServiceProvider())

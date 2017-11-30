@@ -26,10 +26,12 @@ namespace BitcoinBetting.iOS
         {
             var uri = new NSUrlComponents(url, true);
             var token = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "token")?.Value;
+            var refreshToken = uri.PercentEncodedQueryItems.FirstOrDefault(x => x.Name == "refresh_token")?.Value;
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                GlobalSetting.Instance.AuthToken = token;
+                Xamarin.Forms.Application.Current.Properties["token"] = token;
+                Xamarin.Forms.Application.Current.Properties["refresh_token"] = refreshToken;
                 
                 Xamarin.Forms.Application.Current.MainPage = new MasterPage();
             }

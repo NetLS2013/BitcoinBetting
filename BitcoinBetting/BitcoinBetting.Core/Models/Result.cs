@@ -9,6 +9,8 @@ namespace BitcoinBetting.Core.Models
         public bool result { get; set; }
 
         public string token { get; set; }
+        
+        public string refresh_token { get; set; }
 
         public string Message {
             get

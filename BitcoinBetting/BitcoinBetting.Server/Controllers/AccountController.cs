@@ -64,7 +64,8 @@ namespace BitcoinBetting.Server.Controllers
             if (passwordSignIn.Succeeded)
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
-                var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user);
+                
+                var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetDeviceId(context));
                 
                 return Ok(new { result = true, token = accessToken, refresh_token = refreshToken });
             }
@@ -73,32 +74,34 @@ namespace BitcoinBetting.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RefreshToken([FromBody]string refreshToken)
+        public async Task<IActionResult> RefreshToken([FromBody]RefreshTokenModel model)
         {
-            if (string.IsNullOrWhiteSpace(refreshToken))
+            if (string.IsNullOrWhiteSpace(model.refreshToken))
             {
                 return BadRequest();
             }
 
-            var token = await jwtToken.FindTokenAsync(refreshToken);
+            var token = await jwtToken.FindTokenAsync(model.refreshToken, jwtToken.GetDeviceId(context));
             
             if (token == null)
             {
-                return Unauthorized();
+                return Ok(new { result = false });
             }
-
-            var (accessToken, newRefreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, token.User);
             
-            return Ok(new { result = true, access_token = accessToken, refresh_token = newRefreshToken });
+            var user = await userManager.FindByIdAsync(token.UserId);
+            var (accessToken, newRefreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetDeviceId(context));
+            
+            return Ok(new { result = true, token = accessToken, refresh_token = newRefreshToken });
         }
         
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            string accessToken = context.HttpContext.Request.Headers["Authorization"];
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId = claimsIdentity.FindFirst("ID")?.Value;
             
-            await jwtToken.InvalidateUserTokensAsync(accessToken.Substring("Bearer ".Length));
+            await jwtToken.InvalidateTokensByDevice(userId, jwtToken.GetDeviceId(context));
             
             return StatusCode(StatusCodes.Status204NoContent);
         }
@@ -145,7 +148,7 @@ namespace BitcoinBetting.Server.Controllers
 
                 if (passwordSignIn.Succeeded)
                 {
-                    var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user);
+                    var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetDeviceId(context));
                     
                     return Ok(new { result = true, token = accessToken, refresh_token = refreshToken });
                 }
@@ -178,16 +181,16 @@ namespace BitcoinBetting.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExternalLogin(string provider)
+        public async Task<IActionResult> ExternalLogin(string provider, string deviceId)
         {
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback));
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback)) + "?deviceId=" + jwtToken.GetSha256Hash(deviceId);
             var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
             return Challenge(properties, provider);
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallback()
+        public async Task<IActionResult> ExternalLoginCallback(string deviceId)
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
             var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
@@ -197,7 +200,7 @@ namespace BitcoinBetting.Server.Controllers
             if (result.Succeeded)
             {
                 var user = await userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-                var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user);
+                var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, deviceId);
                 
                 redirectUrl = "bitcoinbetting://bitcoinapp.com/final?token=" + accessToken + "&refresh_token=" + refreshToken;
 
@@ -236,7 +239,7 @@ namespace BitcoinBetting.Server.Controllers
                 {
                     await signInManager.SignInAsync(user, false);
 
-                    var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user);
+                    var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetDeviceId(context));
                     
                     return Ok(new { result = true, token = accessToken, refresh_token = refreshToken });
                 }

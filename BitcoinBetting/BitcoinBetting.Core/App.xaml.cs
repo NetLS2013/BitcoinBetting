@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace BitcoinBetting.Core
@@ -14,8 +15,10 @@ namespace BitcoinBetting.Core
 
         protected override void OnStart()
         {
-            
-            // Handle when your app starts
+            if (!Current.Properties.ContainsKey("device_id"))
+            {
+                Current.Properties.Add("device_id", Guid.NewGuid().ToString().Replace("-", ""));
+            }
         }
 
         protected override void OnSleep()

@@ -32,6 +32,7 @@
     <Compile Include="Models\User\LoginModel.cs" />
     <Compile Include="Models\User\RegistrationModel.cs" />
     <Compile Include="Models\Result.cs" />
+    <Compile Include="Models\RefreshTokenModel.cs" />
     <Compile Include="Models\User\ForgotPasswordConfirmModel.cs" />
     <Compile Include="Models\User\ForgotPasswordModel.cs" />
     <Compile Include="Services\RequestProvider.cs" />

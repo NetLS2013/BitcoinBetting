@@ -43,10 +43,12 @@ namespace BitcoinBetting.Droid
             {
                 var uri = intent.Data;
                 string token = uri.GetQueryParameter("token");
+                string refreshToken = uri.GetQueryParameter("refresh_token");
                 
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    GlobalSetting.Instance.AuthToken = token;
+                    Xamarin.Forms.Application.Current.Properties["token"] = token;
+                    Xamarin.Forms.Application.Current.Properties["refresh_token"] = refreshToken;
                     
                     LoadApplication(new App(new MasterPage()));
                 }

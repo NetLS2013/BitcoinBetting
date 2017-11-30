@@ -18,6 +18,6 @@ namespace BitcoinBetting.Server.Models.Account
         public DateTimeOffset RefreshTokenExpiresDateTime { get; set; }
 
         public string UserId { get; set; }
-        public virtual AppIdentityUser User { get; set; }
+        public string DeviceId { get; set; }
     }
 }

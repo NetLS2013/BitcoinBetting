@@ -158,7 +158,8 @@ namespace BitcoinBetting.Core.ViewModels
                     }
                     else
                     {
-                        GlobalSetting.Instance.AuthToken = result.token;
+                        Application.Current.Properties["token"] = result.token;
+                        Application.Current.Properties["refresh_token"] = result.refresh_token;
 
                         Application.Current.MainPage = new MasterPage();
                     }
