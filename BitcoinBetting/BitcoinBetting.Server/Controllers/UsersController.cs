@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-
+using System.Threading.Tasks;
+using BitcoinBetting.Server.Models.Users;
 using BitcoinBetting.Server.Services.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -23,11 +24,11 @@ namespace BitcoinBetting.Server.Controllers
         }
         
         [HttpGet]
-        public IActionResult Test()
+        public async Task<IActionResult> GetUserData()
         {
-            var currentUser = context.HttpContext.User;
+            var user = await userManager.FindByNameAsync(context.HttpContext.User.Identity.Name);
             
-            return Ok(currentUser.Identity.Name);
+            return Ok(new UserDataModel { FirstName = user.FirstName, LastName = user.LastName, Email = user.Email });
         }
     }
 }

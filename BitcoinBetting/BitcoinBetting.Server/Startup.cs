@@ -108,32 +108,26 @@ namespace BitcoinBetting.Server
                 });
             
             services.AddTransient<IBitcoinAverageApi, BitcoinAverageApi>();
-            
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IMailChimpSender, MailChimpSender>();
             services.AddTransient<IJwtToken, JwtToken>();
-            
             services.AddTransient<IJwtValidator, JwtValidator>();
 
             services.AddTransient<IGenericRepository<BidModel>, GenericRepository<BidModel>>();
             services.AddTransient<IGenericRepository<WalletModel>, GenericRepository<WalletModel>>();
             services.AddTransient<IGenericRepository<BettingModel>, GenericRepository<BettingModel>>();
-
             services.AddTransient<IGenericRepository<UserToken>, GenericRepository<UserToken>>();
             
             services.AddTransient<IWalletService, WalletService>();
             services.AddTransient<IBettingService, BettingService>();
             services.AddTransient<IBidService, BidService>();
 
-            services.AddTransient<IBitcoinWalletService, BitcoinWalletService>(
-                provider => new BitcoinWalletService(
+            services.AddTransient<IBitcoinWalletService, BitcoinWalletService>(provider => new BitcoinWalletService(
                     new BitcoinSettings()
                         {
-                            Password =
-                                this.Configuration.GetSection("BitcoinSettings:Password").Value,
+                            Password = this.Configuration.GetSection("BitcoinSettings:Password").Value,
                             Path = this.Configuration.GetSection("BitcoinSettings:Path").Value,
-                            NetworkStr =
-                                this.Configuration.GetSection("BitcoinSettings:NetworkStr").Value
+                            NetworkStr = this.Configuration.GetSection("BitcoinSettings:NetworkStr").Value
                         }));       
 
             services.AddTransient<CreateBettingJob>();

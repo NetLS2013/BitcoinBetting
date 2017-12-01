@@ -7,28 +7,31 @@ namespace BitcoinBetting.Core
 {
     public partial class App : Application
     {
-        public App(bool loadAppViaBrowser = false)
+        public App(string token, string refreshToken)
         {
             InitializeComponent();
+            
+            Properties["token"] = token;
+            Properties["refresh_token"] = refreshToken;
+            
+            MainPage = new MasterPage();
+        }
 
-            if (loadAppViaBrowser)
+        public App()
+        {
+            InitializeComponent();
+            
+            if (Properties.ContainsKey("token"))
             {
                 MainPage = new MasterPage();
             }
             else
             {
-                if (Properties.ContainsKey("token"))
+                MainPage = new NavigationPage(new StartupPage())
                 {
-                    MainPage = new MasterPage();
-                }
-                else
-                {
-                    MainPage = new NavigationPage(new StartupPage())
-                    {
-                        BarBackgroundColor = Color.Transparent,
-                        BarTextColor = Color.Black
-                    };
-                }
+                    BarBackgroundColor = Color.Transparent,
+                    BarTextColor = Color.Black
+                };
             }
         }
 

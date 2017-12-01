@@ -10,33 +10,20 @@
               ItemsSource="{Binding MenuItems}"
               SelectedItem="{Binding SelectedItem}">
       <ListView.Header>
-        <Grid BackgroundColor="#03A9F4">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="10"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="80"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
-          </Grid.RowDefinitions>
-          <Label
-              Grid.Column="1"
-              Grid.Row="2"
-              Text="Bitcoin Betting"
-              Style="{DynamicResource SubtitleStyle}"/>
-        </Grid>
+        <StackLayout VerticalOptions="CenterAndExpand" BackgroundColor="#03A9F4" Padding="16,64,16,16">
+            <Label Text="Bitcoin Betting" FontAttributes="Bold"/>
+            <Label Text="{Binding UserDataModel.Email}" FontSize="14"/>
+            <Label Text="{Binding UserDataModel.UserName}" FontSize="14"/>
+        </StackLayout>
       </ListView.Header>
         
       <ListView.ItemTemplate>
         <DataTemplate>
           <ViewCell>
             <StackLayout Padding="15,10" HorizontalOptions="FillAndExpand">
-              <Label VerticalOptions="FillAndExpand" 
-                    VerticalTextAlignment="Center" 
-                    Text="{Binding Title}" 
+              <Label VerticalOptions="FillAndExpand"
+                    VerticalTextAlignment="Center"
+                    Text="{Binding Title}"
                     FontSize="18"/>
             </StackLayout>
           </ViewCell>

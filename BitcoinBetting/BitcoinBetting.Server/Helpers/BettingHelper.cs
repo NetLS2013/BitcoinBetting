@@ -10,7 +10,7 @@
         {
             if (start > finish || currDate > finish || currDate < start)
             {
-                throw new ArgumentException();
+                return 1;
             }
 
             var totalSeconds = (decimal)(finish - start).TotalSeconds;

@@ -14,6 +14,8 @@
     <Compile Include="Helpers\BetWaitingConverter.cs" />
     <Compile Include="Helpers\BetStatusConverter.cs" />
     <Compile Include="Helpers\NotNullConverter.cs" />
+    <Compile Include="Helpers\PaymentConverter.cs" />
+    <Compile Include="Helpers\PaymentAddressConverter.cs" />
     <Compile Include="Interfaces\IRequestProvider.cs" />
     <Compile Include="Interfaces\IValidationRule.cs" />
     <Compile Include="Interfaces\IValidity.cs" />
@@ -31,6 +33,7 @@
     <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
     <Compile Include="Models\User\LoginModel.cs" />
     <Compile Include="Models\User\RegistrationModel.cs" />
+    <Compile Include="Models\User\UserDataModel.cs" />
     <Compile Include="Models\Result.cs" />
     <Compile Include="Models\RefreshTokenModel.cs" />
     <Compile Include="Models\User\ForgotPasswordConfirmModel.cs" />

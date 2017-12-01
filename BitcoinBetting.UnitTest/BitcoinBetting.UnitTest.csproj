@@ -2,17 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="ControllersTest\AccountControllerTest.cs" />
-    <None Remove="ControllersTest\BidControllerTest.cs" />
-    <None Remove="DynamicObjectResultValue.cs" />
-    <None Remove="HelpersTest\BettingHelperTest.cs" />
-    <None Remove="WalletControllerTest.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="ControllersTest\AccountControllerTest.cs" />

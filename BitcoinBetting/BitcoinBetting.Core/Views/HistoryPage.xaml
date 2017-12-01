@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:helpers="clr-namespace:BitcoinBetting.Core.Helpers;assembly=BitcoinBetting.Core"
              x:Class="BitcoinBetting.Core.HistoryPage"
-             Title="Settings">
+             Title="History">
     <ContentPage.Resources>
         <ResourceDictionary>
             <helpers:SideConverter x:Key="SideConverter"/>
+            <helpers:PaymentConverter x:Key="PaymentConverter"/>
+            <helpers:PaymentAddressConverter x:Key="PaymentAddressConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -23,20 +25,44 @@
                             <ViewCell>
                                 <StackLayout Spacing="0" x:Name="Item">
                                     <StackLayout VerticalOptions="FillAndExpand" Padding="16">
-                                        <Label Text="{Binding PaymentAddress}" />
-                                        <Label Text="{Binding Side, Converter={StaticResource SideConverter}}" />
+                                        <StackLayout Orientation="Vertical" IsVisible="{Binding PaymentAddress, Converter={StaticResource PaymentAddressConverter}}">
+                                            <Label Text="Address" FontSize="14" FontAttributes="Bold"/>
+                                            <Entry Text="{Binding PaymentAddress}" FontSize="14"/>
+                                        </StackLayout>
                                         
                                         <StackLayout Orientation="Horizontal">
-                                            <Label VerticalOptions="Center" Text="{Binding Coefficient, StringFormat='{0:#.###}'}" />
+                                            <Label Text="Side" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Side, Converter={StaticResource SideConverter}}" FontSize="14"/>
+                                        </StackLayout>
+                                        
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="Amount" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Amount, StringFormat='{0:n} BTC'}" FontSize="14"/>
+                                        </StackLayout>
+                                        
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="Date" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Date, StringFormat='{0:g}'}" FontSize="14"/>
+                                        </StackLayout>
+                                        
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="Status" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="{Binding PaymentStatus, Converter={StaticResource PaymentConverter}}" FontSize="14"/>
+                                        </StackLayout>
+                                        
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="Coefficient" FontSize="14" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Coefficient, StringFormat='{0:#.###}'}" FontSize="14"/>
+                                            
                                             <Button
+                                                HorizontalOptions="EndAndExpand"
+                                                VerticalOptions="Center"
                                                 Text="detail"
+                                                BackgroundColor="White" TextColor="#00a99d"
                                                 BindingContext="{Binding Source={x:Reference BidItemsListView}, Path=BindingContext}"
                                                 Command="{Binding ModalBidInfoPageCommand}"
                                                 CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"/>
                                         </StackLayout>
-                                        
-                                        <Label Text="{Binding Amount, StringFormat='{0:n} BTC'}" />
-                                        <Label Text="{Binding Date, StringFormat='{0:g}'}" />
                                     </StackLayout>
                                 </StackLayout>
                             </ViewCell>
