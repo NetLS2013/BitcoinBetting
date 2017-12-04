@@ -171,10 +171,12 @@ namespace BitcoinBetting.Core.ViewModels
 
         private void CloseAndroidApp()
         {
+#if (!DEBUG)
             if (Device.RuntimePlatform == Device.Android)
             {
-                //DependencyService.Get<INativeHelpers>().CloseApp();
+                DependencyService.Get<INativeHelpers>().CloseApp();
             }
+#endif
         }
     }
 }
