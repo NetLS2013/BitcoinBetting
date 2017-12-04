@@ -1,6 +1,7 @@
 ﻿namespace BitcoinBetting.UnitTest.ControllersTest
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Security.Claims;
     using System.Security.Principal;
@@ -12,7 +13,6 @@
     using BitcoinBetting.Server.Database.Repositories;
     using BitcoinBetting.Server.Models;
     using BitcoinBetting.Server.Models.Betting;
-    using BitcoinBetting.Server.Models.Bitcoin;
     using BitcoinBetting.Server.Services.Betting;
     using BitcoinBetting.Server.Services.Bitcoin;
     using BitcoinBetting.Server.Services.Contracts;
@@ -27,18 +27,16 @@
     using Microsoft.Extensions.Options;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Moq;
-
-    using NBitcoin;
-
     [TestClass]
-    public class BidControllerTest
+    public class BettingControllerTest
     {
         private readonly IServiceProvider _serviceProvider;
 
-        private BidController bidController;
+        private BettingController bettingController;
 
-        public BidControllerTest()
+        private ICollection bettingModels;
+
+        public BettingControllerTest()
         {
             var services = new ServiceCollection();
             var efServiceProvider = new ServiceCollection().AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
@@ -86,6 +84,19 @@
             var userManager = this._serviceProvider.GetRequiredService<UserManager<AppIdentityUser>>();
             await userManager.CreateAsync(user, "Pass@word1");
 
+            // sign in test user
+            var httpContext = this._serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+            httpContext.User = new ClaimsPrincipal(
+                new ClaimsIdentity(new GenericIdentity(user.Email), new[] { new Claim("ID", user.Id) }));
+            httpContext.RequestServices = this._serviceProvider;
+
+            this.bettingController = new BettingController(
+                this._serviceProvider.GetRequiredService<IBidService>(),
+                this._serviceProvider.GetRequiredService<IBettingService>(),
+                userManager);
+
+            this.bettingController.ControllerContext.HttpContext = httpContext;
+
             var bettingCurrent = new BettingModel()
                                      {
                                          Status = BettingStatus.Continue,
@@ -96,121 +107,83 @@
                                      };
             var bettingDone = new BettingModel()
                                   {
-                                      Status = BettingStatus.Waiting,
+                                      Status = BettingStatus.Done,
                                       BettingId = 2,
                                       ExchangeRate = 1000,
                                       StartDate = DateTime.Now,
                                       FinishDate = DateTime.Now.AddDays(1)
                                   };
+
+            this.bettingModels = new List<BettingModel>() { bettingCurrent, bettingDone };
+
             var bettingService = this._serviceProvider.GetRequiredService<IGenericRepository<BettingModel>>();
             bettingService.Create(bettingCurrent);
             bettingService.Create(bettingDone);
-
-            var urlHelperMock = new Mock<IBitcoinWalletService>();
-            urlHelperMock.Setup(service => service.GetAddressById(It.IsAny<int>())).Returns(
-                () => BitcoinAddress.Create("mhheFUrieWV2zVsdWXNZkqSmeSVjkbXWer", Network.TestNet));
-            this.bidController = new BidController(
-                this._serviceProvider.GetRequiredService<IBidService>(),
-                this._serviceProvider.GetRequiredService<IBettingService>(),
-                urlHelperMock.Object,
-                userManager);
-
-            // sign in test user
-            var httpContext = this._serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-            httpContext.User = new ClaimsPrincipal(
-                new ClaimsIdentity(new GenericIdentity(user.Email), new[] { new Claim("ID", user.Id) }));
-            httpContext.RequestServices = this._serviceProvider;
-            this.bidController.ControllerContext.HttpContext = httpContext;
         }
 
         [TestMethod]
-        public async Task Create_ValidParams_ExpectSuccess()
+        public async Task Get_NoParams_ExpectSuccess()
         {
-            var result = await this.bidController.Create(new BidModel() { WalletId = 1, BettingId = 1, Side = true });
-
+            var result = await this.bettingController.Get();
             var okResult = result as OkObjectResult;
 
             dynamic obj = new DynamicObjectResultValue(okResult.Value);
 
             Assert.IsNotNull(okResult);
             Assert.AreEqual(200, okResult.StatusCode);
-
-            Assert.IsTrue(obj.result);
-
-            Assert.AreEqual(obj.bid.UserId, "TestUser");
-            Assert.AreEqual(obj.bid.WalletId, 1);
-            Assert.AreEqual(obj.bid.Amount, 0M);
-            Assert.AreEqual(obj.bid.PaymentAddress, "mhheFUrieWV2zVsdWXNZkqSmeSVjkbXWer");
-            Assert.IsTrue(obj.bid.Side);
-            Assert.AreEqual(obj.bid.PaymentStatus, PaymentStatus.None);
-            Assert.IsFalse(obj.bid.Paid);
-        }
-
-        [TestMethod]
-        public async Task Create_InvalidParamsBetNotAllow_ExpectError()
-        {
-            var result = await this.bidController.Create(new BidModel() { WalletId = 1, BettingId = 2, Side = true });
-
-            var okResult = result as OkObjectResult;
-
-            dynamic obj = new DynamicObjectResultValue(okResult.Value);
-
-            Assert.IsNotNull(okResult);
-            Assert.AreEqual(200, okResult.StatusCode);
-
-            Assert.IsFalse(obj.result);
-        }
-
-        [TestMethod]
-        public async Task Create_InvalidBetId_ExpectError()
-        {
-            var result = await this.bidController.Create(new BidModel() { WalletId = 1, BettingId = 3, Side = true });
-
-            var okResult = result as OkObjectResult;
-
-            dynamic obj = new DynamicObjectResultValue(okResult.Value);
-
-            Assert.IsNotNull(okResult);
-            Assert.AreEqual(200, okResult.StatusCode);
-
-            Assert.IsFalse(obj.result);
+            CollectionAssert.AreEqual(obj.list, this.bettingModels);
         }
 
         [TestMethod]
         public async Task GetById_ValidParams_ExpectSuccess()
         {
-            var bidService = this._serviceProvider.GetRequiredService<IGenericRepository<BidModel>>();
-            var bid = new BidModel() { BettingId = 2, Amount = 1M, Side = false, BidId = 8, Coefficient = 2, Date = DateTime.Now, UserId = "TestUser", WalletId = 1, Paid = false, PaymentStatus = PaymentStatus.Confirmed, Status = false, PaymentAddress = "mhheFUrieWV2zVsdWXNZkqSmeSVjkbXWer" };
-            var bidList = new List<BidModel>(){ bid };
-            bidService.Create(bidList[0]);
-
-            var result = await this.bidController.GetById(2);
-
+            var result = await this.bettingController.GetById(1);
             var okResult = result as OkObjectResult;
 
             dynamic obj = new DynamicObjectResultValue(okResult.Value);
 
             Assert.IsNotNull(okResult);
             Assert.AreEqual(200, okResult.StatusCode);
-
-            CollectionAssert.AreEqual(obj.list, bidList);
+            Assert.AreEqual(obj.list, ((List<BettingModel>)this.bettingModels)[0]);
         }
 
         [TestMethod]
-        public async Task GetById_ValidParams_ExpectSuccessEmptyList()
+        public async Task GetById_InvalidParams_ExpectError()
         {
-
-            var result = await this.bidController.GetById(4);
-
+            var result = await this.bettingController.GetById(4);
             var okResult = result as OkObjectResult;
 
             dynamic obj = new DynamicObjectResultValue(okResult.Value);
 
             Assert.IsNotNull(okResult);
             Assert.AreEqual(200, okResult.StatusCode);
+            Assert.IsFalse(obj.result);
+        }
 
+        [TestMethod]
+        public async Task GetCurrent_NoParams_ExpectSuccess()
+        {
+            var result = await this.bettingController.GetCurrent();
+            var okResult = result as OkObjectResult;
+
+            dynamic obj = new DynamicObjectResultValue(okResult.Value);
+
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
             Assert.IsTrue(obj.result);
-            CollectionAssert.AreEqual(obj.list, new List<BidModel>());
+        }
+
+        [TestMethod]
+        public async Task GetArchive_NoParams_ExpectSuccess()
+        {
+            var result = await this.bettingController.GetArchive();
+            var okResult = result as OkObjectResult;
+
+            dynamic obj = new DynamicObjectResultValue(okResult.Value);
+
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.IsTrue(obj.result);
         }
     }
 }

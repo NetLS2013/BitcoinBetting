@@ -1,6 +1,8 @@
-﻿namespace BitcoinBetting.UnitTest
+﻿namespace BitcoinBetting.UnitTest.ControllersTest
 {
     using System;
+    using System.Security.Claims;
+    using System.Security.Principal;
     using System.Threading.Tasks;
 
     using BitcoinBetting.Server.Controllers;
@@ -88,7 +90,6 @@
                     settingsMock.Object.Value,
                     It.IsAny<AppIdentityUser>(),
                     It.IsAny<string>())).ReturnsAsync(() => ("Token", "Token"));
-              //  .ReturnsAsync(() => Task.FromResult(Tuple<string, string>("UserToken", "UserToken")));
 
             // sign in test user
             var httpContext = this.serviceProvider.GetRequiredService<IHttpContextAccessor>();
@@ -175,6 +176,58 @@
             Assert.AreEqual(200, okResult.StatusCode);
 
             Assert.IsNotNull(obj.code);
+        }
+
+        [TestMethod]
+        public async Task ChangePassword_GivenValidUserModel_ExpectSuccess()
+        {
+            var httpContext = this.serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+            httpContext.User = new ClaimsPrincipal(
+                new ClaimsIdentity(new GenericIdentity("test@mail.com"), new[] { new Claim("ID", "TestUser") }));
+            httpContext.RequestServices = this.serviceProvider;
+
+            this.accountController.ControllerContext.HttpContext = httpContext;
+
+            var result = await this.accountController.ChangePassword(new RestorePasswordModel(){OldPassword = "Pass@word1" , NewPassword = "pAss@word1" });
+
+            var okResult = result as OkObjectResult;
+
+            dynamic obj = new DynamicObjectResultValue(okResult.Value);
+
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+
+            Assert.IsTrue(obj.result);
+        }
+
+        [TestMethod]
+        public async Task ForgotPassword_GivenValidUserModelButNotExistedEmail_ExpectError()
+        {
+            var result = await this.accountController.ForgotPassword(new ForgotPasswordModel() { Email = "other@mail.com" });
+
+            var okResult = result as OkObjectResult;
+
+            dynamic obj = new DynamicObjectResultValue(okResult.Value);
+
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+
+            Assert.IsFalse(obj.result);
+        }
+
+        [TestMethod]
+        public async Task ForgotPassword_GivenValidUserModel_ExpectSuccess()
+        {
+            var result = await this.accountController.ForgotPassword(new ForgotPasswordModel() { Email = "test@mail.com" });
+
+            var okResult = result as OkObjectResult;
+
+            dynamic obj = new DynamicObjectResultValue(okResult.Value);
+
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+
+            Assert.IsTrue(obj.result);
         }
     }
 }

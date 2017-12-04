@@ -37,5 +37,22 @@
 
         [NotMapped]
         public decimal CoefficientLess => BettingHelper.GetCoefficient(StartDate, FinishDate, BankLess, BankMore);
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            BettingModel other = obj as BettingModel;
+            if ((Object)other == null)
+                return false;
+
+            return this.BettingId == other.BettingId
+                   && this.ExchangeRate == other.ExchangeRate
+                   && this.StartDate == other.StartDate
+                   && this.FinishDate == other.FinishDate
+                   && this.Status == other.Status
+                   && this.Result == other.Result;
+        }
     }
 }

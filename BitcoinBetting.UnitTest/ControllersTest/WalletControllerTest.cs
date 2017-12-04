@@ -1,4 +1,4 @@
-﻿namespace BitcoinBetting.UnitTest
+﻿namespace BitcoinBetting.UnitTest.ControllersTest
 {
     using System;
     using System.Collections.Generic;
