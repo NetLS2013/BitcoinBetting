@@ -39,10 +39,7 @@ namespace BitcoinBetting.Droid
                 
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    LoadApplication(new App(true));
-                    
-                    Xamarin.Forms.Application.Current.Properties["token"] = token;
-                    Xamarin.Forms.Application.Current.Properties["refresh_token"] = refreshToken;
+                    LoadApplication(new App(token, refreshToken));
                 }
                 else
                 {

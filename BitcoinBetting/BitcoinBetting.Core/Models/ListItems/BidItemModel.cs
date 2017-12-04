@@ -20,10 +20,17 @@ namespace BitcoinBetting.Core.Models.ListItems
 
         public bool Side { get; set; }
 
-//        public PaymentStatus PaymentStatus { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
 
         public string TransactionId { get; set; }
 
         public decimal PossibleWin { get; set; }
+    }
+    
+    public enum PaymentStatus : byte
+    {
+        None,
+        Unconfirmed, 
+        Confirmed
     }
 }

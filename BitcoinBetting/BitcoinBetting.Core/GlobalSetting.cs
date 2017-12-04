@@ -27,6 +27,8 @@ namespace BitcoinBetting.Core
         public string ExternalLoginFinalEndpoint { get; set; }
         public string ExternalLoginNextEndpoint { get; set; }
         
+        public string UserGetDataEndpoint { get; set; }
+        
         public string ForgotPasswordEndpoint { get; set; }
         public string ForgotPasswordConfirmationEndpoint { get; set; }
         
@@ -95,6 +97,8 @@ namespace BitcoinBetting.Core
             
             ForgotPasswordEndpoint = string.Format("{0}/api/Account/ForgotPassword", baseEndpoint);
             ForgotPasswordConfirmationEndpoint = string.Format("{0}/api/Account/ForgotPasswordConfirmation", baseEndpoint);
+            
+            UserGetDataEndpoint = string.Format("{0}/api/Users/GetUserData", baseEndpoint);
             
             AddressCreateWaletEndpoint = string.Format("{0}/api/Wallet/Create", baseEndpoint);
             AddressGetWaletEndpoint = string.Format("{0}/api/Wallet/Get", baseEndpoint);
