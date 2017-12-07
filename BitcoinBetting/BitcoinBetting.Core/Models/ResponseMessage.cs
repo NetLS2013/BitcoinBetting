@@ -12,7 +12,7 @@ namespace BitcoinBetting.Core.Models
             { StatusMessage.EmailNotConfirmed, "Confim email" },
             { StatusMessage.UsernameOrPasswordIncorrect, "Email or password is incorect" },
             { StatusMessage.ErrorCreatingUser, "Cannot create user, try again" },
-            { StatusMessage.EmailDuplicate, "User with this email already exist" },
+            { StatusMessage.EmailDuplicate, "User with this email already exists" },
             { StatusMessage.EmailNotExist, "Account not found, please check the e-mail" },
             { StatusMessage.WrongCode, "The number you entered doesn’t match your code. Please try again" }
         };

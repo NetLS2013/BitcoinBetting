@@ -86,7 +86,7 @@ namespace BitcoinBetting.Core.ViewModels
                 var result = await requestProvider.GetAsync<BidResultModel>(urlLoadBidHistory);
     
                 Device.BeginInvokeOnMainThread(async () => {
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert("Error!",
                             Environment.NewLine + result.Message, "Ok");

@@ -106,25 +106,25 @@ namespace BitcoinBetting.Core.ViewModels
                 error += LastName.Errors.Count > 0 ? LastName.Errors[0] + Environment.NewLine : string.Empty;
                 error += Email.Errors.Count > 0 ? Email.Errors[0] + Environment.NewLine : string.Empty;
 
-                await Application.Current.MainPage.DisplayAlert("Confirm fail", error, "Ok");
+                await Application.Current.MainPage.DisplayAlert("Confirmation has failed", error, "Ok");
             }
             else
             {
                 try
                 {
-                    var result = await this.requestProvider.PostAsync<ExternalLoginConfirmModel, Result>(GlobalSetting.Instance.ExternalLoginConfirmationEndpoint, this.registrationModel, 
+                    var result = await this.requestProvider.PostAsync<ExternalLoginConfirmModel, ResultModel>(GlobalSetting.Instance.ExternalLoginConfirmationEndpoint, this.registrationModel, 
                         new List<KeyValuePair<string, string>>() {
                             new KeyValuePair<string, string>( "Identity.External", registrationModel.Cookie)
                         });
 
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert("Confirm fail", result.Message, "Ok");
                     }
                     else
                     {
-                        Application.Current.Properties["token"] = result.token;
-                        Application.Current.Properties["refresh_token"] = result.refresh_token;
+                        Application.Current.Properties["token"] = result.Token;
+                        Application.Current.Properties["refresh_token"] = result.RefreshToken;
                         
                         Application.Current.MainPage = new MasterPage();
                     }
@@ -145,11 +145,11 @@ namespace BitcoinBetting.Core.ViewModels
 
         private void AddValidations()
         {
-            FirstName.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A first name is required" });
+            FirstName.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "First name is required" });
 
-            LastName.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A last name is required" });
+            LastName.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Last name is required" });
 
-            Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A email is required" });
+            Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Email is required" });
         }
     }
 }

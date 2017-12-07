@@ -69,10 +69,11 @@ namespace BitcoinBetting.Core.Services.Validations
         {
             Errors.Clear();
 
-            IEnumerable<string> errors = _validations.Where(v => !v.Check(Value))
-                .Select(v => v.ValidationMessage);
-
-            Errors = errors.ToList();
+            Errors = _validations
+                .Where(v => !v.Check(Value))
+                .Select(v => v.ValidationMessage)
+                .ToList();
+            
             IsValid = !Errors.Any();
 
             return this.IsValid;
@@ -87,16 +88,29 @@ namespace BitcoinBetting.Core.Services.Validations
         private MemberInfo GetMemberInfo(Expression expression)
         {
             MemberExpression operand;
-            LambdaExpression lambdaExpression = (LambdaExpression)expression;
-            if (lambdaExpression.Body as UnaryExpression != null)
+            LambdaExpression lambdaExpression;
+            
+            try
             {
-                UnaryExpression body = (UnaryExpression)lambdaExpression.Body;
-                operand = (MemberExpression)body.Operand;
+                lambdaExpression = (LambdaExpression)expression;
+                
+                if (lambdaExpression.Body is UnaryExpression)
+                {
+                    UnaryExpression body = (UnaryExpression)lambdaExpression.Body;
+                    operand = (MemberExpression)body.Operand;
+                }
+                else
+                {
+                    operand = (MemberExpression)lambdaExpression.Body;
+                }
             }
-            else
+            catch (Exception e)
             {
-                operand = (MemberExpression)lambdaExpression.Body;
+                Console.WriteLine(e);
+                
+                throw;
             }
+            
             return operand.Member;
         }
     }

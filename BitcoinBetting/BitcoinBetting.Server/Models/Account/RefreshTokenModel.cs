@@ -2,6 +2,6 @@
 {
     public class RefreshTokenModel
     {
-        public string refreshToken { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

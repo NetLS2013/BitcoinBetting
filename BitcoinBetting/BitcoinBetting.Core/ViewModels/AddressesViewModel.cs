@@ -139,14 +139,14 @@ namespace BitcoinBetting.Core.ViewModels
                 var result = await requestProvider
                     .GetAsync<WalletResultModel>(GlobalSetting.Instance.AddressGetWaletEndpoint);
 
-                if (!result.result)
+                if (!result.Result)
                 {
                     await Application.Current.MainPage.DisplayAlert("Error!",
                         Environment.NewLine + result.Message, "Ok");
                 }
                 else
                 {
-                    AddressesItems = new ObservableCollection<AddressItemModel>(result.list);
+                    AddressesItems = new ObservableCollection<AddressItemModel>(result.List);
                 }
             }
             catch (Exception e)
@@ -179,9 +179,9 @@ namespace BitcoinBetting.Core.ViewModels
                 try
                 {
                     var result = await requestProvider
-                        .PostAsync<WalletModel, Result>(GlobalSetting.Instance.AddressCreateWaletEndpoint, walletModel);
+                        .PostAsync<WalletModel, ResultModel>(GlobalSetting.Instance.AddressCreateWaletEndpoint, walletModel);
 
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert("Error!",
                             Environment.NewLine + result.Message, "Ok");

@@ -21,6 +21,8 @@ namespace BitcoinBetting.Core.ViewModels
         private ListView ListView { get; set;}
         
         private IRequestProvider requestProvider { get; set; }
+
+        private string TitleSignout => "Sign out";
         
         public SettingsViewModel(INavigation navigation, Page currentPage, ListView listView)
         {
@@ -34,7 +36,7 @@ namespace BitcoinBetting.Core.ViewModels
             {
                 new MenuItemModel { Title = "Bitcoin addresses", TargetType = typeof(AddressesPage)},
                 new MenuItemModel { Title = "Help", TargetType = typeof(HelpPage)},
-                new MenuItemModel { Title = "Sign out", TargetType = typeof(LoginPage)}
+                new MenuItemModel { Title = TitleSignout, TargetType = typeof(LoginPage)}
             });
         }
         
@@ -60,7 +62,7 @@ namespace BitcoinBetting.Core.ViewModels
 
             var page = (Page) Activator.CreateInstance(item.TargetType);
 
-            if ("Sign out".Contains(item.Title))
+            if (TitleSignout.Contains(item.Title))
             {
                 SignOut();
                 

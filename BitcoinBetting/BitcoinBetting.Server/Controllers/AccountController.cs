@@ -76,12 +76,12 @@ namespace BitcoinBetting.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> RefreshToken([FromBody]RefreshTokenModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.refreshToken))
+            if (string.IsNullOrWhiteSpace(model.RefreshToken))
             {
                 return BadRequest();
             }
 
-            var token = await jwtToken.FindTokenAsync(model.refreshToken, jwtToken.GetDeviceId(context));
+            var token = await jwtToken.FindTokenAsync(model.RefreshToken, jwtToken.GetDeviceId(context));
             
             if (token == null)
             {
@@ -184,7 +184,7 @@ namespace BitcoinBetting.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> ExternalLogin(string provider, string deviceId)
         {
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback)) + "?deviceId=" + jwtToken.GetSha256Hash(deviceId);
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback)) + "?deviceId=" + deviceId;
             var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
             return Challenge(properties, provider);
@@ -201,7 +201,7 @@ namespace BitcoinBetting.Server.Controllers
             if (result.Succeeded)
             {
                 var user = await userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-                var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, deviceId);
+                var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetSha256Hash(deviceId));
                 
                 redirectUrl = "bitcoinbetting://bitcoinapp.com/final?token=" + accessToken + "&refresh_token=" + refreshToken;
 

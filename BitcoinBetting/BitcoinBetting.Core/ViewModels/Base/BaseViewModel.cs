@@ -41,34 +41,5 @@ namespace BitcoinBetting.Core.ViewModels.Base
         }
 
     }
-
-    public class ReadOnlyWrapperViewModel<T> : BaseViewModel
-    {
-        private T _item;
-        public ReadOnlyWrapperViewModel(T item)
-        {
-            Item = item;
-        }
-
-        public T Item { get { return this._item; } private set { SetField(ref this._item, value); } }
-    }
-    public class ReadOnlySelectable<T> : BaseViewModel
-    {
-
-        public ReadOnlySelectable(T item)
-        {
-            Item = item;
-        }
-        public T Item { get; private set; }
-
-        private bool _selected;
-
-        public bool Selected
-        {
-            get { return this._selected; }
-            set { SetField(ref this._selected, value); }
-        }
-
-    }
 }
 

@@ -188,9 +188,9 @@
                     fee = new Money(fastestSatoshiPerByteFee * txSizeInBytes, MoneyUnit.Satoshi);
                 }
             }
-            catch
+            catch (Exception e)
             {
-                throw new Exception("Can't get tx fee");
+                throw new Exception("Can't get tx fee", e);
             }
 
             Money availableAmount = Money.Zero;

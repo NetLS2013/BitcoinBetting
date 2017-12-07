@@ -124,9 +124,9 @@ namespace BitcoinBetting.Core.ViewModels
                 try
                 {
                     var result = await requestProvider
-                        .PostAsync<ForgotPasswordConfirmModel, Result>(GlobalSetting.Instance.ForgotPasswordConfirmationEndpoint, forgotPasswordConfirmModel);
+                        .PostAsync<ForgotPasswordConfirmModel, ResultModel>(GlobalSetting.Instance.ForgotPasswordConfirmationEndpoint, forgotPasswordConfirmModel);
 
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert(alertErrorMessage, Environment.NewLine + result.Message, "Ok");
                     }
@@ -155,7 +155,7 @@ namespace BitcoinBetting.Core.ViewModels
             
             if(isValid && newPassword.Value != newRepeatPassword.Value)
             {
-                NewPassword.Errors.Add("A password and re-password is not equals");
+                NewPassword.Errors.Add("Password and re-password are not equals");
                 
                 isValid = false;
             }
@@ -165,9 +165,9 @@ namespace BitcoinBetting.Core.ViewModels
 
         private void AddValidations()
         {
-            Code.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A code is required" });
-            NewPassword.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A password is required" });
-            NewRepeatPassword.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A repeat password is required" });
+            Code.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Code is required" });
+            NewPassword.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Password is required" });
+            NewRepeatPassword.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Repeat password is required" });
         }
     }
 }

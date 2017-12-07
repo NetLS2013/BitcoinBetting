@@ -150,16 +150,16 @@ namespace BitcoinBetting.Core.ViewModels
             {
                 try
                 {
-                    var result = await this.requestProvider.PostAsync<RegistrationModel, Result>(GlobalSetting.Instance.RegisterEndpoint, this.registrationModel);
+                    var result = await this.requestProvider.PostAsync<RegistrationModel, ResultModel>(GlobalSetting.Instance.RegisterEndpoint, this.registrationModel);
 
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert("Registration fail", result.Message, "Ok");
                     }
                     else
                     {
-                        Application.Current.Properties["token"] = result.token;
-                        Application.Current.Properties["refresh_token"] = result.refresh_token;
+                        Application.Current.Properties["token"] = result.Token;
+                        Application.Current.Properties["refresh_token"] = result.RefreshToken;
 
                         Application.Current.MainPage = new MasterPage();
                     }
@@ -180,7 +180,7 @@ namespace BitcoinBetting.Core.ViewModels
             if(isValid && password.Value != repassword.Value)
             {
                 Password.Errors.Clear();
-                Password.Errors.Add("The password and re-password is not equals");
+                Password.Errors.Add("The password and re-password are not equals");
 
                 isValid = false;
             }

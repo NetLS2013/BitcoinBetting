@@ -43,8 +43,6 @@ namespace BitcoinBetting.Server.Services.Security
                 
                 return;
             }
-            
-            //TODO update user last activity
         }
     }
 }

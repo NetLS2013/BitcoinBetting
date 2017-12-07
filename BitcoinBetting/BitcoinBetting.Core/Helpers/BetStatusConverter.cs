@@ -9,22 +9,12 @@ namespace BitcoinBetting.Core.Helpers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return true;
-
-
-            if (value.Equals(BettingStatus.Waiting) || value.Equals(BettingStatus.Done))
-            {
-                return false;
-            }
-
-            return true;
+            return !(value != null && (value.Equals(BettingStatus.Waiting) || value.Equals(BettingStatus.Done)));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
-    
 }

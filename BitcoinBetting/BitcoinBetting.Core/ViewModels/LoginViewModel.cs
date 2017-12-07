@@ -116,16 +116,16 @@ namespace BitcoinBetting.Core.ViewModels
             {
                 try
                 {
-                    var result = await requestProvider.PostAsync<LoginModel, Result>(GlobalSetting.Instance.LoginEndpoint, this.loginModel);
+                    var result = await requestProvider.PostAsync<LoginModel, ResultModel>(GlobalSetting.Instance.LoginEndpoint, this.loginModel);
 
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert("Login fail", result.Message, "Ok");
                     }
                     else
                     {
-                        Application.Current.Properties["token"] = result.token;
-                        Application.Current.Properties["refresh_token"] = result.refresh_token;
+                        Application.Current.Properties["token"] = result.Token;
+                        Application.Current.Properties["refresh_token"] = result.RefreshToken;
 
                         Application.Current.MainPage = new MasterPage();
                     }
@@ -151,8 +151,8 @@ namespace BitcoinBetting.Core.ViewModels
 
         private void AddValidations()
         {
-            Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A email is required" });
-            Password.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A password is required" });
+            Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Email is required" });
+            Password.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Password is required" });
         }
 
         private async Task FacebookLogin()

@@ -80,9 +80,9 @@ namespace BitcoinBetting.Core.ViewModels
             {
                 try
                 {
-                    var result = await requestProvider.PostAsync<ForgotPasswordModel, Result>(GlobalSetting.Instance.ForgotPasswordEndpoint, forgotPasswordModel);
+                    var result = await requestProvider.PostAsync<ForgotPasswordModel, ResultModel>(GlobalSetting.Instance.ForgotPasswordEndpoint, forgotPasswordModel);
 
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert(alertErrorMessage, Environment.NewLine + result.Message, "Ok");
                     }
@@ -108,7 +108,7 @@ namespace BitcoinBetting.Core.ViewModels
 
         private void AddValidations()
         {
-            Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "A email is required" });
+            Email.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Email is required" });
         }
     }
 }

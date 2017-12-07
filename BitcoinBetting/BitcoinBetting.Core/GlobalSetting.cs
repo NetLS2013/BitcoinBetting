@@ -7,10 +7,24 @@ using Xamarin.Forms;
 
 namespace BitcoinBetting.Core
 {
-    public class GlobalSetting
+    public sealed class GlobalSetting
     {
+        private class Nested
+        {
+            // Explicit static constructor to tell C# compiler
+            // not to mark type as beforefieldinit
+            static Nested()
+            {
+                
+            }
+
+            internal static readonly GlobalSetting Instance = new GlobalSetting();
+        }
+        
+        public static GlobalSetting Instance => Nested.Instance;
+
         public const string DefaultEndpoint = "http://bitcoinapp.com:50276";
-        private string baseEndpoint;
+        private string _baseEndpoint;
 
         public string RegisterEndpoint { get; set; }
 
@@ -40,42 +54,21 @@ namespace BitcoinBetting.Core
         public string BidCreateEndpoint { get; set; }
         public string BidGetEndpoint { get; set; }
         public string BidGetByIdEndpoint { get; set; }
-
-        private static object myLock = new object();
-        private static volatile GlobalSetting instance;
-
-        private GlobalSetting() { }
-
-        public static GlobalSetting Instance
+        
+        private GlobalSetting()
         {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (myLock)
-                    {
-                        if (instance == null)
-                        {
-                            instance = new GlobalSetting()
-                            {
-                                BaseEndpoint = DefaultEndpoint
-                            };
-                        }
-                    }
-                }
-
-                return instance;
-            }
+            BaseEndpoint = DefaultEndpoint;
         }
 
         public string BaseEndpoint
         {
-            get { return baseEndpoint; }
-            set
+            get => _baseEndpoint;
+            
+            private set
             {
-                baseEndpoint = value;
+                _baseEndpoint = value;
                 
-                UpdateEndpoint(baseEndpoint);
+                UpdateEndpoint(_baseEndpoint);
             }
         }
 
@@ -109,6 +102,5 @@ namespace BitcoinBetting.Core
             BidGetEndpoint = string.Format("{0}/api/Bid/Get", baseEndpoint);
             BidGetByIdEndpoint = string.Format("{0}/api/Bid/GetById", baseEndpoint);
         }
-
     }
 }

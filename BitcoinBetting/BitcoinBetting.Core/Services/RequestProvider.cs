@@ -48,7 +48,7 @@ namespace BitcoinBetting.Core.Services
                 }
                 catch (Exception e)
                 {
-                    throw new HttpRequestException("Network error");
+                    throw new HttpRequestException("Network error", e);
                 }
                 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -85,7 +85,7 @@ namespace BitcoinBetting.Core.Services
                 }
                 catch (Exception e)
                 {
-                    throw new HttpRequestException("Network error");
+                    throw new HttpRequestException("Network error", e);
                 }
                 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -120,7 +120,7 @@ namespace BitcoinBetting.Core.Services
                 }
                 catch (Exception e)
                 {
-                    throw new HttpRequestException("Network error");
+                    throw new HttpRequestException("Network error", e);
                 }
                 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -149,7 +149,7 @@ namespace BitcoinBetting.Core.Services
                 }
                 catch (Exception e)
                 {
-                    throw new HttpRequestException("Network error");
+                    throw new HttpRequestException("Network error", e);
                 }
                 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -168,22 +168,22 @@ namespace BitcoinBetting.Core.Services
         
         private async Task<bool> RefreshTokenAsync()
         {
-            var result = await PostAsync<RefreshTokenModel, Result>(GlobalSetting.Instance.RefreshTokenEndpoint, 
-                new RefreshTokenModel { refreshToken = (string) Application.Current.Properties["refresh_token"]});
+            var result = await PostAsync<RefreshTokenModel, ResultModel>(GlobalSetting.Instance.RefreshTokenEndpoint, 
+                new RefreshTokenModel { RefreshToken = (string) Application.Current.Properties["refresh_token"]});
 
-            if (!result.result)
+            if (!result.Result)
             {
-                Device.BeginInvokeOnMainThread(async () => {
-                     Application.Current.MainPage = new NavigationPage(new LoginPage());
+                Device.BeginInvokeOnMainThread(() => {
+                    Application.Current.MainPage = new NavigationPage(new LoginPage());
                 });
             }
             else
             {
-                Application.Current.Properties["token"] = result.token;
-                Application.Current.Properties["refresh_token"] = result.refresh_token;
+                Application.Current.Properties["token"] = result.Token;
+                Application.Current.Properties["refresh_token"] = result.RefreshToken;
             }
 
-            return result.result;
+            return result.Result;
         }
 
         private HttpClient CreateHttpClient(List<KeyValuePair<string, string>> cookies = null)

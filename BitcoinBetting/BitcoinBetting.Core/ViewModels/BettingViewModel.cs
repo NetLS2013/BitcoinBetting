@@ -89,7 +89,7 @@ namespace BitcoinBetting.Core.ViewModels
                     .GetAsync<BettingResultModel>(GlobalSetting.Instance.BettingGetEndpoint);
     
                 Device.BeginInvokeOnMainThread(async () => {
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert("Error!",
                             Environment.NewLine + result.Message, "Ok");
@@ -134,7 +134,7 @@ namespace BitcoinBetting.Core.ViewModels
                     var result = await requestProvider
                         .PostAsync<BidModel, BidResultModel>(GlobalSetting.Instance.BidCreateEndpoint, createBid);
 
-                    if (!result.result)
+                    if (!result.Result)
                     {
                         await Application.Current.MainPage.DisplayAlert("Error!",
                             Environment.NewLine + result.Message, "Ok");
@@ -170,7 +170,7 @@ namespace BitcoinBetting.Core.ViewModels
         {
             if (String.IsNullOrWhiteSpace(SelectedItem.Address))
             {
-                Application.Current.MainPage.DisplayAlert("Error!", "A address is required", "Ok");
+                Application.Current.MainPage.DisplayAlert("Error!", "Address is required", "Ok");
                 
                 return false;
             }
