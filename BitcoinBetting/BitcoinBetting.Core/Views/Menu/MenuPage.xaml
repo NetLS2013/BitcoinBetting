@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BitcoinBetting.Core.Views.Menu.MenuPage"
+             Title="|||">
+  <StackLayout>
+    <ListView x:Name="MenuItemsListView"
+              SeparatorVisibility="None"
+              HasUnevenRows="true"
+              ItemsSource="{Binding MenuItems}"
+              SelectedItem="{Binding SelectedItem}">
+      <ListView.Header>
+        <StackLayout VerticalOptions="CenterAndExpand" BackgroundColor="#03A9F4" Padding="16,64,16,16">
+            <Label Text="Bitcoin Betting" FontAttributes="Bold"/>
+            <Label Text="{Binding UserDataModel.Email}" FontSize="14"/>
+            <Label Text="{Binding UserDataModel.UserName}" FontSize="14"/>
+        </StackLayout>
+      </ListView.Header>
+        
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell>
+            <StackLayout Padding="15,10" HorizontalOptions="FillAndExpand">
+              <Label VerticalOptions="FillAndExpand"
+                    VerticalTextAlignment="Center"
+                    Text="{Binding Title}"
+                    FontSize="18"/>
+            </StackLayout>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+  </StackLayout>
+</ContentPage>

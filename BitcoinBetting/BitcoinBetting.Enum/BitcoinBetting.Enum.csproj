@@ -2,14 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="StatusMessage.cs" />
+    <Compile Include="BettingStatus.cs" />
+    <Compile Include="StatusMessage.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="StatusMessage.cs" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BitcoinBetting.Server.Models.Account;
+using Microsoft.AspNetCore.Identity;
 
 namespace BitcoinBetting.Server.Services.Identity
 {
@@ -6,5 +7,6 @@ namespace BitcoinBetting.Server.Services.Identity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string RestorePassCode { get; set; }
     }
 }

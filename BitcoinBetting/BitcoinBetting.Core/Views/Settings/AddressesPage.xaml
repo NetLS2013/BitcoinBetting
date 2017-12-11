@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BitcoinBetting.Core.Views.Settings.AddressesPage"
+             Title="Addresses">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Icon="ic_plus_circle_outline.png" Command="{Binding ModalAddressesCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <ScrollView>
+                <ListView x:Name="AddressesItemsListView"
+                          HasUnevenRows="true"
+                          ItemsSource="{Binding AddressesItems}"
+                          SelectedItem="{Binding SelectedItem}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding Address}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

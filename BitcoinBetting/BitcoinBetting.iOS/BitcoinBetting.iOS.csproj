@@ -89,6 +89,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ExportRenderer\CustomAllViewCellRendereriOS.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
@@ -117,7 +118,13 @@
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -135,10 +142,19 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BitcoinBetting\BitcoinBetting.csproj">
-      <Project>{c2ad0144-d58b-4618-a6db-2cb7a3fa53ff}</Project>
-      <Name>BitcoinBetting</Name>
+    <ProjectReference Include="..\BitcoinBetting.Core\BitcoinBetting.Core.csproj">
+      <Project>{98c2c438-fad9-4c3e-9169-d79592568612}</Project>
+      <Name>BitcoinBetting.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\bitcoin.png" />
+    <BundleResource Include="Resources\facebook.png" />
+    <BundleResource Include="Resources\google.png" />
+    <BundleResource Include="Resources\ic_plus_circle_outline.png" />
+    <BundleResource Include="Resources\yes_circle.png" />
+    <BundleResource Include="Resources\no_circle.png" />
+    <BundleResource Include="Resources\icon_cup.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

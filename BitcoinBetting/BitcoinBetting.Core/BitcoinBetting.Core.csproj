@@ -1,0 +1,111 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>BitcoinBetting.Core</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSetting.cs" />
+    <Compile Include="Helpers\NotConverter.cs" />
+    <Compile Include="Helpers\SideConverter.cs" />
+    <Compile Include="Helpers\BetWaitingConverter.cs" />
+    <Compile Include="Helpers\BetStatusConverter.cs" />
+    <Compile Include="Helpers\NotNullConverter.cs" />
+    <Compile Include="Helpers\PaymentConverter.cs" />
+    <Compile Include="Helpers\PaymentAddressConverter.cs" />
+    <Compile Include="Interfaces\IRequestProvider.cs" />
+    <Compile Include="Interfaces\IValidationRule.cs" />
+    <Compile Include="Interfaces\IValidity.cs" />
+    <Compile Include="Interfaces\INativeHelpers.cs" />
+    <Compile Include="Models\Betting\BidModel.cs" />
+    <Compile Include="Models\ResponseMessage.cs" />
+    <Compile Include="Models\ListItems\BettingItemModel.cs" />
+    <Compile Include="Models\ListItems\MenuItemModel.cs" />
+    <Compile Include="Models\ListItems\AddressItemModel.cs" />
+    <Compile Include="Models\ListItems\BidItemModel.cs" />
+    <Compile Include="Models\Results\WalletResultModel.cs" />
+    <Compile Include="Models\Results\BettingResultModel.cs" />
+    <Compile Include="Models\Results\BidResultModel.cs" />
+    <Compile Include="Models\Settings\WalletModel.cs" />
+    <Compile Include="Models\User\ExternalLoginConfirmModel.cs" />
+    <Compile Include="Models\User\LoginModel.cs" />
+    <Compile Include="Models\User\RegistrationModel.cs" />
+    <Compile Include="Models\User\UserDataModel.cs" />
+    <Compile Include="Models\ResultModel.cs" />
+    <Compile Include="Models\RefreshTokenModel.cs" />
+    <Compile Include="Models\User\ForgotPasswordConfirmModel.cs" />
+    <Compile Include="Models\User\ForgotPasswordModel.cs" />
+    <Compile Include="Services\RequestProvider.cs" />
+    <Compile Include="Services\Validations\IsNotNullOrEmptyRule.cs" />
+    <Compile Include="Services\Validations\ValidatableObject.cs" />
+    <Compile Include="ViewModels\Base\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ExternalLoginConfirmationViewModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="ViewModels\StartupViewModel.cs" />
+    <Compile Include="ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
+    <Compile Include="ViewModels\NewPasswordViewModel.cs" />
+    <Compile Include="ViewModels\BettingViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\AddressesViewModel.cs" />
+    <Compile Include="ViewModels\HistoryViewModel.cs" />
+    <Compile Include="Views\Menu\MasterPage.xaml.cs">
+      <DependentUpon>MasterPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Menu\MenuPage.xaml.cs">
+      <DependentUpon>MenuPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modals\AddressCreatePage.xaml.cs">
+      <DependentUpon>AddressCreatePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modals\BidInfoPage.xaml.cs">
+      <DependentUpon>BidInfoPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modals\BettingCreatePage.xaml.cs">
+      <DependentUpon>BettingCreatePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Account\ExtrenalLoginConfirmPage.xaml.cs" />
+    <Compile Include="Views\Account\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Account\ForgotPasswordPage.xaml.cs">
+      <DependentUpon>ForgotPasswordPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Account\RegistrationPage.xaml.cs">
+      <DependentUpon>RegistrationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Account\NewPasswordPage.xaml.cs">
+      <DependentUpon>NewPasswordPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BettingPage.xaml.cs">
+      <DependentUpon>BettingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StartupPage.xaml.cs">
+      <DependentUpon>StartupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\AddressesPage.xaml.cs">
+      <DependentUpon>AddressesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\HelpPage.xaml.cs">
+      <DependentUpon>HelpPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HistoryPage.xaml.cs">
+      <DependentUpon>HistoryPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="2.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Xamarin.Forms" Version="2.4.0.38779" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BitcoinBetting.Enum\BitcoinBetting.Enum.csproj" />
+  </ItemGroup>
+</Project>

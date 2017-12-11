@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-
 using BitcoinBetting.Enum;
-using BitcoinBetting.Server.Models;
 using BitcoinBetting.Server.Models.Account;
 using BitcoinBetting.Server.Services.Contracts;
-using BitcoinBetting.Server.Services.Email;
 using BitcoinBetting.Server.Services.Identity;
-
+using BitcoinBetting.Server.Services.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.HttpSys;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
 
 namespace BitcoinBetting.Server.Controllers
 {
@@ -24,54 +27,97 @@ namespace BitcoinBetting.Server.Controllers
         private readonly UserManager<AppIdentityUser> userManager;
         private readonly SignInManager<AppIdentityUser> signInManager;
         private readonly IEmailSender emailSender;
+        private readonly IMailChimpSender mailChimp;
+        private readonly JwtSettings jwtSettings;
+        private readonly IJwtToken jwtToken;
+        private readonly IHttpContextAccessor context;
         
         public AccountController(
             UserManager<AppIdentityUser> userManager,
             SignInManager<AppIdentityUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IMailChimpSender mailChimp,
+            IOptions<JwtSettings> jwtOptions,
+            IJwtToken jwtToken,
+            IHttpContextAccessor context
+            )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailSender = emailSender;
+            this.mailChimp = mailChimp;
+            this.jwtSettings = jwtOptions.Value;
+            this.jwtToken = jwtToken;
+            this.context = context;
         }
-        
+
         [HttpPost]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var user = await userManager.FindByEmailAsync(model.Email);
+            var passwordSignIn = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
-            if (user != null)
+            if (passwordSignIn.Succeeded)
             {
-                var passwordSignIn = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                var user = await userManager.FindByEmailAsync(model.Email);
                 
-                if (passwordSignIn.Succeeded)
-                {
-                    return Ok(new { result = true });
-                }
+                var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetDeviceId(context));
+                
+                return Ok(new { result = true, token = accessToken, refresh_token = refreshToken });
+            }
+
+            return Ok(new { result = false, code = StatusMessage.UsernameOrPasswordIncorrect });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshToken([FromBody]RefreshTokenModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.RefreshToken))
+            {
+                return BadRequest();
+            }
+
+            var token = await jwtToken.FindTokenAsync(model.RefreshToken, jwtToken.GetDeviceId(context));
+            
+            if (token == null)
+            {
+                return Ok(new { result = false });
             }
             
-            return Ok(new { code = StatusMessage.UsernameOrPasswordIncorrect, result = false });
+            var user = await userManager.FindByIdAsync(token.UserId);
+            var (accessToken, newRefreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetDeviceId(context));
+            
+            return Ok(new { result = true, token = accessToken, refresh_token = newRefreshToken });
         }
         
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
-
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId = claimsIdentity.FindFirst("ID")?.Value;
+            
+            await jwtToken.InvalidateTokensByDevice(userId, jwtToken.GetDeviceId(context));
+            await jwtToken.DeleteExpiredTokensAsync();
+            
             return StatusCode(StatusCodes.Status204NoContent);
         }
-        
+
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
+            }
+
+            if (await userManager.FindByEmailAsync(model.Email) != null)
+            {
+                return Ok(new { code = StatusMessage.EmailDuplicate, result = false });
             }
 
             var user = new AppIdentityUser
@@ -83,25 +129,35 @@ namespace BitcoinBetting.Server.Controllers
             };
 
             var create = await userManager.CreateAsync(user, model.Password);
-            
+
             if (create.Succeeded)
             {
                 var confrimationCode = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackurl = Url.Action("ConfirmEmail", new { userId = user.Id, code = confrimationCode });
+                var callbackurl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code = confrimationCode }, Request.Scheme);
 
-                await emailSender.SendEmailAsync(user.Email, "Confirm Email", callbackurl);
-                
+                try
+                {
+                    await emailSender.SendEmailAsync(user.Email, "BitcoinBetting support", "Confirm email link:\n" + callbackurl);
+                    await mailChimp.AddUserAsync(user.Email, user.FirstName, user.LastName);
+                }
+                catch (Exception e)
+                {
+                    return Ok(new { code = StatusMessage.ErrorCreatingUser, result = false });
+                }
+
                 var passwordSignIn = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
-                    
+
                 if (passwordSignIn.Succeeded)
                 {
-                    return Ok(new { result = true });
+                    var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetDeviceId(context));
+                    
+                    return Ok(new { result = true, token = accessToken, refresh_token = refreshToken });
                 }
             }
-            
+
             return Ok(new { code = StatusMessage.ErrorCreatingUser, result = false });
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
@@ -109,20 +165,167 @@ namespace BitcoinBetting.Server.Controllers
             {
                 return BadRequest();
             }
-            
+
             var user = await userManager.FindByIdAsync(userId);
 
             if (user != null)
             {
                 var confirmEmail = await userManager.ConfirmEmailAsync(user, code);
-                
+
                 if (confirmEmail.Succeeded)
                 {
                     return Ok("Your email was sent successfully");
                 }
             }
-            
+
             return BadRequest();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExternalLogin(string provider, string deviceId)
+        {
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback)) + "?deviceId=" + deviceId;
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
+            return Challenge(properties, provider);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string deviceId)
+        {
+            var info = await signInManager.GetExternalLoginInfoAsync();
+            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
+
+            var redirectUrl = String.Empty;
+
+            if (result.Succeeded)
+            {
+                var user = await userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetSha256Hash(deviceId));
+                
+                redirectUrl = "bitcoinbetting://bitcoinapp.com/final?token=" + accessToken + "&refresh_token=" + refreshToken;
+
+                return Redirect(redirectUrl);
+            }
+
+            redirectUrl = "bitcoinbetting://bitcoinapp.com/next?provider=" + info.LoginProvider
+                + "&gname=" + info.Principal.FindFirstValue(ClaimTypes.GivenName)
+                + "&sname=" + info.Principal.FindFirstValue(ClaimTypes.Surname)
+                + "&email=" + info.Principal.FindFirstValue(ClaimTypes.Email)
+                + "&externalToken=" + Request.Cookies["Identity.External"];
+
+            return Redirect(redirectUrl);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExternalLoginConfirmation([FromBody] RegisterModel model)
+        {
+            var info = await signInManager.GetExternalLoginInfoAsync();
+
+            var user = new AppIdentityUser
+            {
+                Email = model.Email,
+                UserName = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
+
+            var result = await userManager.CreateAsync(user);
+
+            if (result.Succeeded)
+            {
+                result = await userManager.AddLoginAsync(user, info);
+
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, false);
+
+                    var (accessToken, refreshToken) = await jwtToken.CreateJwtTokens(jwtSettings, user, jwtToken.GetDeviceId(context));
+                    
+                    return Ok(new { result = true, token = accessToken, refresh_token = refreshToken });
+                }
+            }
+
+            return Ok(new { code = StatusMessage.ErrorCreatingUser, result = false });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+            
+            if (user == null)
+            {
+                return Ok(new { code = StatusMessage.EmailNotExist, result = false });
+            }
+
+            var random = new Random();
+            var restoreCode = random.Next(10000, 100000).ToString();
+
+            user.RestorePassCode = restoreCode;
+            await userManager.UpdateAsync(user);
+
+            await emailSender.SendEmailAsync(user.Email, "BitcoinBetting support", "Your code:\n" + restoreCode);
+
+            return Ok(new { result = true });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPasswordConfirmation([FromBody] ForgotPasswordConfirmModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return Ok(new { code = StatusMessage.EmailNotExist, result = false });
+            }
+
+            if (model.Code == user.RestorePassCode)
+            {
+                await userManager.RemovePasswordAsync(user);
+                var result = await userManager.AddPasswordAsync(user, model.Password);
+
+                user.RestorePassCode = null;
+                await userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new { result = true });
+                }
+
+                return Ok(new { code = StatusMessage.ErrorChangePass, result = false });
+            }
+
+            return Ok(new { result = false, code = StatusMessage.WrongCode });
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword([FromBody] RestorePasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+
+            var result = await userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (result.Succeeded)
+            {
+                return Ok(new { result = true });
+            }
+
+            return Ok(new { code = StatusMessage.ErrorChangePass, result = false });
         }
     }
 }
