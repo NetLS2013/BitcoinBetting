@@ -155,7 +155,7 @@ namespace BitcoinBetting.Core.ViewModels
             
             if(isValid && newPassword.Value != newRepeatPassword.Value)
             {
-                NewPassword.Errors.Add("Password and re-password are not equals");
+                NewPassword.Errors.Add("Password and re-password are not equal");
                 
                 isValid = false;
             }
