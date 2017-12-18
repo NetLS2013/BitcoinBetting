@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitcoinBetting.Android", "BitcoinBetting\BitcoinBetting.Android\BitcoinBetting.Android.csproj", "{FA39718E-54B9-4BD0-A1C2-91001D2BAF65}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitcoinBetting.Enum", "Bitc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitcoinBetting.Core", "BitcoinBetting\BitcoinBetting.Core\BitcoinBetting.Core.csproj", "{98C2C438-FAD9-4C3E-9169-D79592568612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitcoinBetting.UnitTest", "BitcoinBetting.UnitTest\BitcoinBetting.UnitTest.csproj", "{6C723161-196B-47D8-A3A2-BA627A2B4CF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitcoinBetting.UnitTest", "BitcoinBetting.UnitTest\BitcoinBetting.UnitTest.csproj", "{6C723161-196B-47D8-A3A2-BA627A2B4CF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

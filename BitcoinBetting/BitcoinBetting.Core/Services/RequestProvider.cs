@@ -211,7 +211,8 @@ namespace BitcoinBetting.Core.Services
 
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             httpClient.DefaultRequestHeaders.Add("device_id", (string) Application.Current.Properties["device_id"]);
-            
+            httpClient.DefaultRequestHeaders.Host = "bitcoinbetting.netls.com.ua";
+
             return httpClient;
         }
 

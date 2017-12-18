@@ -23,7 +23,7 @@ namespace BitcoinBetting.Core
         
         public static GlobalSetting Instance => Nested.Instance;
 
-        public const string DefaultEndpoint = "http://bitcoinapp.com:50276";
+        public const string DefaultEndpoint = "http://bitcoinbetting.netls.com.ua";
         private string _baseEndpoint;
 
         public string RegisterEndpoint { get; set; }

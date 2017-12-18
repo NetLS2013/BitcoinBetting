@@ -20,8 +20,10 @@ namespace BitcoinBetting.Server
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel()
                 .UseApplicationInsights()
                 .UseStartup<Startup>()
+                .UseUrls("http://*:3000")
                 .Build();
     }
 }
