@@ -20,9 +20,9 @@
 
         private IBidService bidService;
 
-        private BitcoinWalletService bitcoinWalletService;
+        private IBitcoinWalletService bitcoinWalletService;
 
-        public CheckPaymentJob(IBettingService bettingService, IBidService bidService, BitcoinWalletService bitcoinWalletService)
+        public CheckPaymentJob(IBettingService bettingService, IBidService bidService, IBitcoinWalletService bitcoinWalletService)
         {
             this.bettingService = bettingService;
             this.bidService = bidService;

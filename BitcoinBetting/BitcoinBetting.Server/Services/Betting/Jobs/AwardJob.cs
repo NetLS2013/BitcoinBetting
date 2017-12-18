@@ -24,13 +24,13 @@
 
         private IWalletService walletService;
 
-        private BitcoinWalletService bitcoinWalletService;
+        private IBitcoinWalletService bitcoinWalletService;
 
         private readonly UserManager<AppIdentityUser> userManager;
 
         private readonly IEmailSender emailSender;
 
-        public AwardJob(IBettingService bettingService, IBidService bidService, IWalletService walletService, BitcoinWalletService bitcoinWalletService, UserManager<AppIdentityUser> userManager, IEmailSender emailSender)
+        public AwardJob(IBettingService bettingService, IBidService bidService, IWalletService walletService, IBitcoinWalletService bitcoinWalletService, UserManager<AppIdentityUser> userManager, IEmailSender emailSender)
         {
             this.bettingService = bettingService;
             this.bidService = bidService;
