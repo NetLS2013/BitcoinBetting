@@ -49,13 +49,15 @@
         }
 
         [TestMethod]
-        public void GetTimeCoefficient_InvalidParams_ExpectException()
+        public void GetTimeCoefficient_InvalidParams_ExpectCoeffOne()
         {
             var start = DateTime.MaxValue;
             var finish = DateTime.Now.Date;
             var curr = DateTime.MinValue;
 
-            Assert.ThrowsException<ArgumentException>(() => BettingHelper.GetTimeCoefficient(start, finish, curr));
+            var coefficient = BettingHelper.GetTimeCoefficient(start, finish, curr);
+
+            Assert.AreEqual(coefficient, 1M);
         }
 
         [TestMethod]
