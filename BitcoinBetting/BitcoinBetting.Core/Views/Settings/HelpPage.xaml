@@ -1,9 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BitcoinBetting.Core.Views.HelpPage"
              Title="Help">
-        <StackLayout>
-            <Label Text="Help page" />
-        </StackLayout>
+        <ScrollView>
+            <StackLayout Padding="16">
+                <Label Text="Bitcoin betting is application that makes possibility of earning bitcoins using a smartphone. The app has a simple and easy user interface. You can log in to an application using FB or Google+ account, and it is also possible to sign up using your email. The working prosses is also very simple. The user has the opportunity to make a forecast for the bitcoin rate for a certain period in the future both in the direction of increase and in the direction of decrease due to the current rate. To do this, you need to submitt a certain amount of btc and make a bet. In the case of a successful prediction, the btc is credited to the user’s wallet address and comes email notification of the winning. The winning is based on the bets of other users, and also takes into account the time of the bet: the longer is the interval between the bets, the greater is the amout of winning. You can also view your history of betting.e" />
+            </StackLayout>
+        </ScrollView>
 </ContentPage>
