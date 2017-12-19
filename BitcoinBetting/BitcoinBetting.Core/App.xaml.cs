@@ -10,6 +10,7 @@ namespace BitcoinBetting.Core
         public App(string token, string refreshToken)
         {
             InitializeComponent();
+            InitializeDevice();
             
             Properties["token"] = token;
             Properties["refresh_token"] = refreshToken;
@@ -20,6 +21,7 @@ namespace BitcoinBetting.Core
         public App()
         {
             InitializeComponent();
+            InitializeDevice();
             
             if (Properties.ContainsKey("token"))
             {
@@ -35,12 +37,17 @@ namespace BitcoinBetting.Core
             }
         }
 
-        protected override void OnStart()
+        private void InitializeDevice()
         {
             if (!Properties.ContainsKey("device_id"))
             {
                 Properties.Add("device_id", Guid.NewGuid().ToString().Replace("-", ""));
             }
+        }
+
+        protected override void OnStart()
+        {
+            
         }
 
         protected override void OnSleep()
